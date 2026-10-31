@@ -1,0 +1,666 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:04.275
+Imagine que você acabou de escrever um programa para um microcontrolador.
+
+2
+00:00:04.275 --> 00:00:11.312
+Lá no topo do arquivo existe uma variável global, um contador, e você escreveu que ele começa valendo quarenta e dois.
+
+3
+00:00:11.312 --> 00:00:15.200
+Você compila, grava o programa na placa e liga a energia.
+
+4
+00:00:15.200 --> 00:00:20.937
+A primeira linha da sua função main lê esse contador, e ele vale quarenta e dois, como esperado.
+
+5
+00:00:20.937 --> 00:00:24.750
+Mas pare um segundo e pense: quem colocou esse quarenta e dois lá?
+
+6
+00:00:24.750 --> 00:00:27.750
+Variáveis globais vivem na memória RAM.
+
+7
+00:00:27.750 --> 00:00:29.262
+E a RAM é volátil.
+
+8
+00:00:29.262 --> 00:00:32.787
+Quando a placa estava desligada, ela não guardava nada.
+
+9
+00:00:32.787 --> 00:00:37.887
+Quando a energia volta, a RAM acorda cheia de lixo, de valores aleatórios.
+
+10
+00:00:37.887 --> 00:00:42.325
+Ainda assim, quando a sua main começa, o contador está certinho.
+
+11
+00:00:42.325 --> 00:00:45.425
+Isso acontece porque a main não é o começo do programa.
+
+12
+00:00:45.425 --> 00:00:50.900
+Antes dela roda um pedaço de código que quase ninguém lê, mas do qual todo programa depende.
+
+13
+00:00:50.900 --> 00:00:53.225
+E é sobre ele o episódio de hoje.
+
+14
+00:00:53.225 --> 00:00:55.450
+Vamos fazer esse caminho em ordem.
+
+15
+00:00:55.450 --> 00:00:59.650
+Primeiro, o que o processador faz no exato instante em que sai do reset.
+
+16
+00:00:59.650 --> 00:01:05.137
+Depois, como o programa fica organizado na memória, em regiões que chamamos de seções.
+
+17
+00:01:05.137 --> 00:01:15.912
+Em seguida, as duas tarefas clássicas do código de inicialização: copiar os valores iniciais das variáveis da memória flash para a RAM, e zerar uma região chamada bss.
+
+18
+00:01:15.912 --> 00:01:22.487
+Depois entramos no mundo do C mais mais, onde objetos globais têm construtores que precisam rodar antes da main.
+
+19
+00:01:22.487 --> 00:01:29.750
+E no final vamos ver o que acontece se a main retorna, e como tudo isso muda quando o programa roda num computador com sistema operacional.
+
+20
+00:01:29.750 --> 00:01:33.300
+Vamos começar pelo primeiro instante de vida do processador.
+
+21
+00:01:33.300 --> 00:01:40.325
+Quando um microcontrolador é ligado, ou quando alguém aperta o botão de reset, o processador não sabe nada sobre o seu programa.
+
+22
+00:01:40.325 --> 00:01:43.775
+Ele segue uma regra fixa, gravada no hardware.
+
+23
+00:01:43.775 --> 00:01:50.325
+Vou usar como exemplo a família Cortex M, da ARM, que está em boa parte dos microcontroladores modernos.
+
+24
+00:01:50.325 --> 00:01:55.150
+Outras arquiteturas fazem coisas parecidas, com detalhes diferentes.
+
+25
+00:01:55.150 --> 00:02:01.175
+No Cortex M, logo no começo da memória de programa existe uma estrutura chamada tabela de vetores.
+
+26
+00:02:01.175 --> 00:02:03.900
+É basicamente uma lista de endereços.
+
+27
+00:02:03.900 --> 00:02:13.387
+Ao sair do reset, o processador lê a primeira posição dessa tabela e usa esse valor como ponteiro de pilha, ou seja, o lugar na RAM onde a pilha vai começar.
+
+28
+00:02:13.387 --> 00:02:19.425
+Em seguida lê a segunda posição, que contém o endereço de uma função chamada tratador de reset.
+
+29
+00:02:19.425 --> 00:02:20.712
+E pula para lá.
+
+30
+00:02:20.712 --> 00:02:22.800
+Esse detalhe é bem elegante.
+
+31
+00:02:22.800 --> 00:02:29.562
+Como o próprio hardware já configura a pilha, o tratador de reset pode ser escrito em C, sem nenhuma linha de assembly.
+
+32
+00:02:29.562 --> 00:02:41.362
+Em muitas outras arquiteturas, como em processadores ARM mais antigos ou no RISC V, as primeiras instruções precisam ser em assembly, justamente para configurar a pilha antes de chamar qualquer função em C.
+
+33
+00:02:41.362 --> 00:02:47.425
+Sem pilha, uma função em C não tem onde guardar suas variáveis locais nem o endereço de retorno.
+
+34
+00:02:47.425 --> 00:02:53.375
+Então, a partir do tratador de reset, é esse código de inicialização que está no comando.
+
+35
+00:02:53.375 --> 00:03:02.650
+Nos projetos de microcontrolador, ele normalmente vem pronto do fabricante ou do kit de desenvolvimento, num arquivo com um nome parecido com "startup".
+
+36
+00:03:02.650 --> 00:03:05.950
+Muita gente usa esse arquivo por anos sem nunca abrir.
+
+37
+00:03:05.950 --> 00:03:07.237
+Vamos abrir.
+
+38
+00:03:07.237 --> 00:03:12.025
+Para entender o que ele faz, precisamos primeiro entender como o programa está organizado.
+
+39
+00:03:12.025 --> 00:03:18.025
+Quando o compilador e o linker transformam o seu código num binário, eles separam o conteúdo em seções.
+
+40
+00:03:18.025 --> 00:03:20.112
+São quatro as que importam aqui.
+
+41
+00:03:20.112 --> 00:03:23.712
+A primeira é a seção de código, chamada ponto text.
+
+42
+00:03:23.712 --> 00:03:25.887
+São as instruções do programa.
+
+43
+00:03:25.887 --> 00:03:32.787
+Elas nunca mudam durante a execução, então podem morar na memória flash, que não perde o conteúdo quando a energia acaba.
+
+44
+00:03:32.787 --> 00:03:38.087
+A segunda guarda as constantes, coisas como tabelas fixas e textos que nunca mudam.
+
+45
+00:03:38.087 --> 00:03:42.875
+Ela se chama ponto rodata, de "read only data", dados somente de leitura.
+
+46
+00:03:42.875 --> 00:03:44.625
+Também fica na flash.
+
+47
+00:03:44.738 --> 00:03:47.338
+A terceira é a seção ponto data.
+
+48
+00:03:47.338 --> 00:03:55.013
+Aqui ficam as variáveis globais e estáticas que têm um valor inicial diferente de zero, como o nosso contador que começa em quarenta e dois.
+
+49
+00:03:55.013 --> 00:03:56.750
+E aqui começa o problema.
+
+50
+00:03:56.750 --> 00:04:01.475
+Essas variáveis precisam ser alteráveis, então precisam morar na RAM.
+
+51
+00:04:01.475 --> 00:04:07.988
+Mas o valor inicial delas precisa sobreviver com a placa desligada, então precisa estar guardado na flash.
+
+52
+00:04:07.988 --> 00:04:12.913
+A quarta é a seção bss, que se soletra bê, esse, esse.
+
+53
+00:04:12.913 --> 00:04:20.700
+Nela ficam as variáveis globais e estáticas que começam valendo zero, ou que simplesmente não têm valor inicial escrito no código.
+
+54
+00:04:20.700 --> 00:04:24.475
+A linguagem C garante que essas variáveis começam zeradas.
+
+55
+00:04:24.475 --> 00:04:33.063
+Costuma-se dizer que o nome vem de um montador antigo dos anos cinquenta e significaria "Block Started by Symbol", algo como bloco iniciado por um símbolo.
+
+56
+00:04:33.063 --> 00:04:35.500
+Hoje o nome só ficou como herança.
+
+57
+00:04:35.500 --> 00:04:40.238
+Então, resumindo: o código e as constantes ficam na flash e pronto.
+
+58
+00:04:40.238 --> 00:04:46.725
+As variáveis da seção ponto data precisam de duas cópias, uma guardada na flash e outra viva na RAM.
+
+59
+00:04:46.725 --> 00:04:51.838
+E as variáveis da seção bss só precisam existir na RAM, zeradas.
+
+60
+00:04:51.838 --> 00:04:55.563
+Vamos à primeira tarefa: copiar a seção ponto data.
+
+61
+00:04:55.563 --> 00:04:57.300
+O truque está no linker.
+
+62
+00:04:57.300 --> 00:05:00.675
+Ele trabalha com dois endereços para cada seção.
+
+63
+00:05:00.675 --> 00:05:06.375
+Um é o endereço onde a seção vai ser usada durante a execução, que para a ponto data fica na RAM.
+
+64
+00:05:06.375 --> 00:05:14.250
+O outro é o endereço onde ela é carregada, ou seja, onde os bytes realmente ficam guardados dentro da imagem gravada na flash.
+
+65
+00:05:14.250 --> 00:05:17.675
+Na maioria das seções esses dois endereços são o mesmo.
+
+66
+00:05:17.675 --> 00:05:21.063
+Na ponto data, eles são diferentes de propósito.
+
+67
+00:05:21.063 --> 00:05:32.400
+No arquivo de configuração do linker, o chamado linker script, existe uma linha dizendo, em essência: monte a seção ponto data como se ela estivesse na RAM, mas guarde o conteúdo dela na flash.
+
+68
+00:05:32.400 --> 00:05:39.013
+Assim, todo o seu código acessa o contador no endereço da RAM, mas o quarenta e dois fica guardado lá na flash.
+
+69
+00:05:39.013 --> 00:05:49.275
+O linker também cria alguns símbolos especiais que marcam onde estão essas regiões: onde começam os valores iniciais na flash, onde começa a ponto data na RAM e onde ela termina.
+
+70
+00:05:49.275 --> 00:05:53.775
+O código de inicialização usa esses símbolos num laço muito simples.
+
+71
+00:05:53.775 --> 00:05:59.413
+Ele pega uma palavra da flash, escreve na RAM, avança, e repete até chegar ao fim.
+
+72
+00:05:59.413 --> 00:06:03.900
+Quando o laço termina, cada variável inicializada tem o valor certo.
+
+73
+00:06:03.900 --> 00:06:09.200
+O contador agora vale quarenta e dois, e o mistério do começo do episódio está resolvido.
+
+74
+00:06:09.200 --> 00:06:13.088
+Agora, a segunda tarefa: zerar a bss.
+
+75
+00:06:13.088 --> 00:06:16.888
+Você poderia perguntar por que a bss não segue o mesmo esquema.
+
+76
+00:06:16.888 --> 00:06:20.663
+Por que não guardar um monte de zeros na flash e copiar também?
+
+77
+00:06:20.663 --> 00:06:22.750
+A resposta é desperdício.
+
+78
+00:06:22.750 --> 00:06:26.375
+Imagine um buffer de alguns kilobytes que começa zerado.
+
+79
+00:06:26.375 --> 00:06:30.688
+Guardar esses kilobytes de zeros na flash seria jogar espaço fora.
+
+80
+00:06:30.688 --> 00:06:35.063
+Então o linker só registra onde a bss começa e onde termina.
+
+81
+00:06:35.063 --> 00:06:42.250
+E o código de inicialização roda outro laço ainda mais simples: escreve zero, avança, até chegar ao fim.
+
+82
+00:06:42.250 --> 00:06:47.838
+Depois desses dois laços, a memória está exatamente do jeito que a linguagem C promete.
+
+83
+00:06:47.838 --> 00:06:52.550
+Variáveis com valor inicial têm esse valor, e as outras valem zero.
+
+84
+00:06:52.550 --> 00:06:55.763
+Vale fazer uma pausa aqui, porque é fácil se perder.
+
+85
+00:06:55.763 --> 00:07:09.050
+Até agora, o processador saiu do reset, leu a pilha e o endereço do tratador de reset na tabela de vetores, e o tratador fez duas coisas: copiou os valores iniciais da flash para a RAM e zerou a região da bss.
+
+86
+00:07:09.050 --> 00:07:12.275
+Guarde essas duas palavras: copiar e zerar.
+
+87
+00:07:12.275 --> 00:07:19.213
+Esses dois laços parecem triviais, mas a ordem e o momento em que rodam escondem algumas armadilhas bem reais.
+
+88
+00:07:19.213 --> 00:07:24.825
+A primeira: qualquer código que rode antes deles não pode confiar em variáveis globais.
+
+89
+00:07:24.825 --> 00:07:35.863
+Muitos arquivos de inicialização chamam, logo no começo, uma função de configuração do sistema, que ajusta o relógio do processador e às vezes habilita a unidade de ponto flutuante.
+
+90
+00:07:35.863 --> 00:07:44.663
+Se essa função gravar alguma coisa numa variável global, a gravação pode ser apagada logo depois pela cópia da ponto data ou pela limpeza da bss.
+
+91
+00:07:44.663 --> 00:07:50.950
+Esse é um bug clássico, daqueles que fazem alguém passar uma tarde inteira olhando para o depurador sem entender nada.
+
+92
+00:07:51.050 --> 00:07:57.437
+A segunda envolve o watchdog, um temporizador que reinicia o chip se o programa parar de dar sinal de vida.
+
+93
+00:07:57.437 --> 00:08:04.950
+Em algumas famílias, como o MSP430 da Texas Instruments, ele já vem ligado quando o chip sai do reset.
+
+94
+00:08:04.950 --> 00:08:11.362
+Se o programa tiver muita RAM para zerar, a limpeza da bss pode demorar mais do que o prazo do watchdog.
+
+95
+00:08:11.362 --> 00:08:17.775
+Aí o chip reinicia no meio da inicialização, começa de novo, reinicia de novo, para sempre.
+
+96
+00:08:17.775 --> 00:08:26.350
+As ferramentas desses fabricantes oferecem um gancho, uma função que roda antes da cópia e da limpeza, justamente para desligar o watchdog a tempo.
+
+97
+00:08:26.350 --> 00:08:30.687
+A terceira aparece em sistemas maiores, com memória RAM externa.
+
+98
+00:08:30.687 --> 00:08:39.325
+Se a ponto data ou a bss estiverem numa memória externa, o controlador dessa memória precisa ser configurado antes de qualquer escrita nela.
+
+99
+00:08:39.325 --> 00:08:43.175
+Senão, a cópia escreve num lugar que ainda não responde.
+
+100
+00:08:43.175 --> 00:08:48.150
+E existe também o caso contrário, quando você não quer que uma variável seja zerada.
+
+101
+00:08:48.150 --> 00:08:54.412
+Às vezes você quer guardar uma informação que sobreviva a um reset, por exemplo o motivo da última falha.
+
+102
+00:08:54.412 --> 00:09:02.737
+Para isso, muitos projetos criam uma seção especial, geralmente chamada "no init", que o código de inicialização simplesmente pula.
+
+103
+00:09:02.737 --> 00:09:05.625
+O que estava lá antes do reset continua lá.
+
+104
+00:09:05.625 --> 00:09:08.912
+Bom, com a memória pronta, poderíamos chamar a main.
+
+105
+00:09:08.912 --> 00:09:11.625
+Num programa em C, praticamente é isso.
+
+106
+00:09:11.625 --> 00:09:16.100
+Mas se o seu projeto usa C mais mais, ainda falta uma etapa importante.
+
+107
+00:09:16.100 --> 00:09:20.550
+Em C mais mais, uma variável global pode ser um objeto com construtor.
+
+108
+00:09:20.550 --> 00:09:27.000
+Pense num objeto global que representa uma porta serial e cujo construtor configura alguns registradores.
+
+109
+00:09:27.000 --> 00:09:29.950
+Ou numa tabela que é montada chamando uma função.
+
+110
+00:09:29.950 --> 00:09:35.725
+Esses valores não podem ser simplesmente copiados da flash, porque dependem de código rodando.
+
+111
+00:09:35.725 --> 00:09:37.987
+Aqui é importante uma distinção.
+
+112
+00:09:37.987 --> 00:09:51.662
+Se o construtor for simples o bastante para o compilador calcular o resultado durante a compilação, como acontece com construtores marcados como constexpr, o compilador faz isso e o objeto acaba dentro da ponto data ou até das constantes.
+
+113
+00:09:51.662 --> 00:09:53.812
+Nenhum código precisa rodar.
+
+114
+00:09:53.812 --> 00:09:57.387
+A linguagem chama isso de inicialização constante.
+
+115
+00:09:57.387 --> 00:10:05.200
+Quando não dá para resolver na compilação, temos a chamada inicialização dinâmica, e aí alguém precisa chamar o construtor antes da main.
+
+116
+00:10:05.200 --> 00:10:07.362
+O mecanismo funciona assim.
+
+117
+00:10:07.362 --> 00:10:15.812
+Para cada arquivo de código que tem objetos globais desse tipo, o compilador gera uma pequena função escondida que chama os construtores daquele arquivo.
+
+118
+00:10:15.812 --> 00:10:22.487
+Depois coloca um ponteiro para essa função numa seção especial chamada init array, um vetor de inicialização.
+
+119
+00:10:22.487 --> 00:10:27.350
+Em ferramentas mais antigas, o nome era ponto ctors, de construtores.
+
+120
+00:10:27.350 --> 00:10:35.737
+O linker junta os ponteiros de todos os arquivos numa lista só e, de novo, cria símbolos marcando onde essa lista começa e onde termina.
+
+121
+00:10:35.737 --> 00:10:40.925
+O código de inicialização percorre essa lista e chama cada função, uma por uma.
+
+122
+00:10:40.925 --> 00:10:50.975
+Em muitos projetos isso é feito por uma função da biblioteca padrão, que no ambiente newlib, comum em microcontroladores, tem um nome parecido com "libc init array".
+
+123
+00:10:50.975 --> 00:10:58.837
+Ela é chamada depois da cópia e da limpeza, o que faz todo sentido, porque um construtor pode muito bem ler outras variáveis globais.
+
+124
+00:10:58.837 --> 00:11:08.887
+Isso abre uma das armadilhas mais famosas do C mais mais, conhecida em inglês como static initialization order fiasco, o fiasco da ordem de inicialização estática.
+
+125
+00:11:08.887 --> 00:11:14.250
+Dentro de um mesmo arquivo, os objetos globais são construídos na ordem em que aparecem.
+
+126
+00:11:14.250 --> 00:11:19.162
+Mas entre arquivos diferentes, a ordem não é especificada pela linguagem.
+
+127
+00:11:19.162 --> 00:11:23.662
+Ela depende de detalhes como a ordem em que os arquivos foram passados ao linker.
+
+128
+00:11:23.662 --> 00:11:32.025
+Então, se o construtor de um objeto no arquivo A usar um objeto global do arquivo B, ele pode encontrar esse objeto ainda não construído.
+
+129
+00:11:32.025 --> 00:11:36.925
+Às vezes funciona por sorte, até o dia em que alguém muda a ordem de compilação.
+
+130
+00:11:37.034 --> 00:11:44.046
+A solução mais conhecida é trocar o objeto global por uma função que devolve um objeto estático declarado dentro dela.
+
+131
+00:11:44.046 --> 00:11:49.934
+Assim, o objeto é construído na primeira vez que alguém chama a função, sempre na hora certa.
+
+132
+00:11:49.934 --> 00:12:00.421
+Só tenha em mente um detalhe: desde o padrão de dois mil e onze, a linguagem exige que essa construção seja segura entre várias threads, e o compilador adiciona uma pequena proteção para isso.
+
+133
+00:12:00.421 --> 00:12:07.971
+Em sistemas embarcados de uma thread só, muita gente desliga essa proteção com uma opção do compilador, para economizar código.
+
+134
+00:12:07.971 --> 00:12:11.446
+Faz sentido, desde que você saiba o que está desligando.
+
+135
+00:12:11.446 --> 00:12:13.059
+E os destrutores?
+
+136
+00:12:13.059 --> 00:12:19.696
+Num computador comum, quando o programa termina, os objetos globais são destruídos na ordem inversa da construção.
+
+137
+00:12:19.696 --> 00:12:26.146
+Num microcontrolador, a main normalmente nunca retorna, então esses destrutores nunca rodariam.
+
+138
+00:12:26.146 --> 00:12:31.421
+Por isso muitos projetos embarcados configuram as ferramentas para nem gerar esse código.
+
+139
+00:12:31.421 --> 00:12:33.796
+Isso leva a uma pergunta curiosa.
+
+140
+00:12:33.796 --> 00:12:35.946
+E se a main retornar mesmo assim?
+
+141
+00:12:35.946 --> 00:12:41.746
+Num microcontrolador sem sistema operacional, não existe ninguém para receber o valor de retorno.
+
+142
+00:12:41.746 --> 00:12:50.496
+Por isso o código de inicialização costuma colocar, logo depois da chamada à main, um laço infinito, ou uma instrução que coloca o processador para dormir.
+
+143
+00:12:50.496 --> 00:12:55.284
+É uma rede de segurança para o processador não sair executando lixo da memória.
+
+144
+00:12:55.284 --> 00:13:01.759
+Para fechar o quadro, vale comparar com um programa rodando num computador com sistema operacional, como o Linux.
+
+145
+00:13:01.759 --> 00:13:05.696
+A ideia é a mesma, mas o trabalho é dividido de outro jeito.
+
+146
+00:13:05.696 --> 00:13:08.434
+Quem prepara a memória é o próprio sistema.
+
+147
+00:13:08.434 --> 00:13:18.359
+Ele lê o arquivo executável, mapeia a seção de código, e mapeia a ponto data diretamente do arquivo, de um jeito que só cria uma cópia na memória quando alguém escreve nela.
+
+148
+00:13:18.359 --> 00:13:22.996
+A bss vem de páginas de memória que o sistema já entrega zeradas.
+
+149
+00:13:22.996 --> 00:13:27.784
+Então aquele laço de copiar e zerar praticamente desaparece do seu programa.
+
+150
+00:13:27.784 --> 00:13:30.871
+Mesmo assim, a main ainda não é o começo.
+
+151
+00:13:30.871 --> 00:13:39.309
+O ponto de entrada real é uma função chamada start, que vem de um pequeno arquivo da biblioteca de C, ligado automaticamente a todo programa.
+
+152
+00:13:39.309 --> 00:13:46.946
+Se o programa usa bibliotecas dinâmicas, antes ainda roda o carregador dinâmico, que encontra e liga essas bibliotecas.
+
+153
+00:13:46.946 --> 00:13:58.771
+Depois a start chama uma função de partida da biblioteca de C, que prepara os argumentos da linha de comando, roda o mesmo vetor de inicialização com os construtores do C mais mais e, finalmente, chama a main.
+
+154
+00:13:58.771 --> 00:14:08.146
+Quando a main retorna, o valor dela é entregue à função exit, que roda os destrutores, esvazia os buffers de saída e devolve o código de retorno ao sistema.
+
+155
+00:14:08.146 --> 00:14:10.634
+Vamos recapitular o caminho todo.
+
+156
+00:14:10.634 --> 00:14:16.871
+O processador sai do reset e lê a tabela de vetores, que lhe dá a pilha e o endereço do tratador de reset.
+
+157
+00:14:16.871 --> 00:14:22.021
+O tratador, muitas vezes, configura o relógio e algum hardware essencial.
+
+158
+00:14:22.021 --> 00:14:29.871
+Depois ele copia os valores iniciais da ponto data da flash para a RAM e zera a região da bss, usando símbolos que o linker preparou.
+
+159
+00:14:29.871 --> 00:14:39.209
+Em C mais mais, percorre o vetor de inicialização e chama os construtores dos objetos globais, numa ordem que entre arquivos diferentes não é garantida.
+
+160
+00:14:39.209 --> 00:14:41.284
+Só então chega a vez da main.
+
+161
+00:14:41.284 --> 00:14:45.546
+E se ela retornar, alguém precisa decidir o que acontece depois.
+
+162
+00:14:45.546 --> 00:14:49.871
+Eu queria terminar voltando àquele contador que começava em quarenta e dois.
+
+163
+00:14:49.871 --> 00:14:54.471
+A gente escreve uma linha simples e confia que a linguagem vai cumprir a promessa.
+
+164
+00:14:54.471 --> 00:14:57.809
+Mas a linguagem, sozinha, não cumpre nada.
+
+165
+00:14:57.809 --> 00:15:04.509
+Quem cumpre é um punhado de laços pequenos, rodando numa fração de milissegundo, num arquivo que quase ninguém abre.
+
+166
+00:15:04.509 --> 00:15:13.346
+Da próxima vez que um programa seu começar do jeito certo, lembre que, antes da primeira linha que você escreveu, alguém já arrumou a casa inteira para você.
+

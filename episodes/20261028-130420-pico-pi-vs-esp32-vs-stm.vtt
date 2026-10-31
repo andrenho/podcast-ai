@@ -1,0 +1,614 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:03.475
+Imagine que você está na bancada, com uma ideia na cabeça.
+
+2
+00:00:03.425 --> 00:00:11.150
+Pode ser um sensor que mede a umidade das plantas, um controle para as luzes da sala ou um pequeno robô que segue uma linha no chão.
+
+3
+00:00:11.150 --> 00:00:18.975
+Você abre uma loja online e logo aparecem três nomes: Raspberry Pi Pico, ESP trinta e dois e STM trinta e dois.
+
+4
+00:00:18.975 --> 00:00:25.225
+Os três são baratos, pequenos e poderosos, e todo mundo na internet jura que o seu favorito é o melhor.
+
+5
+00:00:25.225 --> 00:00:26.875
+Qual deles você escolhe?
+
+6
+00:00:26.875 --> 00:00:28.462
+Olá, seja bem-vindo.
+
+7
+00:00:28.462 --> 00:00:37.200
+Hoje a conversa é sobre esses três microcontroladores, que hoje dominam boa parte do mundo maker e também aparecem dentro de produtos de verdade.
+
+8
+00:00:37.200 --> 00:00:41.875
+Primeiro vou contar de onde cada um veio e qual é a personalidade de cada um.
+
+9
+00:00:41.875 --> 00:00:52.525
+Depois vamos comparar os três em alguns pontos que importam na prática: conexão sem fio, desempenho, periféricos, consumo de energia, facilidade de uso e uso profissional.
+
+10
+00:00:52.525 --> 00:00:57.475
+No final, vou sugerir um jeito simples de decidir qual usar no seu próximo projeto.
+
+11
+00:00:57.475 --> 00:01:00.612
+Antes de tudo, um ponto que confunde muita gente.
+
+12
+00:01:00.612 --> 00:01:06.137
+Um microcontrolador não é um computador como o Raspberry Pi tradicional, aquele que roda Linux.
+
+13
+00:01:06.137 --> 00:01:13.125
+Um microcontrolador é um chip que junta processador, memória e pinos de entrada e saída num único pedaço de silício.
+
+14
+00:01:13.125 --> 00:01:15.687
+Ele não tem sistema operacional completo.
+
+15
+00:01:15.687 --> 00:01:23.300
+Ele roda um único programa, que começa assim que você liga a energia, e fica ali, em laço, lendo sensores e acionando coisas.
+
+16
+00:01:23.300 --> 00:01:28.512
+Ele liga quase instantaneamente, gasta pouquíssima energia e custa poucos reais.
+
+17
+00:01:28.512 --> 00:01:31.662
+Guarde essa ideia, porque ela vai voltar várias vezes.
+
+18
+00:01:31.662 --> 00:01:35.812
+Vamos começar pelo mais velho dos três, o STM trinta e dois.
+
+19
+00:01:35.812 --> 00:01:43.337
+Ele vem da STMicroelectronics, uma empresa franco-italiana de semicondutores, e a família foi lançada em dois mil e sete.
+
+20
+00:01:43.337 --> 00:01:47.425
+O detalhe mais importante é que STM trinta e dois não é um chip.
+
+21
+00:01:47.425 --> 00:01:50.862
+É uma família enorme, com mais de mil modelos diferentes.
+
+22
+00:01:50.862 --> 00:02:01.137
+Todos usam núcleos de processador projetados pela empresa britânica Arm, da linha chamada Cortex M, que é praticamente o padrão da indústria para microcontroladores.
+
+23
+00:02:01.137 --> 00:02:03.237
+Dentro dessa família tem de tudo.
+
+24
+00:02:03.237 --> 00:02:06.750
+Tem chips minúsculos e baratíssimos para tarefas simples.
+
+25
+00:02:06.750 --> 00:02:11.687
+Tem a linha de baixo consumo, feita para aparelhos que precisam durar anos com uma pilha.
+
+26
+00:02:11.687 --> 00:02:23.162
+E tem a linha de alto desempenho, com chips que passam de quinhentos megahertz e conseguem processar áudio, controlar motores com precisão ou desenhar interfaces gráficas em telas coloridas.
+
+27
+00:02:23.162 --> 00:02:30.862
+Tem até modelos com rádio embutido, para Bluetooth ou para LoRa, que é uma tecnologia de comunicação de longo alcance e baixo consumo.
+
+28
+00:02:30.862 --> 00:02:38.050
+No mundo maker, o STM trinta e dois ficou famoso por causa de uma plaquinha apelidada de Blue Pill, a pílula azul.
+
+29
+00:02:38.050 --> 00:02:41.725
+Ela era baratíssima e muito mais potente que um Arduino comum.
+
+30
+00:02:41.725 --> 00:02:50.437
+Só que existe um alerta aqui: muitas Blue Pills vendidas por aí vinham com chips falsificados ou clones, que nem sempre se comportam igual ao original.
+
+31
+00:02:50.437 --> 00:02:58.625
+Hoje a própria ST vende placas oficiais de desenvolvimento, chamadas Nucleo, que são uma escolha bem mais segura para quem está começando.
+
+32
+00:02:58.625 --> 00:03:03.212
+A personalidade do STM trinta e dois é a de uma ferramenta profissional.
+
+33
+00:03:03.212 --> 00:03:08.425
+Ele é poderoso, flexível e confiável, mas exige que você entenda o que está fazendo.
+
+34
+00:03:08.425 --> 00:03:10.487
+Vamos voltar a ele daqui a pouco.
+
+35
+00:03:10.487 --> 00:03:13.487
+O segundo da lista é o ESP trinta e dois.
+
+36
+00:03:13.487 --> 00:03:16.650
+Ele é da Espressif, uma empresa de Xangai, na China.
+
+37
+00:03:16.650 --> 00:03:23.725
+A história começa um pouco antes, em dois mil e catorze, com um chip chamado ESP oito mil duzentos e sessenta e seis.
+
+38
+00:03:23.725 --> 00:03:29.862
+Ele trazia uma novidade que parecia impossível na época: wi-fi completo por um preço de poucos dólares.
+
+39
+00:03:29.862 --> 00:03:34.037
+Os makers do mundo inteiro adotaram o chip quase da noite para o dia.
+
+40
+00:03:34.037 --> 00:03:39.037
+Em dois mil e dezesseis, a Espressif lançou o sucessor, o ESP trinta e dois.
+
+41
+00:03:39.037 --> 00:03:51.075
+O ESP trinta e dois original tem dois núcleos de processador que chegam a duzentos e quarenta megahertz, bastante memória para um microcontrolador e, o mais importante, wi-fi e Bluetooth no mesmo chip.
+
+42
+00:03:51.075 --> 00:03:52.512
+É essa a alma dele.
+
+43
+00:03:52.512 --> 00:03:56.337
+O ESP trinta e dois nasceu para estar conectado.
+
+44
+00:03:56.500 --> 00:04:01.737
+Assim como acontece com o STM, ESP trinta e dois virou o nome de uma família.
+
+45
+00:04:01.687 --> 00:04:14.050
+Existem variantes com um núcleo só, variantes com instruções extras para inteligência artificial e variantes que trocaram a arquitetura do processador por RISC-V, que é uma arquitetura aberta e livre de licenças.
+
+46
+00:04:14.050 --> 00:04:21.850
+Alguns modelos mais novos suportam wi-fi seis e também os protocolos Zigbee e Thread, usados em automação residencial.
+
+47
+00:04:21.850 --> 00:04:27.125
+Por isso, quando alguém disser "eu uso ESP trinta e dois", vale perguntar: qual deles?
+
+48
+00:04:27.125 --> 00:04:32.437
+Os núcleos de processamento originais do ESP trinta e dois, aliás, não são da Arm.
+
+49
+00:04:32.437 --> 00:04:34.925
+São de uma arquitetura chamada Xtensa.
+
+50
+00:04:34.925 --> 00:04:40.600
+Na prática, para quem programa, isso quase não faz diferença, porque as ferramentas cuidam de tudo.
+
+51
+00:04:40.600 --> 00:04:47.887
+Mas é um detalhe interessante, e é uma das razões pelas quais a Espressif tem migrado para RISC-V nos modelos mais recentes.
+
+52
+00:04:47.887 --> 00:04:50.825
+E aí chegamos ao caçula, o Raspberry Pi Pico.
+
+53
+00:04:50.825 --> 00:04:57.150
+A Fundação Raspberry Pi, do Reino Unido, ficou famosa pelos computadores de placa única que rodam Linux.
+
+54
+00:04:57.150 --> 00:05:07.612
+Em janeiro de dois mil e vinte e um, ela surpreendeu todo mundo lançando o seu primeiro microcontrolador próprio, o RP dois mil e quarenta, e a plaquinha que o carrega, o Pico.
+
+55
+00:05:07.612 --> 00:05:10.387
+O preço de lançamento foi de quatro dólares.
+
+56
+00:05:10.387 --> 00:05:16.087
+O RP dois mil e quarenta tem dois núcleos Arm modestos e uma quantidade generosa de memória.
+
+57
+00:05:16.087 --> 00:05:21.637
+Mas a estrela dele é outra coisa, chamada PIO, que significa entrada e saída programável.
+
+58
+00:05:21.637 --> 00:05:29.537
+Pense nisso como pequenos processadores auxiliares, extremamente simples, dedicados só a mexer nos pinos com precisão de relógio.
+
+59
+00:05:29.537 --> 00:05:34.650
+Com eles, você pode inventar protocolos de comunicação que o chip não tem de fábrica.
+
+60
+00:05:34.650 --> 00:05:41.875
+Tem gente que usa o PIO para gerar sinal de vídeo, controlar fitas de LED endereçáveis e até emular hardware antigo.
+
+61
+00:05:41.875 --> 00:05:44.600
+Para um chip tão barato, isso é muito raro.
+
+62
+00:05:44.600 --> 00:05:47.175
+O primeiro Pico não tinha conexão sem fio.
+
+63
+00:05:47.175 --> 00:05:54.687
+Em dois mil e vinte e dois veio o Pico W, com wi-fi e, depois, Bluetooth, graças a um chip de rádio separado na placa.
+
+64
+00:05:54.687 --> 00:06:00.975
+E em agosto de dois mil e vinte e quatro chegou o Pico dois, com o novo RP dois mil trezentos e cinquenta.
+
+65
+00:06:00.975 --> 00:06:13.300
+Ele trouxe mais velocidade, o dobro de memória, mais blocos de PIO, recursos de segurança e uma curiosidade técnica: o chip tem dois núcleos Arm e dois núcleos RISC-V, e você escolhe quais usar.
+
+66
+00:06:13.300 --> 00:06:17.687
+Pouco tempo depois também saiu a versão com wi-fi, o Pico dois W.
+
+67
+00:06:17.687 --> 00:06:21.100
+A personalidade do Pico é a de um professor generoso.
+
+68
+00:06:21.100 --> 00:06:26.725
+A documentação é excelente, ele é fácil de programar e ainda tem esse truque do PIO na manga.
+
+69
+00:06:26.725 --> 00:06:31.425
+Então, se você se distraiu nos últimos minutos, o resumo até aqui é este.
+
+70
+00:06:31.425 --> 00:06:35.687
+O STM trinta e dois é a família profissional, enorme e veterana.
+
+71
+00:06:35.687 --> 00:06:38.812
+O ESP trinta e dois é o rei da conectividade.
+
+72
+00:06:38.812 --> 00:06:43.925
+E o Raspberry Pi Pico é o mais amigável, com um recurso único para controlar os pinos.
+
+73
+00:06:43.925 --> 00:06:50.325
+Agora vamos colocar os três lado a lado, começando pelo ponto que mais pesa na escolha: a conexão sem fio.
+
+74
+00:06:50.325 --> 00:06:58.587
+Se o seu projeto precisa falar com a internet, com o roteador de casa ou com o celular, o ESP trinta e dois é o caminho mais natural.
+
+75
+00:06:58.587 --> 00:07:06.262
+O rádio está dentro do próprio chip, as bibliotecas são maduras e existe uma comunidade gigantesca fazendo exatamente isso.
+
+76
+00:07:06.262 --> 00:07:14.462
+Projetos como o ESPHome, muito usado com o Home Assistant, permitem criar um sensor conectado sem escrever quase nenhum código.
+
+77
+00:07:14.462 --> 00:07:21.912
+O Pico W e o Pico dois W também resolvem bem, mas com um chip de rádio à parte e um ecossistema menor nessa área.
+
+78
+00:07:21.912 --> 00:07:26.175
+Já no STM trinta e dois, a maioria dos modelos não tem rádio.
+
+79
+00:07:26.175 --> 00:07:33.662
+Existem as linhas sem fio, mas elas são voltadas para Bluetooth de baixo consumo ou para LoRa, e não para wi-fi.
+
+80
+00:07:33.820 --> 00:07:35.920
+O segundo ponto é o desempenho.
+
+81
+00:07:35.870 --> 00:07:40.507
+Aqui é preciso cuidado, porque comparar só a frequência em megahertz engana.
+
+82
+00:07:40.507 --> 00:07:44.757
+Os núcleos são diferentes e cada um faz mais ou menos trabalho por ciclo.
+
+83
+00:07:44.757 --> 00:07:51.607
+De forma geral, o ESP trinta e dois e o Pico dois ficam numa faixa parecida para a maioria das tarefas de hobby.
+
+84
+00:07:51.607 --> 00:07:54.182
+O Pico original é um pouco mais modesto.
+
+85
+00:07:54.182 --> 00:08:02.495
+E o topo da linha do STM trinta e dois ganha com folga dos três, especialmente em contas com números decimais e em processamento de sinais.
+
+86
+00:08:02.495 --> 00:08:09.820
+Mas pense bem: para piscar um LED, ler um sensor de temperatura e mandar o dado para um servidor, qualquer um dos três sobra.
+
+87
+00:08:09.820 --> 00:08:16.970
+Desempenho só vira o critério principal quando você está processando áudio, imagem ou controlando motores muito rápidos.
+
+88
+00:08:16.970 --> 00:08:28.195
+O terceiro ponto são os periféricos, ou seja, os recursos de hardware que vêm junto com o processador, como conversores de sinal analógico, temporizadores e interfaces de comunicação.
+
+89
+00:08:28.195 --> 00:08:30.645
+Aqui o STM trinta e dois brilha.
+
+90
+00:08:30.645 --> 00:08:38.745
+Ele costuma ter temporizadores muito sofisticados, ótimos para controle de motores, e conversores analógicos de boa qualidade.
+
+91
+00:08:38.745 --> 00:08:46.145
+O ESP trinta e dois original, por outro lado, ficou conhecido por ter um conversor analógico um tanto impreciso e pouco linear.
+
+92
+00:08:46.145 --> 00:08:52.745
+As versões mais novas melhoraram, mas ainda vale conferir a documentação se a sua medição precisa ser fina.
+
+93
+00:08:52.745 --> 00:08:58.995
+O Pico tem menos periféricos de fábrica, mas compensa com o PIO, que permite criar o periférico que faltar.
+
+94
+00:08:58.995 --> 00:09:03.757
+O quarto ponto é o consumo de energia, essencial para projetos com bateria.
+
+95
+00:09:03.757 --> 00:09:09.857
+Aqui o STM trinta e dois, especialmente nas linhas de ultrabaixo consumo, costuma ser o campeão.
+
+96
+00:09:09.857 --> 00:09:15.407
+Ele consegue dormir gastando quantidades de corrente tão pequenas que uma pilha pode durar anos.
+
+97
+00:09:15.407 --> 00:09:24.357
+O ESP trinta e dois tem um modo de sono profundo bem razoável, mas o wi-fi, quando está ligado, consome bastante, e isso pesa numa bateria.
+
+98
+00:09:24.357 --> 00:09:30.120
+A estratégia comum é acordar, conectar, mandar o dado e voltar a dormir o mais rápido possível.
+
+99
+00:09:30.120 --> 00:09:38.445
+O Pico, especialmente o primeiro, não foi projetado com foco em baixo consumo, e os números dele no modo de espera são menos impressionantes.
+
+100
+00:09:38.445 --> 00:09:40.682
+O Pico dois melhorou nesse aspecto.
+
+101
+00:09:40.682 --> 00:09:49.532
+Um aviso honesto: o consumo real depende muito da placa, do regulador de tensão e do seu código, então desconfie de comparações muito simples.
+
+102
+00:09:49.532 --> 00:09:54.007
+O quinto ponto é a facilidade de uso, e aqui a conversa muda de figura.
+
+103
+00:09:54.007 --> 00:09:57.407
+O Pico é provavelmente o mais fácil para quem está começando.
+
+104
+00:09:57.407 --> 00:10:04.907
+Você conecta no computador, ele aparece como se fosse um pendrive, você arrasta um arquivo e pronto, o programa está gravado.
+
+105
+00:10:04.907 --> 00:10:13.607
+Ele funciona muito bem com MicroPython, que é uma versão enxuta da linguagem Python, e também com C e C mais mais, além do ambiente do Arduino.
+
+106
+00:10:13.607 --> 00:10:19.545
+O ESP trinta e dois também é bem acessível, principalmente pelo Arduino e pelo MicroPython.
+
+107
+00:10:19.545 --> 00:10:31.707
+A ferramenta oficial da Espressif é mais completa, mas também mais complexa, e é baseada num sistema operacional de tempo real chamado FreeRTOS, que organiza várias tarefas rodando ao mesmo tempo.
+
+108
+00:10:31.707 --> 00:10:35.720
+Já o STM trinta e dois tem a curva de aprendizado mais íngreme.
+
+109
+00:10:35.720 --> 00:10:44.757
+A ST oferece ferramentas gráficas para configurar os pinos e gerar código, o que ajuda muito, mas a quantidade de opções pode assustar no começo.
+
+110
+00:10:44.757 --> 00:10:51.245
+A recompensa é que, quando você aprende, entende de verdade como um microcontrolador funciona por dentro.
+
+111
+00:10:51.412 --> 00:10:57.462
+E o sexto ponto é o uso profissional, aquele que pouca gente considera quando está brincando na bancada.
+
+112
+00:10:57.412 --> 00:11:01.674
+Quem projeta um produto que vai ser fabricado aos milhares quer garantias.
+
+113
+00:11:01.674 --> 00:11:10.874
+Quer saber se o chip vai continuar disponível por muitos anos e se existem versões certificadas para temperaturas extremas, para a indústria ou para carros.
+
+114
+00:11:10.874 --> 00:11:14.462
+Nesse terreno, o STM trinta e dois é muito forte.
+
+115
+00:11:14.462 --> 00:11:23.674
+A ST tem um programa de longevidade que garante a fabricação de muitos modelos por pelo menos dez anos, e a família está em todo tipo de equipamento industrial.
+
+116
+00:11:23.674 --> 00:11:37.187
+O ESP trinta e dois também está em milhões de produtos comerciais, especialmente em eletrodomésticos e dispositivos inteligentes para casa, e os módulos dele já vêm com certificações de rádio, o que economiza tempo e dinheiro.
+
+117
+00:11:37.187 --> 00:11:51.037
+O RP dois mil e quarenta e o RP dois mil trezentos e cinquenta são mais novos nesse mercado, mas a Fundação Raspberry Pi também publicou compromissos de fornecimento de longo prazo, e o chip começou a aparecer em produtos comerciais.
+
+118
+00:11:51.037 --> 00:11:53.499
+Aqui vale lembrar uma história curiosa.
+
+119
+00:11:53.499 --> 00:11:59.324
+Entre dois mil e vinte e um e dois mil e vinte e dois, o mundo passou por uma grave escassez de chips.
+
+120
+00:11:59.324 --> 00:12:05.374
+Muitos modelos de STM trinta e dois simplesmente sumiram do mercado, e os preços dispararam.
+
+121
+00:12:05.374 --> 00:12:11.599
+Nesse mesmo período, o RP dois mil e quarenta, recém-lançado, estava disponível em grande quantidade.
+
+122
+00:12:11.599 --> 00:12:16.974
+Muitos projetistas trocaram de chip por pura necessidade e descobriram que gostavam dele.
+
+123
+00:12:16.974 --> 00:12:22.662
+É um bom lembrete de que, às vezes, o melhor chip é simplesmente aquele que você consegue comprar.
+
+124
+00:12:22.662 --> 00:12:28.424
+Agora, se você estava cozinhando ou dirigindo e perdeu parte da comparação, aqui vai o resumo.
+
+125
+00:12:28.424 --> 00:12:31.299
+O ESP trinta e dois ganha em conectividade.
+
+126
+00:12:31.299 --> 00:12:36.437
+O STM trinta e dois ganha em periféricos, consumo de energia e uso industrial.
+
+127
+00:12:36.437 --> 00:12:40.799
+O Pico ganha em facilidade, documentação e flexibilidade nos pinos.
+
+128
+00:12:40.799 --> 00:12:45.087
+E em desempenho, para a maioria dos projetos, todos são suficientes.
+
+129
+00:12:45.087 --> 00:12:46.724
+Então, como decidir?
+
+130
+00:12:46.724 --> 00:12:49.674
+Eu gosto de fazer três perguntas, nessa ordem.
+
+131
+00:12:49.674 --> 00:12:53.037
+A primeira pergunta é: o projeto precisa de wi-fi?
+
+132
+00:12:53.037 --> 00:12:56.962
+Se a resposta for sim, comece pelo ESP trinta e dois.
+
+133
+00:12:56.962 --> 00:12:58.912
+Ele é o caminho com menos atrito.
+
+134
+00:12:58.912 --> 00:13:03.899
+O Pico W é uma alternativa boa se você já gosta do ecossistema da Raspberry Pi.
+
+135
+00:13:03.899 --> 00:13:11.899
+A segunda pergunta é: o projeto vai funcionar com bateria por muito tempo, ou precisa de controle muito preciso de motores e sinais?
+
+136
+00:13:11.899 --> 00:13:21.374
+Se a resposta for sim, olhe com carinho para o STM trinta e dois, especialmente as linhas de baixo consumo ou de alto desempenho, dependendo do caso.
+
+137
+00:13:21.374 --> 00:13:27.599
+A terceira pergunta é: você está aprendendo, ensinando ou precisa de um protocolo estranho nos pinos?
+
+138
+00:13:27.599 --> 00:13:30.887
+Então o Raspberry Pi Pico é um ótimo ponto de partida.
+
+139
+00:13:30.887 --> 00:13:37.199
+A experiência de uso dele é muito boa, e o PIO abre portas que os outros não abrem com tanta facilidade.
+
+140
+00:13:37.199 --> 00:13:47.149
+E se nenhuma dessas perguntas der uma resposta clara, escolha aquele que você já tem na gaveta, ou aquele com a comunidade mais ativa no tipo de projeto que você quer fazer.
+
+141
+00:13:47.149 --> 00:13:52.599
+Na prática, achar um exemplo que já funciona costuma valer mais que alguns megahertz a mais.
+
+142
+00:13:52.599 --> 00:13:55.112
+Antes de terminar, vamos recapitular.
+
+143
+00:13:55.112 --> 00:14:03.724
+Falamos do STM trinta e dois, a família veterana e profissional da STMicroelectronics, com centenas de modelos e foco em confiabilidade.
+
+144
+00:14:03.724 --> 00:14:10.037
+Falamos do ESP trinta e dois, da Espressif, que tornou o wi-fi barato e acessível para todo mundo.
+
+145
+00:14:10.037 --> 00:14:18.312
+E falamos do Raspberry Pi Pico, o mais novo dos três, amigável, bem documentado e com o recurso único de entrada e saída programável.
+
+146
+00:14:18.312 --> 00:14:25.262
+Comparamos os três em conectividade, desempenho, periféricos, energia, facilidade de uso e uso profissional.
+
+147
+00:14:25.262 --> 00:14:29.099
+E terminamos com três perguntas simples para guiar a sua escolha.
+
+148
+00:14:29.099 --> 00:14:30.874
+E fica uma última ideia.
+
+149
+00:14:30.874 --> 00:14:35.074
+Esses três chips custam menos que um lanche e cabem na ponta do dedo.
+
+150
+00:14:35.074 --> 00:14:39.699
+Há poucas décadas, um poder de processamento assim ocupava uma sala inteira.
+
+151
+00:14:39.699 --> 00:14:43.512
+A pergunta mais importante, então, não é qual deles é o melhor.
+
+152
+00:14:43.512 --> 00:14:45.749
+É o que você vai construir com eles.
+
+153
+00:14:45.749 --> 00:14:47.537
+Até a próxima.
+

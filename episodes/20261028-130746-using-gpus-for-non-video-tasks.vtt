@@ -1,0 +1,738 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:10.437
+Imagine um chip criado para desenhar explosões em videogames, para fazer a água de um lago brilhar ao pôr do sol, para mostrar o cabelo de um personagem balançando ao vento.
+
+2
+00:00:10.387 --> 00:00:22.525
+Agora imagine esse mesmo chip ajudando a prever o tempo de amanhã, simulando como uma proteína se dobra dentro do seu corpo e treinando os modelos de inteligência artificial com quem você talvez tenha conversado hoje.
+
+3
+00:00:22.525 --> 00:00:24.862
+É o mesmo tipo de peça.
+
+4
+00:00:24.862 --> 00:00:26.800
+A placa de vídeo.
+
+5
+00:00:26.800 --> 00:00:28.450
+A GPU.
+
+6
+00:00:28.450 --> 00:00:30.962
+Olá, seja bem-vindo.
+
+7
+00:00:30.962 --> 00:00:38.925
+Hoje a gente vai conversar sobre como um componente pensado para gráficos virou um dos motores mais importantes da computação moderna.
+
+8
+00:00:38.925 --> 00:00:40.900
+E não é exagero.
+
+9
+00:00:40.900 --> 00:00:48.087
+Boa parte do que chamamos hoje de inteligência artificial simplesmente não existiria na forma atual sem essa virada.
+
+10
+00:00:48.087 --> 00:00:50.825
+Vou te contar o que vem pela frente.
+
+11
+00:00:50.825 --> 00:00:56.012
+Primeiro, a gente entende o que uma GPU faz de diferente de um processador comum.
+
+12
+00:00:56.012 --> 00:01:04.300
+Depois, a história curiosa de como pesquisadores começaram a enganar a placa de vídeo para fazer contas que não tinham nada a ver com imagem.
+
+13
+00:01:04.300 --> 00:01:10.137
+Em seguida, a gente entra um pouco no funcionamento técnico, sem fórmulas, prometo.
+
+14
+00:01:10.137 --> 00:01:16.937
+Depois, as aplicações, da ciência à inteligência artificial, passando pelas criptomoedas.
+
+15
+00:01:16.937 --> 00:01:20.912
+E, no fim, os limites e o que pode vir por aí.
+
+16
+00:01:20.912 --> 00:01:23.737
+Então vamos começar pelo básico.
+
+17
+00:01:23.737 --> 00:01:29.375
+Dentro do seu computador ou do seu celular existem dois tipos principais de processador.
+
+18
+00:01:29.375 --> 00:01:33.575
+Um é a CPU, a unidade central de processamento.
+
+19
+00:01:33.575 --> 00:01:37.962
+O outro é a GPU, a unidade de processamento gráfico.
+
+20
+00:01:37.962 --> 00:01:40.287
+As duas fazem contas.
+
+21
+00:01:40.287 --> 00:01:44.212
+Mas foram pensadas com filosofias quase opostas.
+
+22
+00:01:44.212 --> 00:01:50.900
+A CPU é uma especialista em fazer poucas coisas de cada vez, muito rápido e com muita inteligência.
+
+23
+00:01:50.900 --> 00:01:58.125
+Ela tem alguns núcleos, normalmente entre uns poucos e algumas dezenas, e cada um desses núcleos é sofisticado.
+
+24
+00:01:58.125 --> 00:02:07.062
+Ele tenta adivinhar qual caminho o programa vai seguir, reorganiza instruções para ganhar tempo e guarda dados por perto para não precisar buscar longe.
+
+25
+00:02:07.062 --> 00:02:15.137
+A CPU é ótima para tarefas cheias de decisões, do tipo "se acontecer isso, faça aquilo, senão faça outra coisa".
+
+26
+00:02:15.137 --> 00:02:18.525
+A GPU nasceu de um problema bem diferente.
+
+27
+00:02:18.525 --> 00:02:20.737
+Pensa numa tela comum.
+
+28
+00:02:20.737 --> 00:02:24.375
+Ela tem milhões de pontinhos, os pixels.
+
+29
+00:02:24.375 --> 00:02:30.937
+E, num jogo, cada um desses pontinhos precisa ter a cor calculada dezenas de vezes por segundo.
+
+30
+00:02:30.937 --> 00:02:35.537
+A conta para um pixel é parecida com a conta para o pixel ao lado.
+
+31
+00:02:35.537 --> 00:02:38.000
+Muda só o dado de entrada.
+
+32
+00:02:38.000 --> 00:02:50.225
+Então, em vez de poucos núcleos muito espertos, a GPU aposta em milhares de unidades de cálculo mais simples, todas trabalhando ao mesmo tempo, fazendo a mesma operação sobre dados diferentes.
+
+33
+00:02:50.225 --> 00:02:53.837
+Uma imagem que ajuda bastante é a de uma cozinha.
+
+34
+00:02:53.837 --> 00:02:57.787
+A CPU é como um pequeno grupo de chefs experientes.
+
+35
+00:02:57.787 --> 00:03:04.050
+Cada um consegue preparar um prato complicado do começo ao fim, tomando decisões pelo caminho.
+
+36
+00:03:04.050 --> 00:03:07.437
+A GPU é como um exército de ajudantes.
+
+37
+00:03:07.437 --> 00:03:11.437
+Nenhum deles sabe fazer um prato sofisticado sozinho.
+
+38
+00:03:11.437 --> 00:03:18.450
+Mas, se a tarefa for descascar dez mil batatas, o exército termina muito antes dos chefs.
+
+39
+00:03:18.450 --> 00:03:20.912
+Um detalhe de precisão aqui.
+
+40
+00:03:20.912 --> 00:03:27.912
+Quando um fabricante diz que uma GPU tem milhares de núcleos, esse núcleo não é comparável a um núcleo de CPU.
+
+41
+00:03:27.912 --> 00:03:30.675
+É uma unidade bem mais simples.
+
+42
+00:03:30.675 --> 00:03:37.212
+Então não dá para dizer que uma GPU é mil vezes mais poderosa que uma CPU só comparando esse número.
+
+43
+00:03:37.212 --> 00:03:40.275
+Elas são boas em coisas diferentes.
+
+44
+00:03:40.275 --> 00:03:43.775
+E é justamente aí que a história fica interessante.
+
+45
+00:03:43.775 --> 00:03:49.687
+Porque muita coisa no mundo, além dos pixels, se parece com descascar batatas.
+
+46
+00:03:49.687 --> 00:03:55.250
+No começo dos anos dois mil, as placas de vídeo ganharam uma novidade importante.
+
+47
+00:03:55.250 --> 00:03:58.100
+Elas passaram a ser programáveis.
+
+48
+00:03:58.100 --> 00:04:03.312
+Antes, o caminho que um pixel percorria até a tela era praticamente fixo.
+
+49
+00:04:03.312 --> 00:04:14.012
+Depois, os desenvolvedores de jogos podiam escrever pequenos programas, chamados de shaders, que rodavam na GPU para calcular a cor e a iluminação de cada ponto.
+
+50
+00:04:14.012 --> 00:04:24.987
+Alguns pesquisadores olharam para isso e pensaram: espera aí, isso é uma máquina gigante de fazer contas em paralelo, e é barata, porque é vendida para gamers no mundo inteiro.
+
+51
+00:04:24.987 --> 00:04:27.975
+Será que dá para usar para outra coisa?
+
+52
+00:04:28.132 --> 00:04:32.169
+O problema é que a GPU só falava a língua dos gráficos.
+
+53
+00:04:32.119 --> 00:04:35.007
+Então eles precisavam disfarçar.
+
+54
+00:04:35.007 --> 00:04:43.307
+Se queriam multiplicar duas grandes tabelas de números, guardavam esses números como se fossem as cores de uma imagem, uma textura.
+
+55
+00:04:43.307 --> 00:04:49.182
+Escreviam um shader que, em vez de calcular iluminação, fazia a conta que eles queriam.
+
+56
+00:04:49.182 --> 00:04:54.044
+Mandavam a placa "desenhar" um retângulo do tamanho exato da tabela.
+
+57
+00:04:54.044 --> 00:05:01.394
+E o resultado aparecia como se fosse uma imagem, só que cada "cor" era, na verdade, um número da resposta.
+
+58
+00:05:01.394 --> 00:05:05.294
+Era engenhoso e, ao mesmo tempo, um sofrimento.
+
+59
+00:05:05.294 --> 00:05:09.857
+Precisava conhecer a fundo a programação gráfica para fazer ciência.
+
+60
+00:05:09.857 --> 00:05:15.332
+Esse movimento ganhou até um nome: computação de propósito geral em GPU.
+
+61
+00:05:15.332 --> 00:05:18.169
+Em inglês, a sigla é GPGPU.
+
+62
+00:05:18.169 --> 00:05:25.282
+Na universidade de Stanford, um grupo criou uma linguagem chamada Brook, que escondia parte dessa ginástica.
+
+63
+00:05:25.282 --> 00:05:31.082
+Um dos pesquisadores desse projeto, Ian Buck, depois foi trabalhar na NVIDIA.
+
+64
+00:05:31.082 --> 00:05:33.732
+E isso leva ao próximo capítulo.
+
+65
+00:05:33.732 --> 00:05:39.182
+Entre o fim de dois mil e seis e o começo de dois mil e sete, a NVIDIA lançou o CUDA.
+
+66
+00:05:39.182 --> 00:05:49.807
+Era uma forma de programar a GPU diretamente para computação geral, usando uma linguagem parecida com C, sem precisar fingir que tudo era um triângulo ou uma textura.
+
+67
+00:05:49.807 --> 00:05:57.032
+A rival, ATI, que logo depois foi comprada pela AMD, também tinha iniciativas nessa direção.
+
+68
+00:05:57.032 --> 00:06:04.832
+E pouco depois surgiu um padrão aberto chamado OpenCL, pensado para funcionar em placas de fabricantes diferentes.
+
+69
+00:06:04.832 --> 00:06:09.369
+A partir daí, a GPU deixou de ser só uma placa de vídeo.
+
+70
+00:06:09.369 --> 00:06:12.619
+Ela virou um coprocessador de uso geral.
+
+71
+00:06:12.619 --> 00:06:17.394
+Se você se distraiu nos últimos minutos, aqui vai um resumo rápido.
+
+72
+00:06:17.394 --> 00:06:20.869
+A CPU tem poucos núcleos muito espertos.
+
+73
+00:06:20.869 --> 00:06:27.019
+A GPU tem milhares de unidades simples que fazem a mesma conta em muitos dados ao mesmo tempo.
+
+74
+00:06:27.019 --> 00:06:36.232
+Pesquisadores começaram disfarçando contas como se fossem imagens, e depois surgiram ferramentas, como o CUDA, que deixaram isso oficial.
+
+75
+00:06:36.232 --> 00:06:39.707
+Agora vamos olhar um pouco para dentro da máquina.
+
+76
+00:06:39.707 --> 00:06:46.369
+É aqui que a gente entende por que algumas tarefas voam numa GPU e outras simplesmente não funcionam bem.
+
+77
+00:06:46.369 --> 00:06:54.444
+A primeira ideia importante é que, numa GPU, as threads, que são as pequenas linhas de execução, andam em grupos.
+
+78
+00:06:54.444 --> 00:06:58.994
+Na NVIDIA, esse grupo tem trinta e duas threads e se chama warp.
+
+79
+00:06:58.994 --> 00:07:01.994
+Na AMD, o nome é wavefront.
+
+80
+00:07:01.994 --> 00:07:07.969
+O ponto principal é que as threads de um mesmo grupo executam a mesma instrução no mesmo momento.
+
+81
+00:07:07.969 --> 00:07:12.357
+É como uma fileira de remadores que puxa o remo no mesmo ritmo.
+
+82
+00:07:12.357 --> 00:07:16.007
+Isso é ótimo quando todas fazem a mesma coisa.
+
+83
+00:07:16.007 --> 00:07:20.844
+Mas imagina que, no meio do programa, aparece uma condição.
+
+84
+00:07:20.844 --> 00:07:25.482
+Metade das threads precisa ir por um caminho e a outra metade por outro.
+
+85
+00:07:25.482 --> 00:07:27.619
+O que a GPU faz?
+
+86
+00:07:27.619 --> 00:07:35.307
+Em geral, ela executa um caminho com metade do grupo parada esperando, e depois o outro caminho com a outra metade parada.
+
+87
+00:07:35.307 --> 00:07:38.257
+Esse fenômeno se chama divergência.
+
+88
+00:07:38.257 --> 00:07:45.844
+E ele explica por que código cheio de decisões, de "se isso, então aquilo", costuma render mal numa GPU.
+
+89
+00:07:45.844 --> 00:07:48.732
+A segunda ideia importante é a memória.
+
+90
+00:07:48.732 --> 00:07:56.007
+Uma GPU moderna consegue ler e escrever dados numa velocidade enorme, muito maior que a de uma CPU típica.
+
+91
+00:07:56.007 --> 00:08:01.544
+Mas buscar um dado na memória ainda demora, se comparado ao tempo de fazer uma conta.
+
+92
+00:08:01.544 --> 00:08:06.632
+A CPU lida com isso tentando evitar a espera com memórias rápidas e previsões.
+
+93
+00:08:06.632 --> 00:08:17.794
+A GPU usa outra estratégia: ela tem tantas threads esperando na fila que, quando um grupo para para aguardar um dado, ela simplesmente passa para outro grupo que já está pronto.
+
+94
+00:08:17.794 --> 00:08:22.282
+A espera não some, mas fica escondida atrás de trabalho útil.
+
+95
+00:08:22.282 --> 00:08:27.032
+É por isso que a GPU precisa de muito trabalho em paralelo para brilhar.
+
+96
+00:08:27.032 --> 00:08:30.632
+Se você dá pouco trabalho, ela fica ociosa.
+
+97
+00:08:30.796 --> 00:08:34.658
+A terceira ideia é talvez a mais traiçoeira na prática.
+
+98
+00:08:34.608 --> 00:08:41.421
+A GPU, normalmente, tem a sua própria memória, separada da memória principal do computador.
+
+99
+00:08:41.421 --> 00:08:46.246
+Então, antes de calcular, é preciso copiar os dados para a placa.
+
+100
+00:08:46.246 --> 00:08:49.583
+Depois, copiar o resultado de volta.
+
+101
+00:08:49.583 --> 00:08:54.883
+Essa viagem passa por um canal que é bem mais lento que a memória interna da GPU.
+
+102
+00:08:54.883 --> 00:09:05.296
+Muita gente que começa a programar GPUs descobre que o programa ficou mais lento, e não mais rápido, porque gastou mais tempo transportando dados do que calculando.
+
+103
+00:09:05.296 --> 00:09:12.396
+A regra de ouro é: mande os dados uma vez, faça muita conta lá dentro e traga de volta só o que precisa.
+
+104
+00:09:12.396 --> 00:09:23.083
+Vale dizer que alguns chips, como os de celulares e de alguns computadores mais recentes, compartilham a mesma memória entre CPU e GPU, o que diminui esse problema.
+
+105
+00:09:23.083 --> 00:09:35.558
+Juntando tudo: uma tarefa combina bem com a GPU quando pode ser quebrada em milhares de pedaços parecidos, independentes entre si, com pouca tomada de decisão e muita conta por dado transportado.
+
+106
+00:09:35.558 --> 00:09:41.958
+Os programadores têm até um apelido carinhoso para isso: problemas "vergonhosamente paralelos".
+
+107
+00:09:41.958 --> 00:09:45.471
+E qual é o exemplo mais clássico de tarefa assim?
+
+108
+00:09:45.471 --> 00:09:48.071
+A multiplicação de matrizes.
+
+109
+00:09:48.071 --> 00:09:51.358
+Matriz é só uma grande tabela de números.
+
+110
+00:09:51.358 --> 00:09:59.533
+Multiplicar duas delas exige uma quantidade gigante de multiplicações e somas, todas muito parecidas e bem organizadas.
+
+111
+00:09:59.533 --> 00:10:03.821
+É exatamente o tipo de trabalho para o exército de ajudantes.
+
+112
+00:10:03.821 --> 00:10:10.608
+E, como você vai ver agora, a multiplicação de matrizes está no coração de muita coisa importante.
+
+113
+00:10:10.608 --> 00:10:13.271
+Vamos então às aplicações.
+
+114
+00:10:13.271 --> 00:10:18.733
+A mais famosa hoje é a inteligência artificial, especialmente as redes neurais.
+
+115
+00:10:18.733 --> 00:10:27.321
+Por baixo de toda a conversa sobre neurônios artificiais, o que uma rede neural faz, em grande parte, é multiplicar matrizes.
+
+116
+00:10:27.321 --> 00:10:29.696
+Muitas e muitas vezes.
+
+117
+00:10:29.696 --> 00:10:37.258
+Treinar uma rede é repetir essas contas bilhões de vezes, ajustando pouco a pouco os números internos até que ela acerte.
+
+118
+00:10:37.258 --> 00:10:40.771
+Um marco dessa história aconteceu em dois mil e doze.
+
+119
+00:10:40.771 --> 00:10:47.058
+Uma rede chamada AlexNet venceu com folga uma competição famosa de reconhecimento de imagens.
+
+120
+00:10:47.058 --> 00:10:54.558
+Ela foi treinada em duas placas de vídeo de consumo, dessas que um gamer poderia ter em casa, ao longo de alguns dias.
+
+121
+00:10:54.558 --> 00:11:01.908
+O resultado chamou a atenção do mundo da pesquisa e ajudou a disparar a onda de aprendizado profundo que vemos até hoje.
+
+122
+00:11:01.908 --> 00:11:09.246
+Depois disso, os fabricantes começaram a desenhar GPUs pensando cada vez mais em inteligência artificial.
+
+123
+00:11:09.246 --> 00:11:26.308
+A partir de dois mil e dezessete, a NVIDIA passou a incluir unidades especializadas chamadas tensor cores, feitas para acelerar exatamente esse tipo de multiplicação de matrizes, muitas vezes usando números com menos precisão, o que é suficiente para redes neurais e muito mais rápido.
+
+124
+00:11:26.308 --> 00:11:31.158
+Hoje existem GPUs de data center que nem têm saída de vídeo.
+
+125
+00:11:31.158 --> 00:11:34.433
+Você não consegue ligar um monitor nelas.
+
+126
+00:11:34.433 --> 00:11:40.921
+Elas ainda se chamam unidades de processamento gráfico, mas o nome virou quase uma lembrança histórica.
+
+127
+00:11:40.921 --> 00:11:44.871
+Mas a inteligência artificial chegou depois da ciência.
+
+128
+00:11:44.871 --> 00:11:49.821
+Muito antes disso, a GPU já era usada em simulação científica.
+
+129
+00:11:49.821 --> 00:11:54.921
+Pense em dinâmica molecular, que é simular átomos se movendo e interagindo.
+
+130
+00:11:54.921 --> 00:12:00.808
+Cada átomo sente a força dos vizinhos, e essas forças podem ser calculadas em paralelo.
+
+131
+00:12:00.808 --> 00:12:11.008
+O projeto Folding@home, que usa computadores de voluntários para estudar como proteínas se dobram, começou a aceitar GPUs ainda em dois mil e seis.
+
+132
+00:12:11.008 --> 00:12:23.546
+Durante a pandemia, em dois mil e vinte, a rede de voluntários do projeto chegou a um poder de processamento comparável ao dos maiores supercomputadores do mundo, e boa parte disso vinha de placas de vídeo.
+
+133
+00:12:23.546 --> 00:12:31.196
+Falando em supercomputadores, muitos dos mais poderosos de hoje são basicamente grandes conjuntos de GPUs.
+
+134
+00:12:31.196 --> 00:12:39.696
+Eles são usados para previsão do tempo, modelos de clima, simulação de fluidos, física de partículas e pesquisa de materiais.
+
+135
+00:12:39.844 --> 00:12:43.644
+Tem também aplicações mais próximas do dia a dia.
+
+136
+00:12:43.594 --> 00:12:48.056
+Reconstrução de imagens médicas, como em tomografias.
+
+137
+00:12:48.056 --> 00:12:53.769
+Simulações financeiras, que testam milhares de cenários possíveis para estimar risco.
+
+138
+00:12:53.769 --> 00:13:00.169
+Edição e conversão de vídeo, o que é um pouco irônico, já que volta à origem visual da placa.
+
+139
+00:13:00.169 --> 00:13:05.319
+E até bancos de dados que usam a GPU para acelerar certas consultas.
+
+140
+00:13:05.319 --> 00:13:09.506
+E não dá para falar disso sem mencionar as criptomoedas.
+
+141
+00:13:09.506 --> 00:13:20.181
+Minerar uma criptomoeda, em muitos sistemas, significa calcular repetidamente uma função matemática, tentando encontrar um resultado com uma característica específica.
+
+142
+00:13:20.181 --> 00:13:24.181
+É uma tarefa de tentativa e erro, totalmente paralela.
+
+143
+00:13:24.181 --> 00:13:29.194
+No começo do Bitcoin, as GPUs foram muito usadas para isso.
+
+144
+00:13:29.194 --> 00:13:37.281
+Depois vieram chips feitos só para minerar Bitcoin, muito mais eficientes, e as GPUs ficaram para trás nessa moeda.
+
+145
+00:13:37.281 --> 00:13:47.144
+Outras moedas, como o Ethereum, continuaram sendo mineradas em GPUs por anos, o que chegou a contribuir para a falta de placas de vídeo no mercado.
+
+146
+00:13:47.144 --> 00:13:53.756
+Isso mudou em dois mil e vinte e dois, quando o Ethereum trocou o seu mecanismo e deixou de depender de mineração.
+
+147
+00:13:53.756 --> 00:13:58.606
+Há ainda um uso menos simpático: a quebra de senhas por força bruta.
+
+148
+00:13:58.606 --> 00:14:04.056
+Testar milhões de combinações por segundo é outro problema vergonhosamente paralelo.
+
+149
+00:14:04.056 --> 00:14:13.419
+É um dos motivos pelos quais especialistas em segurança insistem em senhas longas e em formas de armazenamento feitas propositalmente para serem lentas de testar.
+
+150
+00:14:13.419 --> 00:14:17.531
+Agora, para equilibrar, vamos falar dos limites.
+
+151
+00:14:17.531 --> 00:14:19.969
+Porque a GPU não é mágica.
+
+152
+00:14:19.969 --> 00:14:22.881
+O primeiro limite é o tipo de problema.
+
+153
+00:14:22.881 --> 00:14:31.931
+Tudo o que é muito sequencial, onde cada passo depende do anterior, ou muito cheio de decisões, continua rodando melhor numa CPU.
+
+154
+00:14:31.931 --> 00:14:38.531
+O seu sistema operacional, o seu navegador e a lógica da maioria dos programas ainda moram na CPU.
+
+155
+00:14:38.531 --> 00:14:45.694
+Na prática, o que existe é uma parceria: a CPU coordena e a GPU faz o trabalho pesado e repetitivo.
+
+156
+00:14:45.694 --> 00:14:48.706
+O segundo limite é energia e custo.
+
+157
+00:14:48.706 --> 00:14:53.869
+As GPUs de data center consomem muita eletricidade e custam caro.
+
+158
+00:14:53.869 --> 00:15:02.219
+Com a explosão da inteligência artificial, a demanda por elas cresceu tanto que o consumo de energia dos data centers virou uma discussão pública.
+
+159
+00:15:02.219 --> 00:15:05.019
+O terceiro limite é a programação.
+
+160
+00:15:05.019 --> 00:15:08.794
+Escrever código eficiente para GPU é difícil.
+
+161
+00:15:08.794 --> 00:15:13.981
+É preciso pensar em memória, em grupos de threads e em transferência de dados.
+
+162
+00:15:13.981 --> 00:15:20.081
+Bibliotecas prontas escondem boa parte disso, mas a complexidade continua lá embaixo.
+
+163
+00:15:20.081 --> 00:15:23.606
+E existe uma questão de mercado que é debatida.
+
+164
+00:15:23.606 --> 00:15:32.356
+O CUDA, da NVIDIA, se tornou o padrão de fato em boa parte da computação em GPU, especialmente em inteligência artificial.
+
+165
+00:15:32.356 --> 00:15:36.619
+Muita gente vê isso como uma dependência de um único fabricante.
+
+166
+00:15:36.619 --> 00:15:42.831
+AMD, Intel e outros oferecem alternativas, e há esforços por padrões abertos.
+
+167
+00:15:42.831 --> 00:15:49.869
+Até que ponto essas alternativas vão alcançar o CUDA é uma pergunta em aberto, e as opiniões variam bastante.
+
+168
+00:15:49.869 --> 00:15:53.544
+Também vale lembrar que a GPU não é o fim da linha.
+
+169
+00:15:53.544 --> 00:16:04.744
+Já existem chips ainda mais especializados para inteligência artificial, como as TPUs do Google e as unidades de processamento neural que aparecem em celulares e notebooks.
+
+170
+00:16:04.744 --> 00:16:09.594
+A tendência parece ser uma mistura de chips, cada um bom numa coisa.
+
+171
+00:16:09.594 --> 00:16:13.194
+Mas a forma exata desse futuro ainda é incerta.
+
+172
+00:16:13.194 --> 00:16:16.056
+Vamos recapitular a nossa jornada.
+
+173
+00:16:16.056 --> 00:16:20.944
+A GPU nasceu para calcular a cor de milhões de pixels ao mesmo tempo.
+
+174
+00:16:20.944 --> 00:16:27.506
+Para isso, ela troca poucos núcleos espertos por milhares de unidades simples que trabalham em sincronia.
+
+175
+00:16:27.506 --> 00:16:36.081
+Pesquisadores perceberam que muitos problemas fora dos gráficos têm essa mesma forma e começaram a disfarçar contas como se fossem imagens.
+
+176
+00:16:36.081 --> 00:16:40.681
+Depois vieram ferramentas como o CUDA, que tornaram isso oficial.
+
+177
+00:16:40.681 --> 00:16:48.931
+Ela brilha em tarefas paralelas, com pouca decisão e muita conta, e sofre com caminhos divergentes e com o transporte de dados.
+
+178
+00:16:48.931 --> 00:16:57.694
+E hoje está no centro da ciência, da inteligência artificial e de muito mais, com limites reais de energia, custo e complexidade.
+
+179
+00:16:57.844 --> 00:17:00.431
+E aqui vai o pensamento final.
+
+180
+00:17:00.381 --> 00:17:05.081
+Às vezes, a grande inovação não é inventar uma ferramenta nova.
+
+181
+00:17:05.081 --> 00:17:12.681
+É olhar para uma ferramenta que já existe e perceber que ela resolve um problema completamente diferente daquele para o qual foi criada.
+
+182
+00:17:12.681 --> 00:17:18.206
+Um chip feito para desenhar mundos de fantasia acabou ajudando a entender o mundo real.
+
+183
+00:17:18.206 --> 00:17:25.581
+Talvez valha a pena olhar de novo para as ferramentas que estão ao seu redor e se perguntar o que mais elas seriam capazes de fazer.
+
+184
+00:17:25.581 --> 00:17:29.081
+Obrigado pela companhia, e até a próxima.
+

@@ -1,0 +1,619 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:06.975
+Imagine uma caixinha plástica do tamanho de um baralho, presa num poste no meio de um canavial no interior de São Paulo.
+
+2
+00:00:06.925 --> 00:00:12.250
+Dentro dela há um sensor de umidade do solo, um microcontrolador e duas pilhas comuns.
+
+3
+00:00:12.250 --> 00:00:18.387
+A cada quinze minutos ela acorda, faz uma medição, manda uns poucos bytes pelo ar e volta a dormir.
+
+4
+00:00:18.387 --> 00:00:23.912
+A antena que recebe essa mensagem está no alto de uma caixa d'água, a dez quilômetros dali.
+
+5
+00:00:23.912 --> 00:00:25.625
+E as pilhas duram anos.
+
+6
+00:00:25.625 --> 00:00:28.762
+Agora vem o detalhe que faz isso parecer trapaça.
+
+7
+00:00:28.762 --> 00:00:32.962
+Quando o sinal chega lá, ele é mais fraco do que o próprio ruído do receptor.
+
+8
+00:00:32.962 --> 00:00:35.362
+Pode ser até cem vezes mais fraco.
+
+9
+00:00:35.362 --> 00:00:38.700
+E mesmo assim os bytes saem do outro lado intactos.
+
+10
+00:00:38.700 --> 00:00:42.312
+Isso é LoRa, abreviação de Long Range, alcance longo.
+
+11
+00:00:42.312 --> 00:00:49.375
+Neste episódio a gente vai ver de onde essa tecnologia veio e o que é o tal chirp, o sinal que dá nome à modulação.
+
+12
+00:00:49.375 --> 00:00:55.475
+Vamos entender como dá para receber algo enterrado embaixo do ruído e por que a energia de uma pilha basta.
+
+13
+00:00:55.475 --> 00:01:04.350
+Depois, como funciona a rede que costuma rodar por cima, a LoRa WAN, onde estão os limites e onde está a diversão para quem mexe com isso em casa.
+
+14
+00:01:04.350 --> 00:01:10.900
+Se você ouviu os episódios sobre ESP-NOW e sobre radioamadorismo, este aqui fica bem no meio dos dois.
+
+15
+00:01:10.900 --> 00:01:20.712
+O ESP-NOW mostrou como dois ESP trinta e dois trocam pacotes direto, sem roteador, em dois vírgula quatro gigahertz, com taxa alta e latência baixa.
+
+16
+00:01:20.712 --> 00:01:25.812
+Mas o alcance fica na casa das centenas de metros, e o rádio Wi-Fi bebe corrente.
+
+17
+00:01:25.812 --> 00:01:36.187
+O radioamadorismo mostrou o outro extremo: gente cruzando continentes com poucos watts, explorando a ionosfera e modos digitais lentíssimos que se escutam abaixo do ruído.
+
+18
+00:01:36.187 --> 00:01:44.100
+LoRa pega uma ideia que os radioamadores conhecem bem e a coloca num chip barato, que fala por S P I com o seu microcontrolador.
+
+19
+00:01:44.100 --> 00:01:47.650
+A ideia é esta: dá para trocar velocidade por alcance.
+
+20
+00:01:47.650 --> 00:01:50.050
+Quem formalizou isso foi Claude Shannon.
+
+21
+00:01:50.050 --> 00:01:55.287
+A capacidade de um canal depende da largura de banda e da relação entre sinal e ruído.
+
+22
+00:01:55.287 --> 00:02:02.675
+Se você aceita transmitir pouquíssimos bits por segundo, pode operar com uma relação sinal ruído péssima, até negativa.
+
+23
+00:02:02.675 --> 00:02:09.087
+Guarde essa frase, porque o episódio inteiro gira em torno dela: LoRa compra distância pagando com tempo.
+
+24
+00:02:09.087 --> 00:02:11.050
+Primeiro, um pouco de história.
+
+25
+00:02:11.050 --> 00:02:19.662
+LoRa nasceu em Grenoble, na França, numa pequena empresa chamada Cycleo, fundada no fim dos anos dois mil por engenheiros que vinham da indústria de rádio.
+
+26
+00:02:19.662 --> 00:02:26.450
+Eles queriam um jeito barato de ler medidores de água, gás e energia à distância, sem trocar bateria toda hora.
+
+27
+00:02:26.450 --> 00:02:33.712
+Em dois mil e doze a Semtech, uma fabricante americana de semicondutores, comprou a Cycleo por alguns milhões de dólares.
+
+28
+00:02:33.712 --> 00:02:36.925
+Pouco depois lançou os primeiros chips de rádio LoRa.
+
+29
+00:02:36.925 --> 00:02:45.425
+Em dois mil e quinze, Semtech, IBM, operadoras de telefonia e outras empresas fundaram a LoRa Alliance, que mantém a especificação da rede.
+
+30
+00:02:45.425 --> 00:02:49.175
+Desde o começo existe uma separação que vale a pena fixar.
+
+31
+00:02:49.175 --> 00:02:53.450
+LoRa é a camada física, a modulação, e é proprietária da Semtech.
+
+32
+00:02:53.450 --> 00:02:58.400
+LoRa WAN é o protocolo de rede por cima, e é uma especificação aberta.
+
+33
+00:02:58.400 --> 00:03:01.787
+Vamos então à camada física, que é a parte mais bonita.
+
+34
+00:03:01.787 --> 00:03:04.475
+Um chirp, em inglês, é o pio de um passarinho.
+
+35
+00:03:04.475 --> 00:03:12.975
+Em rádio, é um sinal cuja frequência varia de forma contínua ao longo do tempo, subindo ou descendo, como uma sirene que vai do grave ao agudo.
+
+36
+00:03:12.975 --> 00:03:15.187
+A natureza usa isso faz tempo.
+
+37
+00:03:15.187 --> 00:03:22.462
+Muitos morcegos ecolocalizam com varreduras de frequência, justamente porque elas são fáceis de reconhecer no meio da bagunça.
+
+38
+00:03:22.462 --> 00:03:26.675
+O radar adotou o chirp em meados do século vinte pelo mesmo motivo.
+
+39
+00:03:26.675 --> 00:03:34.637
+Um pulso longo com frequência variando carrega muita energia e, depois de processado no receptor, se comprime num pico estreito e alto.
+
+40
+00:03:34.637 --> 00:03:38.675
+Os engenheiros de radar chamam isso de compressão de pulso.
+
+41
+00:03:38.836 --> 00:03:43.411
+No LoRa, cada símbolo é um chirp que varre toda a largura de banda do canal.
+
+42
+00:03:43.361 --> 00:03:47.286
+No caso mais comum essa largura é de cento e vinte e cinco quilohertz.
+
+43
+00:03:47.286 --> 00:03:52.998
+A frequência começa embaixo, sobe linearmente até o topo, volta para baixo e recomeça.
+
+44
+00:03:52.998 --> 00:03:56.861
+Mas onde está a informação, se todo chirp varre a mesma faixa?
+
+45
+00:03:56.861 --> 00:03:58.523
+Está no ponto de partida.
+
+46
+00:03:58.523 --> 00:04:03.898
+Em vez de começar sempre na frequência mais baixa, o chirp começa em algum ponto do meio.
+
+47
+00:04:03.898 --> 00:04:09.186
+Ele sobe até o topo, dá a volta para o fundo e continua subindo até completar o ciclo.
+
+48
+00:04:09.186 --> 00:04:11.036
+É um deslocamento circular.
+
+49
+00:04:11.036 --> 00:04:14.298
+A posição desse deslocamento é o valor do símbolo.
+
+50
+00:04:14.298 --> 00:04:16.661
+E aqui entra o que eu acho mais elegante.
+
+51
+00:04:16.661 --> 00:04:19.473
+Como o receptor descobre esse deslocamento?
+
+52
+00:04:19.473 --> 00:04:24.698
+Ele multiplica o sinal recebido por um chirp que desce, o espelho do chirp de referência.
+
+53
+00:04:24.698 --> 00:04:30.273
+Essa operação desfaz a varredura e transforma o símbolo inteiro num tom de frequência constante.
+
+54
+00:04:30.273 --> 00:04:34.211
+A frequência desse tom é proporcional ao deslocamento original.
+
+55
+00:04:34.211 --> 00:04:39.598
+Aí basta uma transformada rápida de Fourier, a F F T, e procurar o pico.
+
+56
+00:04:39.598 --> 00:04:41.536
+O índice do pico é o símbolo.
+
+57
+00:04:41.536 --> 00:04:46.898
+Toda a energia que estava espalhada ao longo do chirp se concentra num único ponto do espectro.
+
+58
+00:04:46.898 --> 00:04:52.586
+Já o ruído, que não tem nada a ver com aquela varredura, continua espalhado por todos os pontos.
+
+59
+00:04:52.586 --> 00:04:56.698
+É a compressão de pulso do radar, agora usada para carregar bits.
+
+60
+00:04:56.698 --> 00:05:00.198
+Vamos parar um segundo para situar quem estava no trânsito.
+
+61
+00:05:00.198 --> 00:05:05.023
+LoRa codifica dados no ponto de partida de um chirp, uma varredura de frequência.
+
+62
+00:05:05.023 --> 00:05:09.548
+O receptor desfaz a varredura e usa uma F F T para achar um pico.
+
+63
+00:05:09.548 --> 00:05:12.586
+A energia do sinal se concentra e o ruído não.
+
+64
+00:05:12.586 --> 00:05:14.111
+Esse é o truque central.
+
+65
+00:05:14.111 --> 00:05:20.736
+Agora, o botão principal que você vai girar quando usar LoRa: o fator de espalhamento, em inglês spreading factor.
+
+66
+00:05:20.736 --> 00:05:24.811
+Ele vai de sete a doze, e diz quantos bits cada símbolo carrega.
+
+67
+00:05:24.811 --> 00:05:33.736
+Com fator sete, o chirp tem dois elevado a sete posições possíveis de partida, ou seja, cento e vinte e oito, e cada símbolo leva sete bits.
+
+68
+00:05:33.736 --> 00:05:38.773
+Com fator doze são quatro mil e noventa e seis posições, doze bits por símbolo.
+
+69
+00:05:38.773 --> 00:05:42.736
+Parece que fator doze é melhor, já que leva mais bits por símbolo.
+
+70
+00:05:42.736 --> 00:05:47.861
+Só que o número de posições dobra a cada passo, e a duração do chirp dobra junto.
+
+71
+00:05:47.861 --> 00:05:52.473
+Cada símbolo fica duas vezes mais longo, mas carrega só um bit a mais.
+
+72
+00:05:52.473 --> 00:05:56.473
+No total, a taxa de dados cai quase pela metade a cada degrau.
+
+73
+00:05:56.473 --> 00:06:05.186
+Em troca, a F F T ganha o dobro de pontos para somar energia, e a sensibilidade melhora cerca de dois vírgula cinco decibéis por degrau.
+
+74
+00:06:05.186 --> 00:06:08.823
+Na teoria seriam três; na prática fica um pouco menos.
+
+75
+00:06:08.823 --> 00:06:19.648
+Em números redondos, com cento e vinte e cinco quilohertz de banda: no fator sete você tem uns cinco kilobits por segundo, e um pacote pequeno fica no ar por umas dezenas de milissegundos.
+
+76
+00:06:19.648 --> 00:06:26.523
+No fator doze você cai para uns trezentos bits por segundo, e o mesmo pacote fica no ar por mais de um segundo.
+
+77
+00:06:26.523 --> 00:06:29.736
+É mais lento que um modem discado dos anos oitenta.
+
+78
+00:06:29.736 --> 00:06:32.436
+E é aqui que aparece aquele número do começo.
+
+79
+00:06:32.436 --> 00:06:42.173
+O ruído térmico num canal de cento e vinte e cinco quilohertz, somado ao ruído do próprio receptor, fica em torno de cento e dezessete decibéis abaixo de um miliwatt.
+
+80
+00:06:42.173 --> 00:06:49.248
+Um rádio LoRa da primeira geração, no fator doze, consegue decodificar sinais em torno de menos cento e trinta e sete.
+
+81
+00:06:49.248 --> 00:06:55.486
+São uns vinte decibéis abaixo do ruído, ou seja, um sinal cem vezes mais fraco que o ruído de fundo.
+
+82
+00:06:55.486 --> 00:07:01.248
+No fator sete a margem é menor, uns sete decibéis abaixo do ruído, mas continua negativa.
+
+83
+00:07:01.248 --> 00:07:10.761
+Quem já viu o modo FT8 no episódio de radioamadorismo vai reconhecer a filosofia: transmitir devagar e deixar a matemática escavar o sinal.
+
+84
+00:07:10.924 --> 00:07:15.249
+Existe um segundo ingrediente, que não tem nada de mágico: a frequência.
+
+85
+00:07:15.199 --> 00:07:18.136
+LoRa costuma operar abaixo de um gigahertz.
+
+86
+00:07:18.136 --> 00:07:26.024
+No Brasil, a faixa usada é de novecentos e quinze a novecentos e vinte e oito megahertz, num plano de canais parecido com o da Austrália.
+
+87
+00:07:26.024 --> 00:07:34.399
+Na Europa é por volta de oitocentos e sessenta e oito megahertz, e nos Estados Unidos fica entre novecentos e dois e novecentos e vinte e oito.
+
+88
+00:07:34.399 --> 00:07:37.961
+A perda no espaço livre cresce com o quadrado da frequência.
+
+89
+00:07:37.961 --> 00:07:49.424
+Indo de dois vírgula quatro gigahertz, onde vive o ESP-NOW, para novecentos e quinze megahertz, você ganha uns oito decibéis de graça, além de atravessar melhor paredes e folhagem.
+
+90
+00:07:49.424 --> 00:07:59.674
+Juntando tudo: um transmissor de uns vinte e cinco miliwatts e um receptor que escuta abaixo do ruído dão um orçamento de enlace na casa dos cento e cinquenta e tantos decibéis.
+
+91
+00:07:59.674 --> 00:08:04.611
+Com isso dá para cobrir dez, quinze quilômetros em campo aberto, com antena alta.
+
+92
+00:08:04.611 --> 00:08:08.036
+Na cidade, cheia de prédios, espere de dois a cinco.
+
+93
+00:08:08.036 --> 00:08:11.824
+E com linha de visada perfeita, os recordes ficam absurdos.
+
+94
+00:08:11.824 --> 00:08:22.086
+Entusiastas já receberam pacotes de transmissores em balões a dezenas de quilômetros de altitude, a distâncias na casa dos oitocentos quilômetros, com potência de miliwatts.
+
+95
+00:08:22.086 --> 00:08:27.524
+São condições excepcionais, claro, mas mostram que o limite é a geometria, não o rádio.
+
+96
+00:08:27.524 --> 00:08:29.099
+Hora de mais uma pausa.
+
+97
+00:08:29.099 --> 00:08:32.524
+Até aqui: o fator de espalhamento vai de sete a doze.
+
+98
+00:08:32.524 --> 00:08:36.486
+Cada degrau dobra o tempo no ar e ganha uns dois decibéis e meio.
+
+99
+00:08:36.486 --> 00:08:40.949
+No fator doze, o receptor escuta uns vinte decibéis abaixo do ruído.
+
+100
+00:08:40.949 --> 00:08:46.436
+Some a isso a frequência abaixo de um gigahertz e você tem quilômetros de alcance com miliwatts.
+
+101
+00:08:46.436 --> 00:08:47.686
+Agora, a pilha.
+
+102
+00:08:47.686 --> 00:08:52.486
+O alcance é só metade da promessa; a outra metade é durar anos sem manutenção.
+
+103
+00:08:52.486 --> 00:08:56.411
+E aqui o segredo não está na modulação, e sim no comportamento.
+
+104
+00:08:56.411 --> 00:08:59.186
+Os números dos chips são mais ou menos estes.
+
+105
+00:08:59.186 --> 00:09:03.261
+Transmitindo com potência moderada, umas dezenas de miliampères.
+
+106
+00:09:03.261 --> 00:09:09.061
+Recebendo, uns dez miliampères na primeira geração, e menos da metade nos chips mais novos.
+
+107
+00:09:09.061 --> 00:09:11.961
+Dormindo, na casa de um microampère ou menos.
+
+108
+00:09:11.961 --> 00:09:16.136
+A diferença entre acordado e dormindo é de quatro ordens de grandeza.
+
+109
+00:09:16.136 --> 00:09:20.849
+Então a vida da bateria depende quase só de quanto tempo o rádio passa acordado.
+
+110
+00:09:20.849 --> 00:09:28.774
+A especificação LoRa WAN define classes de dispositivo, e a mais usada, a classe A, é radicalmente preguiçosa.
+
+111
+00:09:28.774 --> 00:09:30.774
+O sensor só fala quando quer.
+
+112
+00:09:30.774 --> 00:09:40.736
+Depois de transmitir, abre duas janelas curtas de recepção, uma cerca de um segundo depois e outra cerca de dois segundos depois, para o caso de a rede ter algo a dizer.
+
+113
+00:09:40.736 --> 00:09:42.861
+Se nada chega, volta a dormir.
+
+114
+00:09:42.861 --> 00:09:45.649
+O dispositivo nunca fica escutando à toa.
+
+115
+00:09:45.649 --> 00:09:49.411
+Se a rede quiser falar com ele, tem que esperar ele se manifestar.
+
+116
+00:09:49.411 --> 00:09:52.374
+Faça a conta grosseira com o sensor do canavial.
+
+117
+00:09:52.374 --> 00:09:59.824
+Um segundo de transmissão no pior caso, uns quarenta miliampères contando o microcontrolador, noventa e seis vezes por dia.
+
+118
+00:09:59.824 --> 00:10:02.461
+Dá em torno de um miliampère hora por dia.
+
+119
+00:10:02.461 --> 00:10:05.774
+Um par de pilhas de lítio tamanho A A tem uns três mil.
+
+120
+00:10:05.774 --> 00:10:12.286
+Mesmo descontando o consumo em repouso, a autodescarga e uma margem de segurança, a conta fecha em anos.
+
+121
+00:10:12.286 --> 00:10:18.624
+E se o sensor estiver perto da antena e puder usar fator sete, o tempo no ar cai mais de dez vezes.
+
+122
+00:10:18.624 --> 00:10:22.286
+Por isso existe o A D R, a taxa de dados adaptativa.
+
+123
+00:10:22.286 --> 00:10:26.061
+A rede observa com que qualidade recebe cada dispositivo.
+
+124
+00:10:26.061 --> 00:10:31.836
+Para quem chega com sobra de sinal, ela manda usar um fator de espalhamento menor e menos potência.
+
+125
+00:10:31.836 --> 00:10:35.799
+O dispositivo economiza bateria e libera o canal para os outros.
+
+126
+00:10:35.799 --> 00:10:37.486
+E isso leva à rede em si.
+
+127
+00:10:37.486 --> 00:10:40.499
+Como a LoRa WAN se organiza?
+
+128
+00:10:40.660 --> 00:10:43.560
+A topologia é chamada de estrela de estrelas. Os dispositivos não falam com um gateway específico; eles simplesmente transmitem. Qualquer gateway que escute 
+
+129
+00:10:43.510 --> 00:10:48.760
+Os dispositivos não falam com um gateway específico; eles simplesmente transmitem. Qualquer gateway que escute o pacote o repassa pela internet para um servidor de rede. Se três gateways ouviram
+
+130
+00:10:48.760 --> 00:10:53.935
+Qualquer gateway que escute o pacote o repassa pela internet para um servidor de rede. Se três gateways ouviram a mesma mensagem, o servidor descarta as cópias e usa a redundância a seu favor, inclu
+
+131
+00:10:53.935 --> 00:11:02.960
+Se três gateways ouviram a mesma mensagem, o servidor descarta as cópias e usa a redundância a seu favor, inclusive para escolher por onde responder. Os gateways usam um chip concentrador especial, que escuta oito canais ao mesmo tempo e decodifica vários fator
+
+132
+00:11:02.960 --> 00:11:11.910
+Os gateways usam um chip concentrador especial, que escuta oito canais ao mesmo tempo e decodifica vários fatores de espalhamento simultaneamente. Isso é possível porque chirps com fatores diferentes são quase ortogonais entre si: um parece ruído para o outr
+
+133
+00:11:11.910 --> 00:11:18.597
+Isso é possível porque chirps com fatores diferentes são quase ortogonais entre si: um parece ruído para o outro.
+O acesso ao meio é o mais simples possível, herdeiro direto do ALOHA. Esse protocolo foi criado na Universidad
+
+134
+00:11:18.597 --> 00:11:22.872
+O acesso ao meio é o mais simples possível, herdeiro direto do ALOHA. Esse protocolo foi criado na Universidade do Havaí no começo dos anos setenta, para ligar ilhas por rádio. O d
+
+135
+00:11:22.872 --> 00:11:29.297
+Esse protocolo foi criado na Universidade do Havaí no começo dos anos setenta, para ligar ilhas por rádio. O dispositivo transmite quando quer, sem verificar se o canal está livre. Se dois colidirem no mesmo canal e n
+
+136
+00:11:29.297 --> 00:11:33.935
+O dispositivo transmite quando quer, sem verificar se o canal está livre. Se dois colidirem no mesmo canal e no mesmo fator, normalmente o mais forte sobrevive e o outro se perde. Func
+
+137
+00:11:33.935 --> 00:11:40.522
+Se dois colidirem no mesmo canal e no mesmo fator, normalmente o mais forte sobrevive e o outro se perde. Funciona porque cada dispositivo fala pouquíssimo. E existem regras para garantir isso. Na Europa, a lei limit
+
+138
+00:11:40.522 --> 00:11:43.835
+Funciona porque cada dispositivo fala pouquíssimo. E existem regras para garantir isso. Na Europa, a lei limita cada dispositivo a um por cento do tempo no ar em
+
+139
+00:11:43.835 --> 00:11:46.160
+E existem regras para garantir isso. Na Europa, a lei limita cada dispositivo a um por cento do tempo no ar em boa parte das faixas: transmitiu por
+
+140
+00:11:46.160 --> 00:11:55.122
+Na Europa, a lei limita cada dispositivo a um por cento do tempo no ar em boa parte das faixas: transmitiu por um segundo, espera noventa e nove. No Brasil e nos Estados Unidos a regra é outra, um limite de tempo de permanência em cada canal, mas o espírit
+
+141
+00:11:55.122 --> 00:12:02.435
+No Brasil e nos Estados Unidos a regra é outra, um limite de tempo de permanência em cada canal, mas o espírito é o mesmo. A rede comunitária The things Network, que é aberta e gratuita, pede ainda mais 
+
+142
+00:14:38.068 --> 00:14:39.505
+Vamos recapitular.
+
+143
+00:14:39.455 --> 00:14:44.693
+LoRa nasceu numa startup francesa para ler medidores e virou padrão nas mãos da Semtech.
+
+144
+00:14:44.693 --> 00:14:53.005
+A modulação codifica dados no deslocamento de um chirp, e o receptor usa uma F F T para concentrar a energia do sinal num pico.
+
+145
+00:14:53.005 --> 00:15:00.318
+O fator de espalhamento, de sete a doze, troca velocidade por sensibilidade, até uns vinte decibéis abaixo do ruído.
+
+146
+00:15:00.318 --> 00:15:03.880
+Frequências abaixo de um gigahertz ajudam no alcance.
+
+147
+00:15:03.880 --> 00:15:08.130
+A bateria dura anos porque o rádio passa quase todo o tempo dormindo.
+
+148
+00:15:08.130 --> 00:15:15.543
+A LoRa WAN organiza tudo numa rede simples, quase ingênua, que funciona porque cada dispositivo fala pouco.
+
+149
+00:15:15.543 --> 00:15:17.468
+E fica um último pensamento.
+
+150
+00:15:17.468 --> 00:15:24.280
+A intuição diz que, para ir mais longe, é preciso gritar mais alto, ou seja, mais potência e mais energia.
+
+151
+00:15:24.280 --> 00:15:29.130
+LoRa mostra outro caminho, que Shannon já tinha escrito na equação décadas antes.
+
+152
+00:15:29.130 --> 00:15:35.630
+Dá para ir longe falando baixinho, desde que você fale devagar, num padrão que o outro lado sabe reconhecer.
+
+153
+00:15:35.630 --> 00:15:40.368
+O sinal que atravessa dez quilômetros de canavial não vence o ruído pela força.
+
+154
+00:15:40.368 --> 00:15:42.505
+Vence pela paciência.
+

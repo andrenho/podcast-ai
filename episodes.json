@@ -1,0 +1,578 @@
+[
+  {
+    "filename": "20261031-033359-um-episodio-de-25-minutos-explicando-o-espectro-eletromagnet.mp3",
+    "title": "Do rádio aos raios gama: uma viagem pelo espectro eletromagnético",
+    "published": "2026-10-31T03:33:59.351489+00:00",
+    "size": 6406560,
+    "duration": 1068,
+    "category": "Ciência",
+    "description": "Percorremos o espectro eletromagnético de ponta a ponta, das ondas que alcançam submarinos aos raios gama de estrelas em colapso, para entender por que cada frequência faz o que faz. Com dois conceitos simples, o tamanho da onda e a energia do fóton, explicamos micro-ondas, Wi-Fi, efeito estufa, visão, queimaduras de sol e radiografias. No caminho, histórias de Maxwell, Hertz, Marconi, Röntgen e de descobertas feitas quase por acidente."
+  },
+  {
+    "filename": "20261029-215639-topicos-da-prova-basica-de-radio-amador-nos-estados-unidos-o.mp3",
+    "title": "A prova com respostas públicas: o exame de radioamador nos EUA",
+    "published": "2026-10-29T21:56:39.493315+00:00",
+    "size": 5999040,
+    "duration": 1000,
+    "category": "Tecnologia",
+    "description": "Um passeio pelo conteúdo da prova Technician, a licença de entrada do radioamadorismo americano, cujo banco de perguntas e respostas é público: regras da Parte 97, repetidoras, propagação, eletrônica, modos de transmissão, antenas e segurança. O episódio também conta a história do fim da exigência do código Morse e apresenta as provas mais avançadas, General e Extra."
+  },
+  {
+    "filename": "20261029-055710-the-tms9918-video-chip.mp3",
+    "title": "O chip que inventou o sprite: a história do TMS9918",
+    "published": "2026-10-29T05:57:10.571727+00:00",
+    "size": 5827824,
+    "duration": 971,
+    "category": "Tecnologia",
+    "description": "Conheça o TMS9918, o chip de vídeo da Texas Instruments que esteve no TI-99/4A, no ColecoVision, no MSX e no primeiro console da Sega. Entenda por que ele tinha memória própria, como montava a imagem a partir de tabelas e por que o limite de quatro sprites por linha fazia os inimigos piscarem. E descubra como esse projeto dos anos setenta deixou herdeiros no Master System e no Mega Drive."
+  },
+  {
+    "filename": "20261029-055020-how-unix-signals-work-the-kernel-delivering-asynchronous-eve.mp3",
+    "title": "Control C por dentro: como funcionam os sinais do Unix",
+    "published": "2026-10-29T05:50:20.332657+00:00",
+    "size": 4706208,
+    "duration": 784,
+    "category": "Tecnologia",
+    "description": "Descubra o que acontece de verdade quando você aperta Control C: como o kernel marca sinais como pendentes e os entrega na fronteira com o espaço de usuário, e por que sinais iguais não se acumulam em fila. O episódio explica por que tratadores de sinal são território hostil, com armadilhas como reentrância, errno e EINTR, e mostra a história e as técnicas modernas, como sigaction, self-pipe e signalfd, para domá-los."
+  },
+  {
+    "filename": "20261029-054518-the-tty-subsystem-line-discipline-raw-vs-cooked-mode-and-why.mp3",
+    "title": "Control C por dentro: o teletipo escondido no seu terminal",
+    "published": "2026-10-29T05:45:18.866577+00:00",
+    "size": 6020496,
+    "duration": 1003,
+    "category": "Tecnologia",
+    "description": "Descubra como o subsistema de TTY do kernel transforma um simples byte três em um sinal que mata processos, e por que tudo isso começou com os teletipos dos anos sessenta. O episódio explica a disciplina de linha, a diferença entre modo cozido e modo cru, pseudoterminais, SSH e grupos de processos. No fim, revela por que bytes somem ou mudam na comunicação serial com microcontroladores e como corrigir isso."
+  },
+  {
+    "filename": "20261029-054149-how-dynamic-linking-works-on-linux-ld-so-the-plt-and-got-and.mp3",
+    "title": "PLT e GOT: como um programa no Linux conserta o próprio caminho",
+    "published": "2026-10-29T05:41:49.948502+00:00",
+    "size": 5743728,
+    "duration": 957,
+    "category": "Tecnologia",
+    "description": "Acompanhe o que acontece entre executar um programa no Linux e a chamada da função principal: o carregador dinâmico, o código independente de posição e a coreografia da primeira chamada a uma função de biblioteca pelas tabelas PLT e GOT. O episódio também aborda ligação preguiçosa, proteções como o RELRO, desempenho e a interposição de símbolos, que permite trocar o alocador de memória sem recompilar nada."
+  },
+  {
+    "filename": "20261028-212551-lora-mandar-dados-a-10-km-com-a-energia-de-uma-pilha-a-good-.mp3",
+    "title": "LoRa: como falar baixinho e ser ouvido a quilômetros",
+    "published": "2026-10-28T21:25:51.044370+00:00",
+    "size": 5685408,
+    "duration": 948,
+    "category": "Tecnologia",
+    "description": "Descubra como a tecnologia LoRa transmite dados por dezenas de quilômetros com pilhas comuns, recebendo sinais mais fracos que o próprio ruído graças aos chirps e à FFT. O episódio conta a origem da modulação na França, explica o fator de espalhamento, o consumo de energia e a rede LoRaWAN. No fim, aborda os limites da tecnologia e projetos caseiros como o Meshtastic."
+  },
+  {
+    "filename": "20261028-211139-multics-o-avo-ambicioso-do-unix-the-failure-that-led-to-unix.mp3",
+    "title": "Multics: o fracasso caro que deu origem ao Unix",
+    "published": "2026-10-28T21:11:39.650110+00:00",
+    "size": 5408064,
+    "duration": 901,
+    "category": "Tecnologia",
+    "description": "A história do Multics, o ambicioso sistema de tempo compartilhado criado por MIT, General Electric e Bell Labs nos anos 1960, que trouxe ideias como a árvore de diretórios, a ligação dinâmica, os anéis de proteção e o shell. O episódio explica por que o projeto atrasou tanto e como a saída da Bell Labs levou Ken Thompson e Dennis Ritchie a criar o Unix, uma versão enxuta dessas ideias. É também um prelúdio para a conversa sobre o Plan 9."
+  },
+  {
+    "filename": "20261028-210610-o-periferico-rmt-o-canivete-suico-de-pulsos-do-esp32-origina.mp3",
+    "title": "O controle remoto que acende LEDs: o periférico RMT do ESP32",
+    "published": "2026-10-28T21:06:10.709286+00:00",
+    "size": 5702256,
+    "duration": 950,
+    "category": "Tecnologia",
+    "description": "Por que um LED pisca na cor errada quando o ESP32 liga o Wi-Fi? O episódio explica como o RMT, periférico criado para controles remotos infravermelhos, gera pulsos precisos com pares de nível e duração e virou o jeito padrão de controlar fitas WS2812. Também mostramos usos inesperados, de sensores DHT e One Wire a motores de drone, motores de passo e melodias."
+  },
+  {
+    "filename": "20261028-204812-overlays-ems-e-xms-como-os-programas-de-dos-passavam-dos-640.mp3",
+    "title": "O limite dos 640 KB: overlays, EMS e XMS no DOS",
+    "published": "2026-10-28T20:48:12.082556+00:00",
+    "size": 5739696,
+    "duration": 957,
+    "category": "Tecnologia",
+    "description": "Por que um PC com 4 MB de RAM não conseguia rodar um jogo que pedia 580 KB? Neste episódio, explicamos a origem do limite de 640 KB no IBM PC e as estratégias criadas para driblá-lo: overlays, memória expandida (EMS) e memória estendida (XMS). No caminho, aparecem a linha A20, a área de memória alta e os extensores de DOS que libertaram jogos como Doom."
+  },
+  {
+    "filename": "20261028-203042-forth-a-linguagem-que-se-escreve-sozinha-em-poucos-kb-fits-n.mp3",
+    "title": "Forth: a linguagem minúscula que se escreve sozinha",
+    "published": "2026-10-28T20:30:42.791412+00:00",
+    "size": 5698080,
+    "duration": 950,
+    "category": "Tecnologia",
+    "description": "A história do Forth, criado por Chuck Moore para controlar um radiotelescópio com quase nenhuma memória, e como duas pilhas, um dicionário de palavras e o código encadeado o tornam tão compacto. Veja como o compilador se deixa reprogramar pelo próprio usuário e como o Forth foi parar no firmware da Sun e da Apple e até numa sonda que pousou num cometa."
+  },
+  {
+    "filename": "20261028-193928-a-20-minute-overview-about-the-most-popular-podcasts-in-braz.mp3",
+    "title": "Do Nerdcast ao Mano a Mano: a história dos podcasts no Brasil",
+    "published": "2026-10-28T19:39:28.754134+00:00",
+    "size": 6247440,
+    "duration": 1041,
+    "category": "Cultura",
+    "description": "Um passeio pela trajetória dos podcasts mais populares em português brasileiro, dos pioneiros como Nerdcast e Mamilos à explosão dos programas em vídeo como Flow e Podpah. O episódio passa ainda pelos podcasts diários de notícias, pelas grandes séries narrativas como O Caso Evandro e A Mulher da Casa Abandonada, e pelos nichos que conquistaram públicos fiéis."
+  },
+  {
+    "filename": "20261028-192258-a-20-minute-overview-about-the-most-popular-podcasts-in-engl.mp3",
+    "title": "Os podcasts mais ouvidos em inglês: de Serial a Joe Rogan",
+    "published": "2026-10-28T19:22:58.235718+00:00",
+    "size": 5207760,
+    "duration": 868,
+    "category": "Cultura",
+    "description": "Um passeio pela história e pelos maiores sucessos do podcast em língua inglesa, do impacto de Serial às conversas longas de Joe Rogan, passando por The Daily, Crime Junkie, SmartLess e Huberman Lab. O episódio explica por que esses programas funcionam, com a intimidade, a regularidade e a migração para o vídeo, e ainda dá dicas para quem quer usar podcasts para praticar inglês."
+  },
+  {
+    "filename": "20261028-191008-an-20-minute-overview-about-the-most-popular-audiodramas-in-.mp3",
+    "title": "Histórias para ouvir no escuro: do rádio ao audiodrama em podcast",
+    "published": "2026-10-28T19:10:08.818743+00:00",
+    "size": 6028128,
+    "duration": 1005,
+    "category": "Cultura",
+    "description": "Da lendária transmissão de \"A Guerra dos Mundos\" e das radionovelas brasileiras ao renascimento da ficção em áudio com Welcome to Night Vale, este episódio percorre a história do audiodrama. Passamos pelos falsos documentários como Limetown, pelas superproduções de Hollywood como Homecoming e Sandman, pela cena independente de The Magnus Archives e Wolf 359 e pelo brasileiro Paciente 63. No fim, entendemos por que o som sozinho mexe tanto com a nossa imaginação."
+  },
+  {
+    "filename": "20261028-144121-how-ole-rmer-measured-the-speed-of-light-in-1676-jupiters-mo.mp3",
+    "title": "Ole Rømer e os minutos de atraso que revelaram a velocidade da luz",
+    "published": "2026-10-28T14:41:21.820459+00:00",
+    "size": 6208992,
+    "duration": 1035,
+    "category": "História",
+    "description": "Em 1676, observando os eclipses de Io, lua de Júpiter, o astrônomo dinamarquês Ole Rømer percebeu que a luz leva tempo para viajar. O episódio mostra como o problema da longitude levou os astrônomos a cronometrar as luas de Júpiter, acompanha a previsão ousada de Rømer e a resistência de Cassini. No fim, compara a estimativa da época com o valor moderno e conta como James Bradley confirmou a descoberta décadas depois."
+  },
+  {
+    "filename": "20261028-143707-project-oberon-niklaus-wirth-building-a-complete-os-compiler.mp3",
+    "title": "Project Oberon: um computador inteiro que cabe em um livro",
+    "published": "2026-10-28T14:37:07.044716+00:00",
+    "size": 5242752,
+    "duration": 874,
+    "category": "Tecnologia",
+    "description": "Conheça a história de Niklaus Wirth, criador do Pascal, e do Oberon, um sistema completo (linguagem, sistema operacional, interface e até processador próprio) pensado para ser entendido por uma única pessoa. Da visita à Xerox PARC à versão de 2013 em FPGA, o episódio explica como o sistema funciona, por que nunca fez sucesso comercial e como influenciou ferramentas como o Acme e a linguagem Go."
+  },
+  {
+    "filename": "20261028-143325-cp-m-technical-aspects-and-its-bios.mp3",
+    "title": "CP/M por dentro: o BIOS e o segredo da portabilidade",
+    "published": "2026-10-28T14:33:25.588019+00:00",
+    "size": 5974560,
+    "duration": 996,
+    "category": "Tecnologia",
+    "description": "Conheça o CP/M, o pequeno sistema operacional criado por Gary Kildall que fazia o mesmo software rodar em dezenas de computadores diferentes no fim dos anos setenta. O episódio explica suas três partes (CCP, BDOS e BIOS), a organização da memória, a tabela de saltos do BIOS, as tabelas de parâmetros de disco e o sistema de arquivos. No fim, o legado do CP/M no MS-DOS e no BIOS que ainda aparece nos computadores de hoje."
+  },
+  {
+    "filename": "20261028-142838-mode-13h-vgas-320200-with-256-colors-and-why-it-became-dos-g.mp3",
+    "title": "Modo 13h: o segredo das 256 cores que conquistou os jogos de DOS",
+    "published": "2026-10-28T14:28:38.091334+00:00",
+    "size": 5683680,
+    "duration": 947,
+    "category": "Tecnologia",
+    "description": "Uma viagem à era do DOS para entender por que o Modo 13h da placa VGA, com 320 por 200 pixels e 256 cores, virou o favorito de toda uma geração de programadores. O episódio explica a memória linear num único segmento, a paleta de cores e seus efeitos, as limitações que inspiraram o Modo X e o legado em jogos clássicos e na cena demo."
+  },
+  {
+    "filename": "20261028-140729-small-c-and-compilers-that-fit-in-tiny-machines-ron-cains-19.mp3",
+    "title": "Compiladores que cabem em qualquer lugar: do Small-C ao Tiny C",
+    "published": "2026-10-28T14:07:29.997637+00:00",
+    "size": 5935104,
+    "duration": 989,
+    "category": "Tecnologia",
+    "description": "Voltamos a 1980 para conhecer o Small-C, o compilador de Ron Cain publicado na Doctor Dobb's, e entender como um compilador consegue compilar a si mesmo em máquinas de poucos quilobytes. Depois, saltamos para o Tiny C Compiler de Fabrice Bellard, que levou a mesma filosofia de simplicidade ao mundo moderno. No fim, discutimos o alerta de Ken Thompson sobre confiança e o papel desses compiladores pequenos na segurança do software atual."
+  },
+  {
+    "filename": "20261028-140253-memory-protection-without-an-mmu-arms-mpu-risc-vs-pmp-and-th.mp3",
+    "title": "Proteção de memória sem MMU: MPU, PMP e o caso ESP32",
+    "published": "2026-10-28T14:02:53.569979+00:00",
+    "size": 5980608,
+    "duration": 997,
+    "category": "Tecnologia",
+    "description": "Como proteger a memória em microcontroladores que não têm MMU? O episódio explica a diferença entre MMU e MPU, os níveis de privilégio e como funcionam a MPU dos ARM Cortex-M, a PMP do RISC-V e os controles próprios da Espressif na família ESP32. No fim, discute os limites dessas técnicas e por que elas fazem os bugs aparecerem onde nascem."
+  },
+  {
+    "filename": "20261028-135818-newlib-the-c-library-of-embedded-systems-reentrancy-structur.mp3",
+    "title": "Para onde vai o printf? Newlib, reentrância e stubs em embarcados",
+    "published": "2026-10-28T13:58:18.480729+00:00",
+    "size": 5793264,
+    "duration": 966,
+    "category": "Tecnologia",
+    "description": "Descubra como funciona a Newlib, a biblioteca C presente em inúmeros sistemas embarcados, desde sua origem na Cygnus até a estrutura reent que dá a cada tarefa sua própria errno em sistemas de tempo real. Entenda também as chamadas de sistema que você precisa implementar e siga, passo a passo, o caminho de um printf desde a formatação até a porta serial, com as armadilhas mais comuns pelo caminho."
+  },
+  {
+    "filename": "20261028-133759-the-esp-idf-vfs-layer-how-open-read-and-write-get-routed-to-.mp3",
+    "title": "Tudo é arquivo no ESP32: por dentro do VFS do ESP-IDF",
+    "published": "2026-10-28T13:37:59.571089+00:00",
+    "size": 5916816,
+    "duration": 986,
+    "category": "Tecnologia",
+    "description": "Seguimos o caminho de um simples printf no ESP32 até o hardware, passando pela newlib e pelo sistema de arquivos virtual (VFS) do ESP-IDF, que roteia chamadas por prefixos de caminho e tabelas de descritores. Veja exemplos reais com a UART e o SPIFFS, aprenda a registrar seu próprio driver e conheça as armadilhas mais comuns, como buffers, concorrência e select."
+  },
+  {
+    "filename": "20261028-133322-how-a-linker-script-shapes-your-firmware-sections-memory-reg.mp3",
+    "title": "Onde mora o seu código: o script do linker no ESP32",
+    "published": "2026-10-28T13:33:22.362934+00:00",
+    "size": 5433408,
+    "duration": 906,
+    "category": "Tecnologia",
+    "description": "Entenda como o compilador gera seções e como o script do linker decide o endereço de cada byte do firmware, incluindo a ideia de endereço de carga e de execução. Depois, aplicamos tudo ao ESP32 para explicar IRAM, DRAM e flash, a macro IRAM_ATTR e por que uma interrupção na flash pode reiniciar sua placa."
+  },
+  {
+    "filename": "20261028-131214-what-happens-before-main-the-startup-code-zeroing-bss-copyin.mp3",
+    "title": "Antes da main: o código secreto que prepara seu programa",
+    "published": "2026-10-28T13:12:14.057292+00:00",
+    "size": 5510304,
+    "duration": 918,
+    "category": "Tecnologia",
+    "description": "Descubra o que acontece entre o reset do microcontrolador e a primeira linha da main: a tabela de vetores, as seções .text, .data e .bss, e os laços que copiam e zeram a memória. O episódio também explica os construtores globais do C++, o fiasco da ordem de inicialização estática e como tudo isso funciona num sistema operacional como o Linux."
+  },
+  {
+    "filename": "20261028-130746-using-gpus-for-non-video-tasks.mp3",
+    "title": "Da placa de vídeo à IA: como a GPU conquistou a computação",
+    "published": "2026-10-28T13:07:46.363516+00:00",
+    "size": 6324768,
+    "duration": 1054,
+    "category": "Tecnologia",
+    "description": "Descubra como um chip criado para desenhar gráficos de videogame virou peça central da ciência e da inteligência artificial. O episódio explica a diferença entre CPU e GPU, conta como pesquisadores disfarçavam contas como imagens até o surgimento do CUDA e mostra aplicações que vão de simulações científicas e criptomoedas ao treinamento de redes neurais. No fim, discutimos os limites de energia, custo e programação e o que pode vir pela frente."
+  },
+  {
+    "filename": "20261028-130420-pico-pi-vs-esp32-vs-stm.mp3",
+    "title": "Raspberry Pi Pico, ESP32 ou STM32: qual microcontrolador escolher?",
+    "published": "2026-10-28T13:04:20.277800+00:00",
+    "size": 5355504,
+    "duration": 893,
+    "category": "Tecnologia",
+    "description": "Conheça a origem e a personalidade de três microcontroladores populares no mundo maker: o veterano STM32, o conectado ESP32 e o amigável Raspberry Pi Pico. O episódio compara os três em conectividade sem fio, desempenho, periféricos, consumo de energia, facilidade de uso e uso profissional. No final, três perguntas simples ajudam você a decidir qual usar no seu próximo projeto."
+  },
+  {
+    "filename": "20261028-130030-starting-with-ham-radio-first-steps.mp3",
+    "title": "Radioamadorismo: primeiros passos para falar com o mundo",
+    "published": "2026-10-28T13:00:30.483229+00:00",
+    "size": 6148080,
+    "duration": 1025,
+    "category": "Tecnologia",
+    "description": "Um guia para quem quer começar no radioamadorismo: o que é o hobby, por que ele ainda faz sentido e como começar apenas escutando, de graça, pela internet. O episódio explica como tirar a licença da Anatel, que equipamento comprar no início, como funcionam as repetidoras e como fazer o seu primeiro contato no ar."
+  },
+  {
+    "filename": "20261028-125727-filesystems-on-esp32-flash-spiffs-littlefs-and-fat-with-wear.mp3",
+    "title": "Por que o SPIFFS caiu em desuso: sistemas de arquivos no ESP32",
+    "published": "2026-10-28T12:57:27.623223+00:00",
+    "size": 6152832,
+    "duration": 1025,
+    "category": "Tecnologia",
+    "description": "Entenda por que a memória flash do ESP32 se desgasta e como os sistemas de arquivos lidam com apagamentos em blocos, vida útil limitada e quedas de energia. O episódio compara SPIFFS, Little FS e FAT com nivelamento de desgaste, explicando por que o SPIFFS foi abandonado e qual opção escolher em cada projeto."
+  },
+  {
+    "filename": "20261028-104428-filesystems-on-esp32-flash-spiffs-littlefs-and-fat-with-wear.mp3",
+    "title": "SPIFFS, LittleFS ou FAT: sobrevivendo na flash do ESP32",
+    "published": "2026-10-28T10:44:28.458274+00:00",
+    "size": 5910048,
+    "duration": 985,
+    "category": "Tecnologia",
+    "description": "Por que o SPIFFS caiu em desuso e o que a memória flash do ESP32 exige de um sistema de arquivos? O episódio explica apagamento por setores, desgaste e nivelamento, e compara SPIFFS, LittleFS e FAT com a camada de wear leveling da Espressif. No fim, um guia prático para escolher a melhor opção para o seu projeto, inclusive quando a energia cai."
+  },
+  {
+    "filename": "20261028-041631-how-esp-now-works-connectionless-wi-fi-frames-low-latency-an.mp3",
+    "title": "ESP-NOW: Wi-Fi sem roteador, sem conexão e em milissegundos",
+    "published": "2026-10-28T04:16:31.418801+00:00",
+    "size": 5462640,
+    "duration": 910,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos como funciona o ESP-NOW, o protocolo que permite que dispositivos troquem dados diretamente por Wi-Fi, sem roteador e sem precisar estabelecer uma conexão tradicional. Falamos sobre como os quadros são enviados de forma direta entre os aparelhos, o que torna a comunicação tão rápida e com baixa latência, e em que tipos de projeto essa abordagem faz sentido. Uma conversa para quem quer entender o que acontece por trás dessa troca de mensagens em milissegundos."
+  },
+  {
+    "filename": "20261028-040824-loading-code-at-runtime-on-the-esp32-elf-loaders-position-in.mp3",
+    "title": "Plugins no ESP32: carregando código nativo em tempo de execução",
+    "published": "2026-10-28T04:08:24.051471+00:00",
+    "size": 5632272,
+    "duration": 939,
+    "category": "Tecnologia",
+    "description": "Neste episódio, falamos sobre como carregar código nativo em tempo de execução no ESP32, criando um sistema de plugins para microcontroladores. Discutimos o funcionamento de carregadores ELF, o papel do código independente de posição e os desafios de memória e arquitetura envolvidos. Também comentamos vantagens, limitações e cuidados para quem quer trazer mais flexibilidade aos seus projetos embarcados."
+  },
+  {
+    "filename": "20261028-040039-partition-tables-and-ota-updates-how-two-app-slots-and-the-o.mp3",
+    "title": "Atualização OTA sem tijolos: partições, dois slots e rollback no ESP32",
+    "published": "2026-10-28T04:00:39.477544+00:00",
+    "size": 5747184,
+    "duration": 958,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos como funcionam as atualizações OTA no ESP32 sem correr o risco de transformar a placa em um tijolo. Falamos sobre tabelas de partição, o esquema de dois slots de aplicação e o papel da partição de dados OTA na escolha do firmware que vai inicializar. Também mostramos como o rollback ajuda a voltar para uma versão estável quando uma atualização dá errado."
+  },
+  {
+    "filename": "20261028-035637-how-the-esp32-boots-rom-bootloader-second-stage-bootloader-p.mp3",
+    "title": "A corrida de revezamento do boot no ESP32: dos pinos à app_main",
+    "published": "2026-10-28T03:56:37.300088+00:00",
+    "size": 6744240,
+    "duration": 1124,
+    "category": "Tecnologia",
+    "description": "Neste episódio, acompanhamos passo a passo o que acontece desde o momento em que o ESP32 é ligado até a execução da sua função app_main. Explicamos o papel do bootloader da ROM, do bootloader de segundo estágio e como cada etapa passa o bastão para a seguinte, incluindo a influência dos pinos de inicialização e da tabela de partições. Uma conversa ideal para quem quer entender melhor o que roda por trás do seu firmware."
+  },
+  {
+    "filename": "20261028-034810-psram-on-the-esp32-how-external-ram-is-mapped-through-the-ca.mp3",
+    "title": "ESP32: quando o compilador consertou um defeito do chip",
+    "published": "2026-10-28T03:48:10.550020+00:00",
+    "size": 4776912,
+    "duration": 796,
+    "category": "Tecnologia",
+    "description": "Neste episódio, falamos sobre a PSRAM no ESP32 e como a memória RAM externa é mapeada através do cache para que o processador possa usá-la quase como se fosse memória interna. Explicamos também a curiosa história de um defeito de hardware nas primeiras versões do chip e como o compilador passou a gerar código especial para contornar o problema. Um papo sobre os bastidores dos microcontroladores e sobre o que acontece quando software precisa corrigir falhas do silício."
+  },
+  {
+    "filename": "20261028-034352-how-code-runs-from-external-flash-the-cache-and-mmu-that-map.mp3",
+    "title": "Executando código da flash: MMU, cache e a conversa por baixo da porta",
+    "published": "2026-10-28T03:43:52.740867+00:00",
+    "size": 5659488,
+    "duration": 943,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos como um microcontrolador consegue executar código diretamente de uma memória flash externa, como se ela fizesse parte do seu próprio espaço de endereços. Falamos sobre o papel da MMU no mapeamento desses endereços e da cache em reduzir a lentidão do acesso à flash, além do diálogo que acontece nos bastidores entre o processador e a memória. Um papo para quem quer entender o que realmente ocorre quando o firmware roda a partir da flash."
+  },
+  {
+    "filename": "20261028-034011-the-esp32-memory-map-explained-iram-dram-rtc-memory-and-why-.mp3",
+    "title": "ESP32: a memória com dois endereços e o mistério da IRAM e DRAM",
+    "published": "2026-10-28T03:40:11.754883+00:00",
+    "size": 5874336,
+    "duration": 979,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos o mapa de memória do ESP32 e por que a mesma região de memória pode aparecer em dois endereços diferentes. Falamos sobre as diferenças entre IRAM, DRAM e a memória RTC, para que serve cada uma e como isso afeta o seu código. Um papo para quem quer entender o que acontece por baixo dos panos no microcontrolador e tirar melhor proveito dele nos seus projetos."
+  },
+  {
+    "filename": "20261028-033201-the-xtensa-windowed-register-file-how-register-windows-make-.mp3",
+    "title": "Janelas de registradores do Xtensa: chamadas de função quase de graça",
+    "published": "2026-10-28T03:32:01.594356+00:00",
+    "size": 5597280,
+    "duration": 933,
+    "category": "Tecnologia",
+    "description": "Neste episódio, exploramos o arquivo de registradores com janelas da arquitetura Xtensa e como esse mecanismo torna as chamadas de função muito mais baratas. Explicamos como as janelas deslizam a cada chamada, o que acontece quando os registradores acabam e quais são as vantagens e os custos desse design em comparação com abordagens mais tradicionais."
+  },
+  {
+    "filename": "20261028-025825-how-bootloaders-work-on-microcontrollers.mp3",
+    "title": "Bootloader: o programa invisível que decide tudo quando o chip liga",
+    "published": "2026-10-28T02:58:25.615875+00:00",
+    "size": 4236048,
+    "duration": 706,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos o que é um bootloader e por que esse pequeno programa é tão importante nos microcontroladores. Falamos sobre o que acontece desde o momento em que o chip é energizado até a aplicação principal começar a rodar, e como o bootloader permite atualizar o firmware sem precisar de um gravador dedicado. Também comentamos cuidados e boas práticas para quem quer entender ou desenvolver o seu próprio."
+  },
+  {
+    "filename": "20261028-024615-how-usb-enumeration-works-what-happens-in-the-first-millisec.mp3",
+    "title": "O que acontece quando você espeta um pen drive: a enumeração USB",
+    "published": "2026-10-28T02:46:15.770440+00:00",
+    "size": 4107456,
+    "duration": 685,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos o que acontece nos primeiros instantes depois que você conecta um pen drive ao computador. Acompanhamos passo a passo o processo de enumeração USB, em que o sistema detecta o dispositivo, descobre o que ele é e prepara tudo para que ele funcione. Uma conversa acessível sobre a troca de mensagens invisível que acontece antes mesmo de o ícone aparecer na tela."
+  },
+  {
+    "filename": "20261028-024334-memory-mapped-i-o-how-writing-to-an-address-turns-on-an-led.mp3",
+    "title": "Como um número vira luz: entrada e saída mapeada em memória",
+    "published": "2026-10-28T02:43:34.604587+00:00",
+    "size": 3338784,
+    "duration": 556,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos o que é entrada e saída mapeada em memória e como o processador conversa com periféricos usando simples leituras e escritas em endereços. Acompanhamos o caminho de um número escrito em um registrador até o momento em que ele acende um LED, passando por conceitos como barramentos, registradores de hardware e decodificação de endereços. Uma conversa acessível para quem quer entender o que acontece entre o código e o mundo físico."
+  },
+  {
+    "filename": "20261028-023341-how-the-esp32-dual-core-is-split.mp3",
+    "title": "ESP32: o que realmente decide o trabalho de cada núcleo",
+    "published": "2026-10-28T02:33:41.595210+00:00",
+    "size": 3490848,
+    "duration": 582,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos como funciona o processador dual-core do ESP32 e como as tarefas são distribuídas entre os dois núcleos. Falamos sobre o papel do FreeRTOS, a diferença entre o núcleo que cuida do Wi-Fi e do Bluetooth e o que roda a sua aplicação, e quando faz sentido fixar uma tarefa em um núcleo específico. Um guia prático para quem quer tirar mais desempenho dos seus projetos com ESP32."
+  },
+  {
+    "filename": "20261028-023053-how-dma-works-in-a-microcontroller.mp3",
+    "title": "DMA: o assistente que carrega as caixas pelo processador",
+    "published": "2026-10-28T02:30:53.777095+00:00",
+    "size": 3357216,
+    "duration": 560,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos como funciona o DMA (acesso direto à memória) em microcontroladores, o recurso que transfere dados entre periféricos e memória sem ocupar o processador. Falamos sobre canais, requisições e transferências, além de mostrar em que situações o DMA ajuda a ganhar desempenho e economizar energia nos seus projetos embarcados."
+  },
+  {
+    "filename": "20261028-022829-the-rise-of-risc-v-microcontrollers.mp3",
+    "title": "Risc-Five: a língua aberta que conquistou os microcontroladores",
+    "published": "2026-10-28T02:28:29.319362+00:00",
+    "size": 3495888,
+    "duration": 583,
+    "category": "Tecnologia",
+    "description": "Neste episódio, falamos sobre a ascensão do RISC-V, a arquitetura de conjunto de instruções aberta que vem ganhando espaço no mundo dos microcontroladores. Discutimos o que torna esse padrão diferente das alternativas proprietárias, por que fabricantes e desenvolvedores estão apostando nele e quais desafios ainda existem pela frente. Uma conversa para quem quer entender como uma ideia aberta está mudando o hardware embarcado."
+  },
+  {
+    "filename": "20261028-022612-7400-digital-series.mp3",
+    "title": "7400: o chip de centavos que construiu a era digital",
+    "published": "2026-10-28T02:26:12.902554+00:00",
+    "size": 3721104,
+    "duration": 620,
+    "category": "Tecnologia",
+    "description": "Neste episódio, contamos a história da série 7400, a família de circuitos integrados lógicos TTL que, por poucos centavos, se tornou a base de computadores, equipamentos e projetos eletrônicos por décadas. Falamos sobre como essas portas lógicas simples ajudaram a padronizar o design digital e por que elas ainda aparecem em bancadas, cursos e projetos de hobby até hoje."
+  },
+  {
+    "filename": "20261028-022329-how-jtag-works.mp3",
+    "title": "JTAG: a porta secreta para conversar com o interior dos chips",
+    "published": "2026-10-28T02:23:29.164958+00:00",
+    "size": 3986208,
+    "duration": 664,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos o que é o JTAG e como essa interface permite acessar e testar o interior de chips e placas eletrônicas. Falamos sobre sua origem nos testes de fabricação, como funciona a comunicação por meio dos seus sinais e da cadeia de varredura, e por que ele se tornou uma ferramenta essencial para depuração, gravação de firmware e até pesquisas de segurança. Uma conversa acessível para quem quer entender melhor o que acontece por trás dos circuitos."
+  },
+  {
+    "filename": "20261028-022027-the-german-colonization-of-rio-grande-do-sul.mp3",
+    "title": "Rio dos Sinos, 1824: a saga dos imigrantes alemães no Rio Grande do Sul",
+    "published": "2026-10-28T02:20:27.669750+00:00",
+    "size": 3255408,
+    "duration": 543,
+    "category": "História",
+    "description": "Neste episódio, voltamos a 1824 para acompanhar a chegada dos primeiros imigrantes alemães às margens do Rio dos Sinos, no Rio Grande do Sul. Falamos sobre os motivos que levaram essas famílias a deixar a Europa, os desafios que enfrentaram para se estabelecer em terras desconhecidas e como construíram suas comunidades. Uma conversa sobre a herança cultural, econômica e social que a colonização alemã deixou no sul do Brasil."
+  },
+  {
+    "filename": "20261028-021833-how-kepler-found-exoplanets.mp3",
+    "title": "Kepler: o telescópio que caçava sombras de planetas",
+    "published": "2026-10-28T02:18:33.999358+00:00",
+    "size": 3518784,
+    "duration": 586,
+    "category": "Ciência",
+    "description": "Neste episódio, explicamos como o telescópio espacial Kepler revolucionou a busca por planetas fora do Sistema Solar observando pequenas quedas no brilho das estrelas. Entenda o método do trânsito, os desafios de detectar essas sombras sutis e o que essas descobertas revelaram sobre a variedade de mundos na nossa galáxia."
+  },
+  {
+    "filename": "20261028-021602-how-we-measured-the-distance-to-the-sun.mp3",
+    "title": "Quão longe está o Sol? A aventura de medir o céu",
+    "published": "2026-10-28T02:16:02.109356+00:00",
+    "size": 3506544,
+    "duration": 584,
+    "category": "Ciência",
+    "description": "Neste episódio, embarcamos na história de como a humanidade descobriu a distância entre a Terra e o Sol. Conhecemos as ideias engenhosas, os erros e as grandes expedições científicas que, ao longo dos séculos, ajudaram a medir o céu. Uma viagem pela astronomia que mostra como a curiosidade e a matemática nos permitiram entender o tamanho do nosso lugar no universo."
+  },
+  {
+    "filename": "20261028-020818-the-story-of-plan-9-from-bell-labs.mp3",
+    "title": "Plan 9: o sistema que fracassou e mesmo assim mudou a computação",
+    "published": "2026-10-28T02:08:18.774309+00:00",
+    "size": 3623040,
+    "duration": 604,
+    "category": "Tecnologia",
+    "description": "Neste episódio, contamos a história do Plan 9, o sistema operacional criado nos Bell Labs pelos mesmos pesquisadores por trás do Unix. Falamos sobre as ideias ousadas que ele propôs, por que nunca conquistou o mercado e como muitos de seus conceitos acabaram influenciando a computação que usamos até hoje."
+  },
+  {
+    "filename": "20261028-020055-how-the-linux-kernel-boots-on-x86.mp3",
+    "title": "Do 8086 ao Linux: a viagem no tempo de cada inicialização",
+    "published": "2026-10-28T02:00:55.011414+00:00",
+    "size": 3574800,
+    "duration": 596,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos o que acontece desde o momento em que você liga um computador x86 até o kernel Linux assumir o controle. Percorremos as etapas da inicialização, do firmware e do bootloader às transições entre os modos do processador, mostrando como cada boot repete um pouco da história da arquitetura desde o 8086. Uma conversa para entender, sem complicação, a engenharia escondida por trás de cada vez que o sistema sobe."
+  },
+  {
+    "filename": "20261028-015756-how-the-game-boys-sound-chip-worked.mp3",
+    "title": "Quatro vozes num chip: os segredos do som do Game Boy",
+    "published": "2026-10-28T01:57:56.111605+00:00",
+    "size": 4150512,
+    "duration": 692,
+    "category": "Tecnologia",
+    "description": "Neste episódio, mergulhamos no funcionamento do chip de som do Game Boy e descobrimos como apenas quatro canais conseguiram criar trilhas sonoras que marcaram gerações. Explicamos de forma acessível o papel de cada voz, das ondas quadradas ao ruído, e como os compositores driblavam as limitações do hardware com criatividade. Uma conversa para quem ama videogames, música e a engenhosidade por trás dos sons de 8 bits."
+  },
+  {
+    "filename": "20261028-015454-the-apple-iis-disk-controller.mp3",
+    "title": "O ronco do Disk Two: como Wozniak reinventou o disquete com 8 chips",
+    "published": "2026-10-28T01:54:54.831445+00:00",
+    "size": 4014288,
+    "duration": 669,
+    "category": "Tecnologia",
+    "description": "Neste episódio, mergulhamos na história da controladora de disquete do Apple II, uma das soluções de engenharia mais engenhosas da computação pessoal. Contamos como Steve Wozniak repensou o funcionamento das unidades de disco usando pouquíssimos chips e transferindo para o software tarefas que normalmente exigiam hardware caro. Também falamos sobre o impacto desse projeto no sucesso do Apple II e sobre o famoso som característico da unidade em funcionamento."
+  },
+  {
+    "filename": "20261028-015150-the-farroupilha-revolution-18351845-the-decade-long-rio-gran.mp3",
+    "title": "Revolução Farroupilha: por que os gaúchos celebram uma guerra que não venceram",
+    "published": "2026-10-28T01:51:50.865411+00:00",
+    "size": 3590352,
+    "duration": 598,
+    "category": "História",
+    "description": "Neste episódio, mergulhamos na Revolução Farroupilha, o conflito de cerca de uma década que colocou o Rio Grande do Sul contra o Império brasileiro no século XIX. Falamos sobre as causas da revolta, os principais personagens e os rumos da guerra até o acordo de paz. E discutimos por que, mesmo sem uma vitória militar, a Farroupilha se tornou um dos maiores símbolos da identidade e do orgulho gaúcho até hoje."
+  },
+  {
+    "filename": "20261028-014849-how-doom-ran-on-a-386-bsp-trees-the-visplane-limit-and-john-.mp3",
+    "title": "Como Doom rodava num 386: BSP, visplanes e ponto fixo",
+    "published": "2026-10-28T01:48:49.423210+00:00",
+    "size": 4392720,
+    "duration": 732,
+    "category": "Tecnologia",
+    "description": "Neste episódio, explicamos como Doom conseguia rodar em computadores 386, que eram modestos até para a época, olhando para as soluções técnicas por trás do jogo. Falamos sobre as árvores BSP usadas para organizar os mapas, sobre os visplanes e o famoso limite que eles impunham, e sobre o uso de aritmética de ponto fixo no lugar de ponto flutuante. Também comentamos o papel de John Carmack nessas escolhas de engenharia que marcaram a história dos games."
+  },
+  {
+    "filename": "20261028-014512-how-smalltalk-80-bootstraps-itself.mp3",
+    "title": "Smalltalk-80: o sistema que acorda de onde parou e se ergue sozinho",
+    "published": "2026-10-28T01:45:12.150469+00:00",
+    "size": 4413456,
+    "duration": 736,
+    "category": "Tecnologia",
+    "description": "Neste episódio, mergulhamos no Smalltalk-80 para entender como esse sistema consegue se inicializar a partir de si mesmo, retomando o trabalho exatamente de onde parou. Falamos sobre a ideia da imagem persistente, o papel da máquina virtual e como o ambiente é construído e modificado usando a própria linguagem. Uma conversa sobre um dos projetos mais influentes da história da computação e as ideias que ele deixou para as linguagens e ferramentas de hoje."
+  },
+  {
+    "filename": "20261028-013737-the-brazilian-computer-market-reserve.mp3",
+    "title": "Reserva de mercado: quando o Brasil proibiu computadores importados",
+    "published": "2026-10-28T01:37:37.954022+00:00",
+    "size": 3867552,
+    "duration": 645,
+    "category": "Tecnologia",
+    "description": "Neste episódio, revisitamos a política de reserva de mercado da informática, quando o Brasil restringiu a importação de computadores na tentativa de criar uma indústria nacional de tecnologia. Falamos sobre as motivações por trás da medida, como ela afetou empresas, consumidores e o desenvolvimento tecnológico do país, e os debates que ela ainda provoca. Uma conversa sobre soberania, inovação e os dilemas do protecionismo."
+  },
+  {
+    "filename": "20261027-234148-how-voyager-still-talks-to-earth.mp3",
+    "title": "Voyager: como ainda ouvimos um sussurro a 24 bilhões de km",
+    "published": "2026-10-27T23:41:48.830308+00:00",
+    "size": 4058784,
+    "duration": 676,
+    "category": "Ciência",
+    "description": "Neste episódio, explicamos como as sondas Voyager, lançadas há décadas, continuam se comunicando com a Terra mesmo estando nos confins do Sistema Solar. Falamos sobre as antenas gigantes que captam sinais extremamente fracos, os desafios de enviar comandos a uma distância tão grande e o que essas mensagens ainda nos revelam sobre o espaço interestelar."
+  },
+  {
+    "filename": "20261027-231719-intro-to-radio-wireless-communication-and-ham-radio-with-som.mp3",
+    "title": "Ondas invisíveis: do rádio de Maxwell ao radioamador digital",
+    "published": "2026-10-27T23:17:19.036657+00:00",
+    "size": 7485696,
+    "duration": 1248,
+    "category": "Tecnologia",
+    "description": "Neste episódio, fazemos uma introdução à comunicação sem fio, partindo das ideias de Maxwell sobre as ondas eletromagnéticas até chegar às formas modernas de transmissão por rádio. Falamos sobre o universo do radioamadorismo, como ele funciona e o que mudou com a chegada dos modos digitais. Uma conversa acessível para quem tem curiosidade sobre as ondas invisíveis que nos conectam e quer dar os primeiros passos nesse hobby."
+  },
+  {
+    "filename": "20261027-231207-the-chip-8-story.mp3",
+    "title": "Chip Oito: a máquina virtual dos anos 70 que nunca morreu",
+    "published": "2026-10-27T23:12:07.291326+00:00",
+    "size": 4405248,
+    "duration": 734,
+    "category": "Tecnologia",
+    "description": "Neste episódio, contamos a história do CHIP-8, a linguagem interpretada criada nos anos 70 para facilitar a programação de jogos em microcomputadores simples. Falamos sobre como ela funcionava, por que conquistou entusiastas ao longo das décadas e como continua viva até hoje como porta de entrada para quem quer aprender a construir emuladores. Uma viagem pela computação retrô e pelo legado de uma ideia pequena que se recusou a desaparecer."
+  },
+  {
+    "filename": "20261027-230835-how-the-commodore-64s-sid-chip-was-designed.mp3",
+    "title": "SID: o chip de som do Commodore 64 e os defeitos que viraram música",
+    "published": "2026-10-27T23:08:35.988590+00:00",
+    "size": 4401504,
+    "duration": 734,
+    "category": "Tecnologia",
+    "description": "Neste episódio, contamos a história de como foi projetado o SID, o chip de som que deu voz ao Commodore 64 e marcou uma geração de jogos e computadores pessoais. Falamos sobre as ideias e limitações por trás do seu desenvolvimento e sobre como certas imperfeições técnicas acabaram se tornando parte do seu som característico. Uma conversa sobre engenharia, criatividade e o legado do chip na música eletrônica e na cultura chiptune."
+  },
+  {
+    "filename": "20261027-224843-colonization-jogo-da-microprose-num-episodio-de-10-minutos-f.mp3",
+    "title": "Colonization, jogo da Microprose, num episodio de 10 minutos. Fale da historia do jogo, da mecanica, das versoes modernas e do legado.",
+    "published": "2026-10-27T22:48:43.598788+00:00",
+    "size": 4268448,
+    "duration": 711,
+    "category": "",
+    "description": "Neste episódio rápido de cerca de 10 minutos, revisitamos Colonization, o clássico de estratégia da MicroProse que coloca o jogador no comando de uma colônia no Novo Mundo. Falamos da história do jogo, de como funcionam suas mecânicas de exploração, economia e diplomacia, e do caminho até a independência. Também comentamos as versões modernas e o legado que o título deixou no gênero de estratégia."
+  },
+  {
+    "filename": "20261027-213949-gere-um-episodio-de-15-minutos-falando-de-todos-os-principai.mp3",
+    "title": "Gere um episodio de 15 minutos falando de todos os principais components para o ESP32, como elf_loader, rgb_lcd, etc. Uma visao geral cujo objetivo eh eu conhecer esse componentes para ter ideias para novos projetos.",
+    "published": "2026-10-27T21:39:49.173176+00:00",
+    "size": 4734432,
+    "duration": 789,
+    "category": "",
+    "description": "Neste episódio, fazemos um panorama dos principais componentes disponíveis para o ESP32, como o elf_loader, o rgb_lcd e outros recursos que ampliam as possibilidades da plataforma. A ideia é apresentar o que cada um faz e em que situações pode ser útil, de forma leve e direta. Um bom ponto de partida para quem quer conhecer o ecossistema e buscar inspiração para novos projetos."
+  },
+  {
+    "filename": "20261027-213228-a-historia-do-transistor-apenas-30-segundos-de-fala.mp3",
+    "title": "A historia do transistor - apenas 30 segundos de fala",
+    "published": "2026-10-27T21:32:28.624074+00:00",
+    "size": 203184,
+    "duration": 34,
+    "category": "",
+    "description": "Em apenas 30 segundos, conhecemos a história do transistor, a pequena invenção que mudou a eletrônica e abriu caminho para os computadores e celulares que usamos hoje. Um resumo rápido e direto sobre como esse componente surgiu e por que ele é tão importante para o mundo moderno."
+  },
+  {
+    "filename": "20261027-212943-a-historia-do-transistor-apenas-30-segundos-de-fala.mp3",
+    "title": "A historia do transistor - apenas 30 segundos de fala",
+    "published": "2026-10-27T21:29:43.204762+00:00",
+    "size": 185040,
+    "duration": 31,
+    "category": "",
+    "description": "Neste episódio relâmpago, em apenas 30 segundos, contamos de forma rápida e direta a história do transistor, a pequena invenção que revolucionou a eletrônica. Descubra por que esse componente é considerado a base dos computadores, celulares e de praticamente toda a tecnologia que usamos hoje."
+  }
+]

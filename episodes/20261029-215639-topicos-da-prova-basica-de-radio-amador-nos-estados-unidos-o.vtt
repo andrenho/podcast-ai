@@ -1,0 +1,666 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:05.700
+Imagine uma prova oficial do governo americano em que todas as perguntas são públicas.
+
+2
+00:00:05.650 --> 00:00:11.612
+E não só as perguntas: as quatro alternativas de cada uma e a resposta certa também.
+
+3
+00:00:11.612 --> 00:00:21.137
+Qualquer pessoa pode baixar o banco inteiro, com cerca de quatrocentas perguntas, estudar com calma e depois sentar para responder trinta e cinco delas.
+
+4
+00:00:21.137 --> 00:00:30.525
+Parece uma brincadeira, mas é exatamente assim que funciona a prova de entrada do radioamadorismo nos Estados Unidos, a licença chamada Technician.
+
+5
+00:00:30.525 --> 00:00:34.312
+Neste episódio a gente vai percorrer o que cai nessa prova.
+
+6
+00:00:34.312 --> 00:00:38.212
+Primeiro, como ela é organizada e de onde ela veio.
+
+7
+00:00:38.212 --> 00:00:50.012
+Depois, os grandes blocos de assunto: as regras, a operação, a propagação das ondas, a eletrônica, os equipamentos e modos de transmissão, as antenas e a segurança.
+
+8
+00:00:50.012 --> 00:00:56.150
+E no final, uma passada rápida pelas duas provas mais avançadas, a General e a Extra.
+
+9
+00:00:56.150 --> 00:00:58.737
+Vamos começar pelo contexto.
+
+10
+00:00:58.737 --> 00:01:05.550
+Quem regula o rádio amador nos Estados Unidos é a F C C, a agência federal de comunicações.
+
+11
+00:01:05.550 --> 00:01:08.712
+Mas a F C C não aplica as provas.
+
+12
+00:01:08.712 --> 00:01:16.712
+Quem aplica são examinadores voluntários, radioamadores licenciados, organizados por entidades coordenadoras.
+
+13
+00:01:16.712 --> 00:01:22.225
+A mais conhecida é a A R R L, a liga nacional de radioamadores.
+
+14
+00:01:22.225 --> 00:01:30.925
+Essas entidades cobram uma taxa pequena pela prova, e a própria F C C cobra trinta e cinco dólares pela licença desde dois mil e vinte e dois.
+
+15
+00:01:30.925 --> 00:01:37.800
+Hoje existe até prova remota, por vídeo, com o examinador observando você e o seu quarto pela câmera.
+
+16
+00:01:37.800 --> 00:01:43.175
+Hoje são três classes de licença: Technician, General e Amateur Extra.
+
+17
+00:01:43.175 --> 00:01:45.550
+Mas nem sempre foi assim.
+
+18
+00:01:45.550 --> 00:01:50.937
+Até o ano dois mil existiam seis classes, e o código Morse era o grande filtro.
+
+19
+00:01:50.937 --> 00:01:58.587
+Para operar em ondas curtas era preciso receber Morse a cinco, treze ou vinte palavras por minuto, conforme a classe.
+
+20
+00:01:58.587 --> 00:02:05.925
+Em dois mil a estrutura foi simplificada, e em fevereiro de dois mil e sete o Morse deixou de ser exigido em qualquer prova.
+
+21
+00:02:05.925 --> 00:02:08.762
+Foi uma mudança polêmica na época.
+
+22
+00:02:08.762 --> 00:02:11.850
+Muita gente achou que ia baixar o nível.
+
+23
+00:02:11.850 --> 00:02:16.062
+Outros argumentaram que o filtro estava medindo a habilidade errada.
+
+24
+00:02:16.062 --> 00:02:20.625
+Esse debate ainda aparece em conversa de radioamador mais antigo.
+
+25
+00:02:20.625 --> 00:02:23.112
+Agora, a prova em si.
+
+26
+00:02:23.112 --> 00:02:31.887
+A Technician tem trinta e cinco perguntas de múltipla escolha, e você precisa acertar vinte e seis, ou seja, uns setenta e quatro por cento.
+
+27
+00:02:31.887 --> 00:02:37.787
+O banco de perguntas é revisado a cada quatro anos por um comitê dos próprios coordenadores.
+
+28
+00:02:37.787 --> 00:02:44.637
+Ele é dividido em dez subelementos, e cada subelemento contribui com um número fixo de perguntas na prova.
+
+29
+00:02:44.637 --> 00:02:46.600
+Isso é importante.
+
+30
+00:02:46.600 --> 00:02:52.812
+Você sabe de antemão quantas perguntas virão de cada assunto, e é essa estrutura que vamos seguir.
+
+31
+00:02:52.812 --> 00:02:57.025
+O maior bloco, com seis perguntas, é o de regras.
+
+32
+00:02:57.025 --> 00:03:04.437
+As regras do radioamadorismo americano ficam num capítulo do regulamento federal conhecido como a Parte noventa e sete.
+
+33
+00:03:04.437 --> 00:03:12.912
+A prova começa pelo propósito do serviço, e vale a pena prestar atenção nele, porque explica quase todas as proibições.
+
+34
+00:03:12.912 --> 00:03:22.837
+O radioamadorismo existe para comunicação de emergência, para o avanço da técnica de rádio, para formar operadores e técnicos e para a boa vontade internacional.
+
+35
+00:03:22.837 --> 00:03:29.700
+É um serviço para experimentação e serviço público, e não para fazer negócio nem para entreter uma audiência.
+
+36
+00:03:29.700 --> 00:03:32.762
+Daí vêm as proibições clássicas.
+
+37
+00:03:32.762 --> 00:03:39.162
+Você não pode ter interesse comercial na comunicação, nem pode transmitir em nome do seu empregador.
+
+38
+00:03:39.162 --> 00:03:44.775
+Não pode fazer radiodifusão, quer dizer, transmitir para um público geral.
+
+39
+00:03:44.775 --> 00:03:52.912
+Não pode tocar música, salvo exceções muito específicas, como a retransmissão de áudio da Estação Espacial Internacional.
+
+40
+00:03:52.912 --> 00:03:55.837
+Não pode usar linguagem obscena.
+
+41
+00:03:55.837 --> 00:04:04.425
+E, um ponto que costuma surpreender programadores, não pode criptografar uma mensagem com a intenção de esconder o seu significado.
+
+42
+00:04:04.425 --> 00:04:08.812
+A exceção principal é o comando de satélites e de aeromodelos.
+
+43
+00:04:08.812 --> 00:04:15.200
+A lógica é que o espectro é compartilhado e que qualquer um precisa poder verificar o que está sendo transmitido.
+
+44
+00:04:15.364 --> 00:04:17.951
+Também cai a identificação.
+
+45
+00:04:17.901 --> 00:04:26.614
+Você precisa transmitir o seu indicativo de chamada pelo menos a cada dez minutos durante um contato e ao final dele, em inglês ou em Morse.
+
+46
+00:04:26.614 --> 00:04:38.176
+Caem também a validade da licença, que é de dez anos, com dois anos de carência para renovar, e a figura do operador de controle, a pessoa responsável pela estação naquele momento.
+
+47
+00:04:38.176 --> 00:04:42.914
+E, claro, caem os privilégios da própria classe Technician.
+
+48
+00:04:42.914 --> 00:04:51.089
+Ela dá acesso pleno a todas as faixas acima de trinta megahertz, ou seja, V H F, U H F e acima.
+
+49
+00:04:51.089 --> 00:04:54.789
+Nas ondas curtas, o acesso é bem limitado.
+
+50
+00:04:54.789 --> 00:05:04.851
+Há trechos de Morse em oitenta, quarenta e quinze metros, e a faixa de dez metros, onde além de Morse e de dados o Technician pode usar voz em um pedaço pequeno.
+
+51
+00:05:04.851 --> 00:05:10.164
+Nessas faixas de ondas curtas, a potência máxima é de duzentos watts.
+
+52
+00:05:10.164 --> 00:05:15.451
+Então, para quem se distraiu no trânsito, o resumo até aqui é o seguinte.
+
+53
+00:05:15.451 --> 00:05:22.364
+A Technician tem trinta e cinco perguntas, você precisa de vinte e seis, e todas saem de um banco público.
+
+54
+00:05:22.364 --> 00:05:33.176
+O maior bloco é o de regras, e quase todas elas derivam de uma ideia só: o rádio amador é para experimentar e servir, não para vender nem para transmitir para uma plateia.
+
+55
+00:05:33.176 --> 00:05:37.689
+Seguindo em frente, vem a operação, com três perguntas.
+
+56
+00:05:37.689 --> 00:05:40.089
+Aqui a prova é bem prática.
+
+57
+00:05:40.089 --> 00:05:47.714
+Como a maior parte dos novos Technicians começa em V H F e U H F, o assunto central são as repetidoras.
+
+58
+00:05:47.714 --> 00:05:53.164
+Uma repetidora fica num lugar alto, recebe numa frequência e retransmite em outra.
+
+59
+00:05:53.164 --> 00:05:56.539
+A diferença entre as duas se chama offset.
+
+60
+00:05:56.539 --> 00:06:04.501
+Na faixa de dois metros, o offset padrão é de seiscentos quilohertz, e na de setenta centímetros é de cinco megahertz.
+
+61
+00:06:04.501 --> 00:06:12.489
+Muitas repetidoras só abrem se o seu rádio enviar junto um tom subaudível, um tom grave contínuo abaixo da faixa de voz.
+
+62
+00:06:12.489 --> 00:06:17.576
+Isso evita que a repetidora seja disparada por sinais de outras regiões.
+
+63
+00:06:17.576 --> 00:06:23.251
+Quem compra o primeiro rádio e não consegue abrir a repetidora quase sempre esqueceu esse tom.
+
+64
+00:06:23.251 --> 00:06:34.226
+Também caem o alfabeto fonético, o uso de simplex, que é falar direto de rádio para rádio sem repetidora, como chamar alguém, e como funcionam as redes de emergência.
+
+65
+00:06:34.226 --> 00:06:42.914
+Existem organizações voluntárias de radioamadores que apoiam a defesa civil em desastres, e a prova cobra o básico de como elas operam.
+
+66
+00:06:42.914 --> 00:06:47.139
+Agora, propagação, também com três perguntas.
+
+67
+00:06:47.139 --> 00:06:53.801
+Em V H F e U H F a regra geral é a linha de visada, mas a prova gosta das exceções.
+
+68
+00:06:53.801 --> 00:07:01.701
+A primeira é que o horizonte de rádio é um pouco mais distante que o horizonte visual, porque a atmosfera curva levemente as ondas.
+
+69
+00:07:01.701 --> 00:07:04.589
+A segunda é a camada E esporádica.
+
+70
+00:07:04.589 --> 00:07:16.001
+São nuvens de ionização intensa na camada E da ionosfera que, de repente, fazem a faixa de seis metros, e às vezes até a de dois metros, alcançar mil ou dois mil quilômetros.
+
+71
+00:07:16.001 --> 00:07:23.714
+A terceira é o duto troposférico, quando uma inversão de temperatura cria uma espécie de guia de onda natural na atmosfera baixa.
+
+72
+00:07:23.714 --> 00:07:32.514
+Também aparecem a difração em cumes de montanha, o espalhamento por rastros de meteoros e o efeito que os americanos chamam de cerca de estacas.
+
+73
+00:07:32.514 --> 00:07:38.939
+É aquela oscilação rápida do sinal de um rádio móvel em movimento, causada pelo multipercurso.
+
+74
+00:07:38.939 --> 00:07:45.739
+Para as ondas curtas, a prova introduz o básico da ionosfera e do ciclo solar de cerca de onze anos.
+
+75
+00:07:45.739 --> 00:07:56.139
+Com mais manchas solares, a ionosfera reflete frequências mais altas, e as faixas superiores, como dez metros, se abrem para contatos com o mundo inteiro.
+
+76
+00:07:56.139 --> 00:07:59.164
+Vamos de novo para um ponto de parada.
+
+77
+00:07:59.164 --> 00:08:03.126
+Já passamos por regras, operação e propagação.
+
+78
+00:08:03.126 --> 00:08:14.789
+A ideia para guardar da propagação é que V H F é linha de visada na teoria, mas a prova cobra justamente as exceções: a camada E esporádica, o duto troposférico e os meteoros.
+
+79
+00:08:14.789 --> 00:08:22.001
+Agora, a parte que para você vai ser a mais tranquila: eletricidade e componentes, com quatro perguntas cada.
+
+80
+00:08:22.001 --> 00:08:25.251
+O nível aqui é de ensino médio bem feito.
+
+81
+00:08:25.251 --> 00:08:33.064
+Lei de Ohm, potência como tensão vezes corrente, prefixos métricos e identificação de componentes num esquema elétrico.
+
+82
+00:08:33.064 --> 00:08:38.551
+Diodo, transistor, capacitor, indutor, relé, fusível.
+
+83
+00:08:38.551 --> 00:08:43.051
+Para quem programa microcontrolador, isso é praticamente de graça.
+
+84
+00:08:43.204 --> 00:08:47.966
+Dois pontos merecem atenção, porque são específicos de rádio.
+
+85
+00:08:47.916 --> 00:08:50.216
+O primeiro é o decibel.
+
+86
+00:08:50.216 --> 00:08:57.716
+A prova espera que você saiba de cabeça que três decibéis é o dobro da potência, e que dez decibéis é dez vezes.
+
+87
+00:08:57.716 --> 00:09:01.816
+O segundo é a relação entre frequência e comprimento de onda.
+
+88
+00:09:01.816 --> 00:09:07.804
+Você divide trezentos pela frequência em megahertz e obtém o comprimento de onda em metros.
+
+89
+00:09:07.804 --> 00:09:10.779
+É daí que vêm os nomes das faixas.
+
+90
+00:09:10.779 --> 00:09:17.391
+Cento e quarenta e seis megahertz dá mais ou menos dois metros, por isso a faixa se chama dois metros.
+
+91
+00:09:17.391 --> 00:09:21.841
+Quatrocentos e quarenta megahertz dá uns setenta centímetros.
+
+92
+00:09:21.841 --> 00:09:29.954
+Radioamador fala de faixas por comprimento de onda e não por frequência, e essa conta simples faz a ponte entre as duas coisas.
+
+93
+00:09:29.954 --> 00:09:35.041
+Em seguida vêm equipamentos e modos de transmissão, oito perguntas no total.
+
+94
+00:09:35.041 --> 00:09:38.379
+Aqui entra um pouco mais de rádio de verdade.
+
+95
+00:09:38.379 --> 00:09:43.054
+Do lado dos equipamentos, a prova cobra o que dá errado numa estação.
+
+96
+00:09:43.054 --> 00:09:48.116
+Sobremodulação, que espalha o sinal e interfere nos vizinhos de frequência.
+
+97
+00:09:48.116 --> 00:09:54.416
+Harmônicos, que aparecem em múltiplos da frequência transmitida e podem ser atenuados com filtros.
+
+98
+00:09:54.416 --> 00:10:00.779
+Interferência na eletrônica da casa, que muitas vezes se resolve com um núcleo de ferrite no cabo.
+
+99
+00:10:00.779 --> 00:10:08.279
+A prova também cobra a carga fantasma, que é um resistor capaz de dissipar a potência do transmissor sem irradiar nada.
+
+100
+00:10:08.279 --> 00:10:12.416
+Ela serve para testar o equipamento sem colocar sinal no ar.
+
+101
+00:10:12.416 --> 00:10:16.829
+Do lado dos modos, a pergunta de fundo é largura de banda.
+
+102
+00:10:16.829 --> 00:10:21.116
+Um sinal de Morse ocupa algo como cento e cinquenta hertz.
+
+103
+00:10:21.116 --> 00:10:25.104
+Voz em banda lateral única ocupa uns três quilohertz.
+
+104
+00:10:25.104 --> 00:10:30.979
+Voz em F M, como nas repetidoras, ocupa entre cinco e quinze quilohertz.
+
+105
+00:10:30.979 --> 00:10:34.354
+Esse é um dos porquês mais elegantes da prova.
+
+106
+00:10:34.354 --> 00:10:42.729
+A banda lateral única corta a portadora e uma das bandas laterais, que são redundantes, e coloca toda a potência na informação.
+
+107
+00:10:42.729 --> 00:10:47.079
+Por isso ela é a escolha para longas distâncias com sinais fracos.
+
+108
+00:10:47.079 --> 00:10:54.654
+Já o F M é imune a muito ruído de amplitude e soa limpo em contatos locais, e por isso domina as repetidoras.
+
+109
+00:10:54.654 --> 00:10:57.791
+Os modos digitais também aparecem.
+
+110
+00:10:57.791 --> 00:11:02.816
+Tem o A P R S, que transmite posição e pequenas mensagens.
+
+111
+00:11:02.816 --> 00:11:07.466
+Tem os sistemas digitais de voz, como D M R e D-STAR.
+
+112
+00:11:07.466 --> 00:11:17.416
+E tem o F T oito, que decodifica sinais muito abaixo do nível de ruído usando ciclos sincronizados de quinze segundos, com o relógio do computador acertado.
+
+113
+00:11:17.416 --> 00:11:19.654
+E entram os satélites.
+
+114
+00:11:19.654 --> 00:11:27.029
+Existem satélites de radioamador em órbita baixa que você alcança com um rádio portátil e uma antena direcional na mão.
+
+115
+00:11:27.029 --> 00:11:35.804
+A prova cobra o efeito Doppler, que desloca a frequência enquanto o satélite passa por cima de você e obriga o operador a ir corrigindo a sintonia.
+
+116
+00:11:35.804 --> 00:11:40.991
+Depois vêm as antenas e as linhas de transmissão, com duas perguntas.
+
+117
+00:11:40.991 --> 00:11:44.316
+A antena clássica é o dipolo de meia onda.
+
+118
+00:11:44.316 --> 00:11:48.104
+Em dois metros, ele tem cerca de um metro no total.
+
+119
+00:11:48.104 --> 00:11:53.816
+Uma antena vertical de um quarto de onda para a mesma faixa tem uns cinquenta centímetros.
+
+120
+00:11:53.816 --> 00:12:01.566
+A linha de transmissão típica é o cabo coaxial de cinquenta ohms, e a prova insiste que a perda no cabo aumenta com a frequência.
+
+121
+00:12:01.566 --> 00:12:08.291
+Um cabo fino que funciona razoavelmente em ondas curtas pode engolir boa parte do sinal em U H F.
+
+122
+00:12:08.291 --> 00:12:12.479
+E entra a R O E, a relação de ondas estacionárias.
+
+123
+00:12:12.479 --> 00:12:15.979
+Ela mede o quanto a antena está casada com a linha.
+
+124
+00:12:15.979 --> 00:12:19.091
+Uma relação de um para um é o ideal.
+
+125
+00:12:19.091 --> 00:12:26.854
+Valores altos significam potência voltando para o transmissor, e os rádios modernos reduzem a potência para se proteger.
+
+126
+00:12:26.854 --> 00:12:30.316
+Por fim, segurança, três perguntas.
+
+127
+00:12:30.316 --> 00:12:38.479
+Uma parte é segurança elétrica comum: fontes de alimentação, aterramento, para-raios, cuidado ao subir em torres.
+
+128
+00:12:38.479 --> 00:12:43.341
+A outra parte é mais interessante: exposição à radiofrequência.
+
+129
+00:12:43.341 --> 00:12:50.529
+O ponto que a prova sempre cobra é que os limites de exposição são mais rigorosos entre trinta e trezentos megahertz.
+
+130
+00:12:50.529 --> 00:12:57.954
+O motivo é que o corpo humano tem dimensões próximas da ressonância nessa região e absorve energia com mais eficiência.
+
+131
+00:12:57.954 --> 00:13:02.279
+O efeito principal da radiofrequência no tecido é aquecimento.
+
+132
+00:13:02.279 --> 00:13:07.816
+O radioamador é responsável por avaliar se a sua estação respeita esses limites.
+
+133
+00:13:07.972 --> 00:13:12.184
+Hora de mais um ponto de parada, porque foi bastante coisa.
+
+134
+00:13:12.134 --> 00:13:24.697
+A prova Technician tem dez blocos: regras, operação, propagação, eletricidade, componentes, equipamentos, modos de transmissão, antenas e duas partes de segurança.
+
+135
+00:13:24.697 --> 00:13:29.472
+Para quem já mexe com eletrônica, o desafio real não é a teoria.
+
+136
+00:13:29.472 --> 00:13:33.047
+São as regras e o vocabulário próprio do rádio.
+
+137
+00:13:33.047 --> 00:13:38.072
+E a ideia mais útil de todo esse conteúdo talvez seja a largura de banda.
+
+138
+00:13:38.072 --> 00:13:44.234
+Morse estreitíssimo, banda lateral única com uns três quilohertz e F M bem mais largo.
+
+139
+00:13:44.234 --> 00:13:48.097
+Isso explica por que cada modo é usado onde é usado.
+
+140
+00:13:48.097 --> 00:13:52.959
+Agora, a parte final prometida: as provas mais avançadas.
+
+141
+00:13:52.959 --> 00:13:55.584
+As provas são cumulativas.
+
+142
+00:13:55.584 --> 00:14:01.659
+Para fazer a General você precisa ter a Technician, e para a Extra você precisa ter a General.
+
+143
+00:14:01.659 --> 00:14:10.322
+Mas dá para fazer as três na mesma sessão, e muitos grupos de examinadores deixam você tentar a próxima prova de graça se passou na anterior.
+
+144
+00:14:10.322 --> 00:14:16.284
+A General tem o mesmo formato da Technician: trinta e cinco perguntas e vinte e seis acertos.
+
+145
+00:14:16.284 --> 00:14:20.184
+Ela é a porta de entrada das ondas curtas de verdade.
+
+146
+00:14:20.184 --> 00:14:27.947
+Com ela você ganha acesso à maior parte das faixas de H F, com voz, e pode usar até mil e quinhentos watts.
+
+147
+00:14:27.947 --> 00:14:30.747
+O conteúdo acompanha essa mudança.
+
+148
+00:14:30.747 --> 00:14:40.672
+Entra muito mais propagação ionosférica, com a frequência máxima utilizável, as zonas de silêncio e o comportamento das faixas ao longo do dia e do ciclo solar.
+
+149
+00:14:40.672 --> 00:14:49.647
+Entram amplificadores lineares, acopladores de antena, mais modos digitais e mais regras, especialmente sobre operação internacional.
+
+150
+00:14:49.647 --> 00:14:51.934
+A Extra é outro nível.
+
+151
+00:14:51.934 --> 00:14:58.122
+São cinquenta perguntas, você precisa de trinta e sete, e o banco tem umas seiscentas.
+
+152
+00:14:58.122 --> 00:15:01.222
+Aqui a matemática aparece de verdade.
+
+153
+00:15:01.222 --> 00:15:15.522
+Reatância e impedância complexa, circuitos ressonantes e fator de qualidade, amplificadores operacionais, projeto de filtros, processamento digital de sinais, figura de ruído de receptores e a carta de Smith.
+
+154
+00:15:15.522 --> 00:15:20.072
+Muita gente com formação em engenharia ainda precisa estudar para ela.
+
+155
+00:15:20.072 --> 00:15:34.484
+O prêmio são todos os privilégios: alguns trechos de faixa exclusivos, a possibilidade de pedir os indicativos de chamada mais curtos, que são cobiçados, e a autorização para aplicar qualquer uma das três provas como examinador voluntário.
+
+156
+00:15:34.484 --> 00:15:37.372
+Para fechar, vamos recapitular.
+
+157
+00:15:37.372 --> 00:15:41.909
+Nos Estados Unidos, o radioamadorismo tem três classes.
+
+158
+00:15:41.909 --> 00:15:48.084
+A de entrada, a Technician, é uma prova de trinta e cinco perguntas tiradas de um banco público.
+
+159
+00:15:48.084 --> 00:15:58.034
+Ela cobre regras, operação, propagação, eletricidade, componentes, equipamentos, modos de transmissão, antenas e segurança.
+
+160
+00:15:58.034 --> 00:16:01.447
+O Morse saiu das provas em dois mil e sete.
+
+161
+00:16:01.447 --> 00:16:08.409
+A General abre as ondas curtas, e a Extra transforma a prova numa disciplina de eletrônica de rádio para valer.
+
+162
+00:16:08.409 --> 00:16:15.147
+E aquela ideia do começo, de uma prova com todas as respostas publicadas, faz mais sentido agora.
+
+163
+00:16:15.147 --> 00:16:18.822
+O objetivo nunca foi pegar ninguém de surpresa.
+
+164
+00:16:18.822 --> 00:16:27.697
+O objetivo é que, para passar, você precise ter lido, pelo menos uma vez, tudo aquilo que um operador responsável deveria saber.
+
+165
+00:16:27.697 --> 00:16:29.959
+A prova não é o filtro.
+
+166
+00:16:29.959 --> 00:16:34.784
+Ela é o roteiro de estudo, entregue de antemão para quem quiser entrar no ar.
+

@@ -1,0 +1,710 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:02.800
+Imagine que alguém te entrega um único livro.
+
+2
+00:00:02.750 --> 00:00:15.987
+Nele está tudo o que faz um computador funcionar: o processador, desenhado do zero, o sistema operacional, o compilador, o editor de texto, o sistema de janelas, o gerenciador de arquivos e até o software de rede.
+
+3
+00:00:15.987 --> 00:00:18.387
+E não é um resumo, nem uma visão geral.
+
+4
+00:00:18.387 --> 00:00:29.412
+É o código de verdade, explicado linha por linha, com a promessa de que uma única pessoa, com paciência e atenção, consegue entender o sistema inteiro, do transistor até a janela na tela.
+
+5
+00:00:29.412 --> 00:00:34.925
+Parece fantasia, num mundo em que um navegador sozinho tem dezenas de milhões de linhas de código.
+
+6
+00:00:34.925 --> 00:00:36.512
+Mas esse livro existe.
+
+7
+00:00:36.512 --> 00:00:42.362
+Chama-se Project Oberon, e foi escrito por um suíço teimoso e elegante chamado Niklaus Wirth.
+
+8
+00:00:42.362 --> 00:00:45.325
+Neste episódio, a gente vai conhecer essa história.
+
+9
+00:00:45.325 --> 00:00:49.762
+Primeiro, quem foi Wirth e de onde veio a obsessão dele por simplicidade.
+
+10
+00:00:49.762 --> 00:00:52.850
+Depois, a viagem que plantou a semente do projeto.
+
+11
+00:00:52.850 --> 00:01:02.512
+Em seguida, como o Oberon funciona por dentro: a linguagem, o sistema operacional e uma interface bem esquisita, em que qualquer texto na tela pode virar um comando.
+
+12
+00:01:02.512 --> 00:01:07.700
+Depois vem a segunda vida do projeto, já no século vinte e um, com um processador próprio.
+
+13
+00:01:07.700 --> 00:01:12.500
+E, no fim, o que esse projeto ainda tem a dizer para quem trabalha com tecnologia hoje.
+
+14
+00:01:12.500 --> 00:01:16.062
+Inclusive as críticas, porque elas existem e são justas.
+
+15
+00:01:16.062 --> 00:01:18.175
+Vamos começar pelo personagem.
+
+16
+00:01:18.175 --> 00:01:28.425
+Niklaus Wirth nasceu na Suíça, em mil novecentos e trinta e quatro, e passou a maior parte da carreira no Instituto Federal de Tecnologia de Zurique, a famosa ETH.
+
+17
+00:01:28.425 --> 00:01:31.837
+Se você já programou em Pascal, já tocou no trabalho dele.
+
+18
+00:01:31.837 --> 00:01:41.512
+Wirth criou o Pascal por volta de mil novecentos e setenta, pensando em ensino: uma linguagem limpa, organizada, que obrigasse o estudante a pensar com clareza.
+
+19
+00:01:41.512 --> 00:01:48.812
+O Pascal acabou indo muito além da sala de aula e virou base de ferramentas comerciais muito populares nos anos oitenta.
+
+20
+00:01:48.812 --> 00:01:52.325
+Depois do Pascal veio o Modula-2, e depois o Oberon.
+
+21
+00:01:52.325 --> 00:01:58.487
+Em mil novecentos e oitenta e quatro, Wirth recebeu o Prêmio Turing, que é a honraria máxima da computação.
+
+22
+00:01:58.487 --> 00:02:03.100
+Ele morreu no primeiro dia de dois mil e vinte e quatro, aos oitenta e nove anos.
+
+23
+00:02:03.100 --> 00:02:06.125
+Mas o que interessa aqui não é a lista de conquistas.
+
+24
+00:02:06.125 --> 00:02:08.475
+É a ideia que atravessa todas elas.
+
+25
+00:02:08.475 --> 00:02:12.525
+Wirth acreditava que a complexidade é o grande inimigo do software.
+
+26
+00:02:12.525 --> 00:02:15.087
+Não um detalhe, não um custo inevitável.
+
+27
+00:02:15.087 --> 00:02:16.075
+O inimigo.
+
+28
+00:02:16.075 --> 00:02:24.712
+Ele dizia, e escreveu num ensaio famoso dos anos noventa, que o software estava ficando mais lento mais depressa do que o hardware ficava mais rápido.
+
+29
+00:02:24.712 --> 00:02:27.662
+Essa frase ficou conhecida como a Lei de Wirth.
+
+30
+00:02:27.662 --> 00:02:30.387
+Ele estava meio brincando e meio falando sério.
+
+31
+00:02:30.387 --> 00:02:36.787
+Mas quem já esperou um programa simples demorar para abrir num computador potentíssimo sabe do que ele estava falando.
+
+32
+00:02:36.787 --> 00:02:40.525
+Guarde essa ideia, porque ela é o motor de tudo o que vem a seguir.
+
+33
+00:02:40.525 --> 00:02:41.925
+Agora, a viagem.
+
+34
+00:02:41.925 --> 00:02:51.050
+Nos anos setenta, Wirth passou um período sabático num lugar lendário: o centro de pesquisa da Xerox em Palo Alto, na Califórnia, conhecido como PARC.
+
+35
+00:02:51.050 --> 00:03:02.700
+Foi lá que nasceram muitas das coisas que hoje parecem óbvias: a interface gráfica com janelas, o mouse como ferramenta do dia a dia, a rede local entre computadores pessoais, a impressora a laser.
+
+36
+00:03:02.700 --> 00:03:09.600
+Lá, Wirth usou o Alto, uma estação de trabalho em que cada pesquisador tinha seu próprio computador com tela gráfica.
+
+37
+00:03:09.600 --> 00:03:15.012
+Isso, numa época em que a maioria das pessoas dividia máquinas enormes por meio de terminais.
+
+38
+00:03:15.012 --> 00:03:20.150
+Wirth voltou para Zurique impressionado e com um problema: a Xerox não vendia aquilo.
+
+39
+00:03:20.150 --> 00:03:23.012
+Então ele fez o que um engenheiro teimoso faz.
+
+40
+00:03:23.012 --> 00:03:25.625
+Construiu a sua própria estação de trabalho.
+
+41
+00:03:25.625 --> 00:03:32.262
+Ela se chamou Lilith e ficou pronta por volta de mil novecentos e oitenta, programada inteiramente em Modula-2.
+
+42
+00:03:32.262 --> 00:03:39.850
+Anos depois, Wirth voltou ao PARC para um segundo período sabático e conheceu um ambiente ainda mais sofisticado, chamado Cedar.
+
+43
+00:03:39.850 --> 00:03:42.725
+Era poderoso, mas também grande e complicado.
+
+44
+00:03:42.725 --> 00:03:45.625
+E aí ele teve uma reação muito característica.
+
+45
+00:03:45.625 --> 00:03:51.087
+Em vez de pensar "quero isso tudo", ele pensou algo como: "quanto disso é realmente necessário?
+
+46
+00:03:51.087 --> 00:03:54.475
+Essa pergunta deu origem ao Projeto Oberon.
+
+47
+00:03:54.628 --> 00:04:01.253
+Por volta de mil novecentos e oitenta e cinco, de volta à ETH, Wirth se juntou ao colega Jürg Gutknecht.
+
+48
+00:04:01.203 --> 00:04:07.203
+Os dois decidiram construir, praticamente sozinhos, um sistema completo para estações de trabalho.
+
+49
+00:04:07.203 --> 00:04:15.228
+O nome veio de Oberon, uma das luas de Urano, que estava nas notícias porque a sonda Voyager passou por Urano em mil novecentos e oitenta e seis.
+
+50
+00:04:15.228 --> 00:04:18.053
+E aqui vale uma pausa para entender a ambição.
+
+51
+00:04:18.053 --> 00:04:21.090
+Eles não queriam só escrever um sistema operacional.
+
+52
+00:04:21.090 --> 00:04:26.828
+Queriam um sistema tão enxuto que pudesse ser publicado inteiro num livro e ensinado numa disciplina.
+
+53
+00:04:26.828 --> 00:04:29.528
+A transparência não era um efeito colateral.
+
+54
+00:04:29.528 --> 00:04:30.790
+Era o objetivo.
+
+55
+00:04:30.790 --> 00:04:34.490
+Vamos então para dentro do sistema, começando pela linguagem.
+
+56
+00:04:34.490 --> 00:04:40.078
+O Oberon é, ao mesmo tempo, o nome do sistema e o nome da linguagem em que ele foi escrito.
+
+57
+00:04:40.078 --> 00:04:43.415
+E a linguagem é um exercício radical de subtração.
+
+58
+00:04:43.415 --> 00:04:46.753
+Wirth pegou o Modula-2 e começou a tirar coisas.
+
+59
+00:04:46.753 --> 00:04:51.640
+Tirou os tipos enumerados, aqueles em que você lista valores possíveis com nomes.
+
+60
+00:04:51.640 --> 00:04:53.428
+Tirou os tipos de intervalo.
+
+61
+00:04:53.428 --> 00:04:59.790
+Tirou os registros com variantes, que eram uma forma meio perigosa de guardar dados diferentes no mesmo espaço.
+
+62
+00:04:59.790 --> 00:05:04.815
+E acrescentou praticamente uma única ideia nova, que ele chamou de extensão de tipos.
+
+63
+00:05:04.815 --> 00:05:15.378
+A extensão de tipos funciona assim: você define um registro, que é um agrupamento de dados, e depois cria um novo registro que herda tudo o que o primeiro tem e acrescenta mais campos.
+
+64
+00:05:15.378 --> 00:05:16.690
+Parece familiar?
+
+65
+00:05:16.690 --> 00:05:20.215
+É o coração da herança em programação orientada a objetos.
+
+66
+00:05:20.215 --> 00:05:27.678
+Mas Wirth chegou lá com um único mecanismo, pequeno, sem a montanha de recursos que outras linguagens da época estavam empilhando.
+
+67
+00:05:27.678 --> 00:05:33.215
+O resultado é que a definição oficial da linguagem Oberon cabe em algo como dezesseis páginas.
+
+68
+00:05:33.215 --> 00:05:40.240
+Para comparação, a especificação de linguagens populares de hoje ocupa centenas, às vezes milhares de páginas.
+
+69
+00:05:40.240 --> 00:05:44.903
+E um compilador completo para Oberon cabe em alguns milhares de linhas de código.
+
+70
+00:05:44.903 --> 00:05:48.903
+É um programa que um estudante consegue ler inteiro em poucas semanas.
+
+71
+00:05:48.903 --> 00:05:56.353
+A linguagem também tinha coleta de lixo, ou seja, a memória que o programa não usa mais é recuperada automaticamente.
+
+72
+00:05:56.353 --> 00:05:57.703
+Hoje isso é comum.
+
+73
+00:05:57.703 --> 00:06:02.428
+No fim dos anos oitenta, num sistema operacional inteiro, era uma escolha ousada.
+
+74
+00:06:02.428 --> 00:06:05.503
+Agora, o sistema operacional propriamente dito.
+
+75
+00:06:05.503 --> 00:06:07.753
+O Oberon é organizado em módulos.
+
+76
+00:06:07.753 --> 00:06:12.328
+Cada módulo é uma unidade de código com uma interface pública bem definida.
+
+77
+00:06:12.328 --> 00:06:16.978
+E os módulos são carregados na memória sob demanda, quando alguém precisa deles.
+
+78
+00:06:16.978 --> 00:06:21.940
+Não existe a separação clássica entre "o sistema" de um lado e "os programas" do outro.
+
+79
+00:06:21.940 --> 00:06:23.003
+Tudo é módulo.
+
+80
+00:06:23.003 --> 00:06:24.953
+O editor de texto é um módulo.
+
+81
+00:06:24.953 --> 00:06:27.115
+O sistema de arquivos é um módulo.
+
+82
+00:06:27.115 --> 00:06:31.953
+O seu programa também é um módulo, que se encaixa no mesmo ambiente, no mesmo nível.
+
+83
+00:06:31.953 --> 00:06:37.178
+Uma consequência disso é que não existe a ideia de "rodar um programa" no sentido tradicional.
+
+84
+00:06:37.178 --> 00:06:40.040
+Você não abre um aplicativo, usa e fecha.
+
+85
+00:06:40.040 --> 00:06:42.590
+Em vez disso, você chama procedimentos.
+
+86
+00:06:42.590 --> 00:06:45.565
+E é aqui que entra a parte mais curiosa do Oberon.
+
+87
+00:06:45.565 --> 00:06:46.765
+A interface.
+
+88
+00:06:46.765 --> 00:06:50.078
+No Oberon, qualquer texto na tela pode ser um comando.
+
+89
+00:06:50.078 --> 00:07:01.915
+Se em algum lugar está escrito o nome de um módulo, um ponto e o nome de um procedimento, por exemplo, algo como "Edit ponto Open", você aponta o mouse para esse texto e clica com o botão do meio.
+
+90
+00:07:01.915 --> 00:07:07.440
+O sistema carrega o módulo, se ainda não estiver na memória, e executa aquele procedimento.
+
+91
+00:07:07.440 --> 00:07:08.690
+Simples assim.
+
+92
+00:07:08.690 --> 00:07:10.615
+Pense no que isso significa.
+
+93
+00:07:10.615 --> 00:07:13.090
+Não existem menus fixos nem ícones.
+
+94
+00:07:13.090 --> 00:07:18.490
+Sua "barra de ferramentas" é um arquivo de texto qualquer, que você mesmo escreve e edita.
+
+95
+00:07:18.490 --> 00:07:19.853
+Quer um atalho novo?
+
+96
+00:07:19.853 --> 00:07:24.090
+Digita o nome do comando em algum lugar e pronto, ele já é clicável.
+
+97
+00:07:24.090 --> 00:07:29.515
+A documentação pode conter os próprios comandos que ela descreve, prontos para usar.
+
+98
+00:07:29.668 --> 00:07:34.155
+O mouse, aliás, tinha três botões, e cada um tinha um papel claro.
+
+99
+00:07:34.105 --> 00:07:39.243
+Um para posicionar o cursor, um para executar comandos, outro para selecionar texto.
+
+100
+00:07:39.243 --> 00:07:44.180
+E as janelas não ficavam empilhadas umas sobre as outras, como no Windows ou no Mac.
+
+101
+00:07:44.180 --> 00:07:49.418
+Elas eram dispostas lado a lado, em colunas, dividindo a tela sem sobreposição.
+
+102
+00:07:49.418 --> 00:07:53.080
+Hoje isso tem nome: gerenciador de janelas em mosaico.
+
+103
+00:07:53.080 --> 00:07:57.280
+Muita gente que programa usa esse estilo por escolha, achando que é moderno.
+
+104
+00:07:57.280 --> 00:08:00.218
+O Oberon fazia isso no fim dos anos oitenta.
+
+105
+00:08:00.218 --> 00:08:06.468
+Mais uma escolha importante, e talvez a mais polêmica: o Oberon original não tinha multitarefa preemptiva.
+
+106
+00:08:06.468 --> 00:08:11.255
+Isso quer dizer que o sistema não ficava interrompendo um programa para dar a vez a outro.
+
+107
+00:08:11.255 --> 00:08:17.355
+Havia um laço central, que esperava um evento, como um clique ou uma tecla, e chamava o procedimento certo.
+
+108
+00:08:17.355 --> 00:08:20.793
+Cada comando rodava até terminar e devolvia o controle.
+
+109
+00:08:20.793 --> 00:08:27.668
+Tarefas de fundo existiam, mas eram cooperativas: pequenas, rápidas, chamadas repetidamente pelo mesmo laço.
+
+110
+00:08:27.668 --> 00:08:37.868
+Wirth defendia que, para uma estação de trabalho usada por uma única pessoa, isso bastava, e eliminava uma enorme fonte de complexidade e de erros difíceis de reproduzir.
+
+111
+00:08:37.868 --> 00:08:42.880
+Os críticos respondiam que um único comando mal escrito podia travar a máquina inteira.
+
+112
+00:08:42.880 --> 00:08:46.668
+Os dois lados têm razão, e a gente volta a isso daqui a pouco.
+
+113
+00:08:46.668 --> 00:08:50.205
+Para rodar tudo isso, a equipe também construiu o hardware.
+
+114
+00:08:50.205 --> 00:08:56.818
+A estação de trabalho se chamava Ceres e usava um processador comercial da época, da National Semiconductor.
+
+115
+00:08:56.818 --> 00:09:02.205
+O Oberon foi usado de verdade na ETH, por estudantes e pesquisadores, durante anos.
+
+116
+00:09:02.205 --> 00:09:04.593
+Não era só um brinquedo de demonstração.
+
+117
+00:09:04.593 --> 00:09:14.005
+Em mil novecentos e noventa e dois, Wirth e Gutknecht publicaram o livro Project Oberon, com o subtítulo "o projeto de um sistema operacional e de um compilador"
+
+118
+00:09:14.005 --> 00:09:17.818
+Nele estava o código-fonte do sistema, comentado e explicado.
+
+119
+00:09:17.818 --> 00:09:22.355
+Um livro que era, ao mesmo tempo, um manual, um curso e o próprio sistema.
+
+120
+00:09:22.355 --> 00:09:26.805
+Agora, um salto no tempo, porque a história não termina nos anos noventa.
+
+121
+00:09:26.805 --> 00:09:30.755
+Wirth se aposentou formalmente em mil novecentos e noventa e nove.
+
+122
+00:09:30.755 --> 00:09:35.393
+Mas, já perto dos oitenta anos, voltou ao Oberon com uma ambição ainda maior.
+
+123
+00:09:35.393 --> 00:09:41.343
+O problema era o seguinte: o livro original dependia de um processador comercial que já não existia.
+
+124
+00:09:41.343 --> 00:09:45.293
+E a dependência de um chip de terceiros quebrava a promessa original.
+
+125
+00:09:45.293 --> 00:09:49.118
+Se você não entende o processador, não entende o sistema inteiro.
+
+126
+00:09:49.118 --> 00:09:51.868
+Então Wirth desenhou o seu próprio processador.
+
+127
+00:09:51.868 --> 00:09:58.880
+Um processador simples, no estilo RISC, que é a família de arquiteturas com um conjunto pequeno e regular de instruções.
+
+128
+00:09:58.880 --> 00:10:03.605
+E, em vez de fabricar um chip, ele implementou esse processador numa FPGA.
+
+129
+00:10:03.605 --> 00:10:12.218
+Uma FPGA é um circuito programável: um chip cuja lógica interna pode ser configurada para se comportar como o circuito que você descrever.
+
+130
+00:10:12.218 --> 00:10:20.318
+Na prática, com uma placa de desenvolvimento relativamente barata, você "monta" o processador do Wirth e roda o Oberon em cima dele.
+
+131
+00:10:20.318 --> 00:10:28.980
+Esse trabalho, feito com a colaboração do engenheiro britânico Paul Reed, resultou numa nova edição, conhecida como Project Oberon dois mil e treze.
+
+132
+00:10:28.980 --> 00:10:41.493
+O livro revisado cobre a descrição do processador em linguagem de hardware, o compilador que gera código para ele, o sistema operacional, o sistema de arquivos, a interface gráfica e uma rede simples.
+
+133
+00:10:41.493 --> 00:10:42.468
+Tudo junto.
+
+134
+00:10:42.468 --> 00:10:46.330
+E o código do sistema inteiro fica na ordem de dez mil linhas.
+
+135
+00:10:46.330 --> 00:10:51.355
+A contagem exata depende do que você inclui, mas a ordem de grandeza é essa.
+
+136
+00:10:51.355 --> 00:10:54.418
+É o tamanho de um projeto pequeno numa empresa comum.
+
+137
+00:10:54.418 --> 00:10:56.655
+E ali está um computador completo.
+
+138
+00:10:56.655 --> 00:11:01.380
+Hoje existem emuladores que rodam o Oberon dois mil e treze num computador comum.
+
+139
+00:11:01.380 --> 00:11:07.705
+Ou seja, qualquer pessoa curiosa pode baixar, abrir e clicar no texto para ver acontecer.
+
+140
+00:11:07.876 --> 00:11:10.876
+Vamos fazer uma pausa para recolocar as peças.
+
+141
+00:11:10.826 --> 00:11:14.513
+Temos um homem que acreditava que a complexidade é o inimigo.
+
+142
+00:11:14.513 --> 00:11:18.588
+Uma visita a um laboratório que mostrou o futuro da computação pessoal.
+
+143
+00:11:18.588 --> 00:11:22.238
+Uma linguagem construída tirando coisas, em vez de acrescentar.
+
+144
+00:11:22.238 --> 00:11:25.626
+Um sistema em que tudo é módulo e qualquer texto é comando.
+
+145
+00:11:25.626 --> 00:11:29.401
+E, décadas depois, um processador próprio para fechar o ciclo.
+
+146
+00:11:29.401 --> 00:11:34.076
+Agora, a pergunta inevitável: se era tão bom, por que você nunca usou?
+
+147
+00:11:34.076 --> 00:11:35.976
+E aqui é preciso ser honesto.
+
+148
+00:11:35.976 --> 00:11:40.163
+O Oberon nunca teve sucesso comercial, e há motivos reais para isso.
+
+149
+00:11:40.163 --> 00:11:43.388
+O sistema não tinha proteção de memória entre módulos.
+
+150
+00:11:43.388 --> 00:11:47.013
+Qualquer código podia, em princípio, mexer em qualquer coisa.
+
+151
+00:11:47.013 --> 00:11:55.488
+Num computador conectado à internet de hoje, rodando código de origens diversas, isso seria inaceitável do ponto de vista de segurança.
+
+152
+00:11:55.488 --> 00:12:00.263
+A ausência de multitarefa preemptiva também limita o que o sistema pode fazer bem.
+
+153
+00:12:00.263 --> 00:12:07.188
+E a interface, por mais elegante que seja, exige que o usuário aprenda um jeito completamente diferente de trabalhar.
+
+154
+00:12:07.188 --> 00:12:10.138
+A maioria das pessoas não estava disposta a isso.
+
+155
+00:12:10.138 --> 00:12:15.426
+Também é justo dizer que parte da complexidade dos sistemas modernos não é desperdício.
+
+156
+00:12:15.426 --> 00:12:17.726
+Ela existe porque o mundo é complicado.
+
+157
+00:12:17.726 --> 00:12:26.026
+Suporte a centenas de idiomas, acessibilidade para pessoas com deficiência, milhares de modelos de hardware, defesas contra ataques.
+
+158
+00:12:26.026 --> 00:12:29.663
+Wirth podia escolher o próprio hardware e o próprio público.
+
+159
+00:12:29.663 --> 00:12:31.263
+A indústria não pode.
+
+160
+00:12:31.263 --> 00:12:37.863
+Até que ponto a crítica dele se aplica ao software comercial é um debate legítimo, e não tem resposta fácil.
+
+161
+00:12:37.863 --> 00:12:41.888
+Mas a influência do Oberon é bem maior do que a sua base de usuários.
+
+162
+00:12:41.888 --> 00:12:52.051
+Rob Pike, um dos criadores do sistema Plan 9 nos Laboratórios Bell, reconheceu a influência do Oberon no editor Acme, que também transforma texto em comandos clicáveis.
+
+163
+00:12:52.051 --> 00:13:01.013
+Pike depois foi um dos criadores da linguagem Go, no Google, ao lado de Robert Griesemer, que fez o doutorado na ETH, no ambiente de Wirth.
+
+164
+00:13:01.013 --> 00:13:13.276
+Quem conhece Go reconhece ecos do Oberon no jeito de declarar variáveis, na organização em pacotes e, principalmente, na filosofia de manter a linguagem pequena, mesmo sob pressão para acrescentar recursos.
+
+165
+00:13:13.276 --> 00:13:22.226
+E muitos cursos de compiladores e de sistemas pelo mundo usaram e ainda usam o Oberon como material, justamente porque ele cabe na cabeça de um estudante.
+
+166
+00:13:22.226 --> 00:13:23.926
+Então, para recapitular.
+
+167
+00:13:23.926 --> 00:13:33.076
+Niklaus Wirth, o criador do Pascal, voltou da Xerox convencido de que dava para ter os benefícios da computação pessoal sem a montanha de complexidade.
+
+168
+00:13:33.076 --> 00:13:42.226
+Com Jürg Gutknecht, criou o Oberon: uma linguagem mínima, um sistema feito de módulos, uma interface em que o texto é o comando, e um livro que explica tudo.
+
+169
+00:13:42.226 --> 00:13:46.813
+Décadas depois, com Paul Reed, fechou o círculo desenhando o próprio processador.
+
+170
+00:13:46.813 --> 00:13:50.551
+O sistema tem limitações sérias, e nunca conquistou o mercado.
+
+171
+00:13:50.551 --> 00:13:56.763
+Mas provou um ponto que continua incômodo: um computador inteiro pode ser compreendido por uma única pessoa.
+
+172
+00:13:56.763 --> 00:13:59.001
+E talvez seja essa a lição que fica.
+
+173
+00:13:59.001 --> 00:14:06.238
+A gente se acostumou a tratar os sistemas que usamos como caixas-pretas, grandes demais para entender, que só nos resta aceitar.
+
+174
+00:14:06.238 --> 00:14:10.251
+O Oberon é um lembrete de que isso é uma escolha, não uma lei da natureza.
+
+175
+00:14:10.251 --> 00:14:14.713
+Wirth costumava dizer, de várias formas, que o difícil não é acrescentar.
+
+176
+00:14:14.713 --> 00:14:16.626
+É saber o que deixar de fora.
+
+177
+00:14:16.626 --> 00:14:28.751
+Da próxima vez que você estiver diante de um problema complicado, no código ou fora dele, vale fazer a pergunta que ele fez na Califórnia, tantos anos atrás: quanto disso é realmente necessário?
+

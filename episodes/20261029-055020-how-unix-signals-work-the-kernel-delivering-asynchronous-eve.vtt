@@ -1,0 +1,522 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:03.337
+Imagine que você está rodando um programa no terminal.
+
+2
+00:00:03.337 --> 00:00:10.850
+Ele está preso num laço, cuspindo texto sem parar, e você faz o gesto mais automático do mundo: aperta Control C.
+
+3
+00:00:10.850 --> 00:00:12.350
+O programa morre.
+
+4
+00:00:12.350 --> 00:00:13.750
+Instantâneo.
+
+5
+00:00:13.750 --> 00:00:15.375
+Você nem pensa nisso.
+
+6
+00:00:15.375 --> 00:00:18.600
+Mas pare um segundo e pense no que acabou de acontecer.
+
+7
+00:00:18.600 --> 00:00:23.362
+Seu programa estava ocupado, rodando o código dele, sem pedir nada a ninguém.
+
+8
+00:00:23.362 --> 00:00:31.700
+E mesmo assim, um evento vindo de fora conseguiu interromper a execução, desviar o fluxo, e na maioria das vezes encerrar o processo.
+
+9
+00:00:31.700 --> 00:00:36.875
+Não houve uma chamada de função pedindo "me avise quando alguém apertar Control C".
+
+10
+00:00:36.875 --> 00:00:43.062
+O programa estava simplesmente executando, e foi interrompido no meio de qualquer coisa que estivesse fazendo.
+
+11
+00:00:43.062 --> 00:00:45.325
+Esse mecanismo chama-se sinal.
+
+12
+00:00:45.325 --> 00:01:00.112
+E hoje eu quero contar como os sinais do Unix funcionam de verdade, por dentro: como o kernel entrega um evento assíncrono a um processo, e por que escrever um tratador de sinal, um signal handler, é uma das coisas mais traiçoeiras que existem na programação de sistemas.
+
+13
+00:01:00.112 --> 00:01:09.475
+É um daqueles assuntos que parecem simples na superfície e que, quando você raspa a tinta, revelam décadas de decisões de projeto, correções e armadilhas.
+
+14
+00:01:09.475 --> 00:01:11.800
+Vamos começar pela ideia central.
+
+15
+00:01:11.800 --> 00:01:15.187
+Um sinal é, no fundo, um número pequeno.
+
+16
+00:01:15.187 --> 00:01:19.012
+Uma notificação de um único bit de informação, quase.
+
+17
+00:01:19.012 --> 00:01:24.212
+Quando você aperta Control C, o terminal manda o sinal de interrupção, o SIGINT.
+
+18
+00:01:24.212 --> 00:01:32.700
+Quando um processo tenta acessar memória que não lhe pertence, o kernel manda o sinal de falha de segmentação, o famoso SIGSEGV, o segfault.
+
+19
+00:01:32.700 --> 00:01:36.200
+Quando um processo filho termina, o pai recebe SIGCHLD.
+
+20
+00:01:36.200 --> 00:01:40.975
+São dezenas desses, cada um com um número e um significado convencionado.
+
+21
+00:01:40.975 --> 00:01:44.187
+A parte interessante é a palavra "assíncrono".
+
+22
+00:01:44.187 --> 00:01:50.725
+A maioria das coisas que um programa faz é síncrona: você chama uma função, ela retorna, você segue em frente.
+
+23
+00:01:50.725 --> 00:01:53.025
+Você sabe exatamente onde está.
+
+24
+00:01:53.025 --> 00:01:55.237
+Um sinal é o oposto disso.
+
+25
+00:01:55.237 --> 00:02:02.500
+Ele pode chegar a qualquer momento, entre quaisquer duas instruções de máquina, sem que o seu código tenha pedido ou esperado.
+
+26
+00:02:02.500 --> 00:02:08.462
+É essa natureza imprevisível que torna os sinais poderosos e, como veremos, perigosos.
+
+27
+00:02:08.462 --> 00:02:11.737
+Então como é que o kernel realmente entrega um sinal?
+
+28
+00:02:11.737 --> 00:02:16.425
+Guarde essa pergunta, porque a resposta desfaz um monte de mal-entendidos.
+
+29
+00:02:16.425 --> 00:02:24.462
+Quando algo gera um sinal para o seu processo, o kernel não interrompe você na mesma hora, no sentido de pular imediatamente para o seu código.
+
+30
+00:02:24.462 --> 00:02:31.487
+O que ele faz é mais discreto: ele marca um bit numa estrutura de dados dentro do kernel, associada ao seu processo.
+
+31
+00:02:31.487 --> 00:02:38.475
+Existe uma espécie de conjunto de sinais pendentes, um mapa de bits onde cada posição corresponde a um tipo de sinal.
+
+32
+00:02:38.475 --> 00:02:43.125
+Gerar um sinal é, essencialmente, ligar o bit correspondente.
+
+33
+00:02:43.125 --> 00:02:43.687
+Pronto.
+
+34
+00:02:43.687 --> 00:02:46.162
+O sinal agora está "pendente".
+
+35
+00:02:46.162 --> 00:02:50.325
+Repare numa consequência imediata e surpreendente dessa escolha.
+
+36
+00:02:50.325 --> 00:02:58.862
+Como é um único bit por tipo de sinal, se o mesmo sinal chegar duas, três, dez vezes antes de ser tratado, o bit já está ligado.
+
+37
+00:02:58.862 --> 00:03:01.875
+Ligar um bit que já está ligado não faz nada.
+
+38
+00:03:01.875 --> 00:03:06.325
+Ou seja: os sinais clássicos do Unix não se acumulam numa fila.
+
+39
+00:03:06.325 --> 00:03:12.637
+Se dez SIGCHLD chegam em rajada enquanto o seu processo está ocupado, você pode acabar vendo apenas um.
+
+40
+00:03:12.637 --> 00:03:14.925
+Isso não é um bug, é o modelo.
+
+41
+00:03:14.925 --> 00:03:22.787
+E é por isso que um tratador de SIGCHLD bem escrito precisa recolher todos os filhos que terminaram num laço, e não assumir um sinal por filho.
+
+42
+00:03:22.787 --> 00:03:26.587
+Certo, o bit está ligado, o sinal está pendente.
+
+43
+00:03:26.587 --> 00:03:29.175
+Quando é que ele é efetivamente entregue?
+
+44
+00:03:29.175 --> 00:03:36.162
+A entrega acontece num momento muito específico: quando o processo está prestes a voltar do kernel para o espaço de usuário.
+
+45
+00:03:36.162 --> 00:03:44.850
+Pense em todas as vezes que seu programa entra no kernel: a cada chamada de sistema, a cada interrupção de relógio que suspende e retoma o processo.
+
+46
+00:03:44.850 --> 00:03:52.687
+Na saída desse caminho, pouco antes de devolver o controle ao seu código, o kernel olha: tem algum sinal pendente que não esteja bloqueado?
+
+47
+00:03:52.687 --> 00:03:54.912
+Se tem, é agora que ele age.
+
+48
+00:03:55.010 --> 00:03:58.972
+Deixa eu marcar onde estamos, porque esse é o coração do assunto.
+
+49
+00:03:58.972 --> 00:04:09.647
+Até aqui: um sinal é um número; gerar um sinal apenas liga um bit de "pendente" no kernel; e a entrega de verdade só acontece na fronteira entre kernel e espaço de usuário.
+
+50
+00:04:09.647 --> 00:04:13.447
+O sinal fica esperando educadamente nessa porta de saída.
+
+51
+00:04:13.447 --> 00:04:26.622
+Isso também explica um fenômeno que todo programador de sistemas já viu: um processo completamente travado, num laço infinito que não faz nenhuma chamada de sistema, pode ser surpreendentemente difícil de matar com certos sinais.
+
+52
+00:04:26.622 --> 00:04:33.360
+Na prática o relógio do sistema ainda te tira do processador periodicamente, então há oportunidade de entrega.
+
+53
+00:04:33.360 --> 00:04:40.122
+Mas a intuição central vale: o sinal precisa de uma brecha, de um momento de transição, para ser aplicado.
+
+54
+00:04:40.122 --> 00:04:43.960
+Agora, o que acontece de fato quando o kernel decide entregar?
+
+55
+00:04:43.960 --> 00:04:46.897
+Depende do que você configurou para aquele sinal.
+
+56
+00:04:46.897 --> 00:04:49.285
+Existem três possibilidades.
+
+57
+00:04:49.285 --> 00:04:57.835
+A primeira é a ação padrão, que para muitos sinais significa matar o processo, às vezes gerando um arquivo de despejo de memória, o core dump.
+
+58
+00:04:57.835 --> 00:05:02.985
+A segunda é ignorar o sinal, e aí o bit é simplesmente limpo e nada acontece.
+
+59
+00:05:02.985 --> 00:05:10.797
+E a terceira, a mais interessante e a mais perigosa, é você ter registrado um tratador: uma função sua que o kernel vai chamar.
+
+60
+00:05:10.797 --> 00:05:13.622
+E aqui a mágica fica estranha de verdade.
+
+61
+00:05:13.622 --> 00:05:23.610
+Para rodar o seu tratador, o kernel manipula a pilha do seu processo de forma que, quando ele devolver o controle ao espaço de usuário, a execução não retome exatamente de onde parou.
+
+62
+00:05:23.610 --> 00:05:27.397
+Em vez disso, ela desvia para a sua função tratadora.
+
+63
+00:05:27.397 --> 00:05:40.235
+Seu programa estava calculando alguma coisa na linha, sei lá, de uma multiplicação de matrizes, e de repente está executando o seu handler, como se alguém tivesse inserido uma chamada de função fantasma entre duas instruções quaisquer.
+
+64
+00:05:40.235 --> 00:05:48.010
+Quando o tratador retorna, há um mecanismo especial que restaura o estado e volta ao ponto original, como se nada tivesse acontecido.
+
+65
+00:05:48.010 --> 00:05:52.110
+É essa inserção arbitrária que é a origem de todos os perigos.
+
+66
+00:05:52.110 --> 00:06:01.085
+E é sobre isso que eu quero gastar a maior parte do tempo, porque é a parte que os manuais costumam tratar com um aviso tímido e que merecia estar em letras garrafais.
+
+67
+00:06:01.085 --> 00:06:05.872
+Pense bem no que significa "ser interrompido entre duas instruções quaisquer".
+
+68
+00:06:05.872 --> 00:06:12.085
+Significa que o seu tratador pode começar a rodar quando o seu programa está no meio de uma operação que não terminou.
+
+69
+00:06:12.085 --> 00:06:17.347
+E o exemplo clássico, aquele que derruba gente experiente, é a alocação de memória.
+
+70
+00:06:17.347 --> 00:06:22.147
+Suponha que o seu código principal chamou a função de alocação, o malloc.
+
+71
+00:06:22.147 --> 00:06:31.722
+Lá dentro, o alocador está mexendo nas suas estruturas internas, nas listas de blocos livres, e nesse instante exato o sinal chega e o seu tratador é invocado.
+
+72
+00:06:31.722 --> 00:06:39.760
+Se o tratador também chamar malloc, ele vai mexer nas mesmas estruturas que estavam no meio de uma atualização, num estado inconsistente.
+
+73
+00:06:39.760 --> 00:06:49.372
+O resultado é corrupção de memória, travamento, ou pior: um bug que só aparece uma vez a cada milhão de execuções e que você nunca vai conseguir reproduzir.
+
+74
+00:06:49.372 --> 00:06:52.635
+O nome técnico para esse problema é reentrância.
+
+75
+00:06:52.635 --> 00:06:59.460
+Uma função é reentrante, ou segura para sinais, se ela puder ser chamada de novo no meio de si mesma sem quebrar.
+
+76
+00:06:59.460 --> 00:07:02.635
+A maioria das funções da biblioteca padrão não é.
+
+77
+00:07:02.635 --> 00:07:03.947
+O malloc não é.
+
+78
+00:07:03.947 --> 00:07:10.585
+As funções de impressão formatada, como o printf, não são, porque elas usam buffers internos e também alocam.
+
+79
+00:07:10.585 --> 00:07:14.560
+Até mesmo coisas que parecem inocentes podem não ser seguras.
+
+80
+00:07:14.666 --> 00:07:19.478
+E tem um detalhe ainda mais sorrateiro: a variável global de erro, o errno.
+
+81
+00:07:19.478 --> 00:07:23.553
+Quase toda chamada de sistema escreve nessa variável quando falha.
+
+82
+00:07:23.553 --> 00:07:32.416
+Agora imagine: seu código principal acabou de fazer uma chamada que falhou, errno está prestes a ser lido por você, e nesse microssegundo o sinal chega.
+
+83
+00:07:32.416 --> 00:07:37.903
+Seu tratador faz alguma chamada de sistema qualquer, que por sua vez sobrescreve errno.
+
+84
+00:07:37.903 --> 00:07:42.803
+O tratador retorna, seu código principal lê errno e vê o valor errado.
+
+85
+00:07:42.803 --> 00:07:51.516
+A regra de ouro, por causa disso, é que um tratador de sinal bem comportado deve salvar o valor de errno logo na entrada e restaurá-lo na saída.
+
+86
+00:07:51.516 --> 00:07:55.141
+É o tipo de detalhe que ninguém lembra até ser mordido por ele.
+
+87
+00:07:55.141 --> 00:07:58.916
+Deixa eu recapitular, porque isso é o essencial do episódio.
+
+88
+00:07:58.916 --> 00:08:02.578
+Um sinal pode interromper o seu programa em qualquer ponto.
+
+89
+00:08:02.578 --> 00:08:11.691
+Por isso, dentro de um tratador, você só pode usar com segurança um conjunto bem pequeno de funções, as chamadas funções seguras para sinais assíncronos.
+
+90
+00:08:11.691 --> 00:08:15.016
+É uma lista curta, padronizada pelo POSIX.
+
+91
+00:08:15.016 --> 00:08:21.528
+Nada de alocar memória, nada de printf, nada de mexer em estruturas compartilhadas sem muito cuidado.
+
+92
+00:08:21.528 --> 00:08:28.353
+A ideia de keep para levar no bolso é: tratador de sinal é território hostil, faça o mínimo possível lá dentro.
+
+93
+00:08:28.353 --> 00:08:30.766
+E o que é esse mínimo recomendado?
+
+94
+00:08:30.766 --> 00:08:37.653
+Na prática, a sabedoria acumulada diz: dentro do tratador, apenas faça um gesto pequeno e atômico.
+
+95
+00:08:37.653 --> 00:08:48.178
+Por exemplo, atribua um valor a uma variável global de um tipo especial, o tipo atômico volátil de sinal, que é garantido de ser lido e escrito numa única operação indivisível.
+
+96
+00:08:48.178 --> 00:08:55.353
+Então o seu laço principal, lá fora, no fluxo normal, verifica essa variável e faz o trabalho pesado de verdade.
+
+97
+00:08:55.353 --> 00:09:01.241
+O tratador só levanta a bandeirinha; quem age é o código normal, onde tudo é síncrono e seguro.
+
+98
+00:09:01.241 --> 00:09:08.803
+Há ainda outra consequência dos sinais que atormenta quem programa redes e entrada e saída: a interrupção de chamadas de sistema.
+
+99
+00:09:08.803 --> 00:09:19.103
+Quando um sinal é entregue enquanto o seu processo está bloqueado numa chamada demorada, digamos esperando dados de um socket com a função read, essa chamada pode ser abortada antes de completar.
+
+100
+00:09:19.103 --> 00:09:24.903
+Ela retorna com um erro específico, o que em errno aparece como "chamada interrompida", o EINTR.
+
+101
+00:09:24.903 --> 00:09:30.428
+Se o seu código não previr isso, ele vai interpretar como uma falha real e talvez desistir.
+
+102
+00:09:30.428 --> 00:09:37.116
+O padrão correto, em muitos casos, é simplesmente tentar de novo: viu interrupção, refaça a chamada.
+
+103
+00:09:37.116 --> 00:09:46.016
+Sistemas mais modernos oferecem a opção de reiniciar automaticamente certas chamadas, mas nem todas, e o comportamento tem particularidades.
+
+104
+00:09:46.016 --> 00:09:50.253
+Esse é mais um imposto que os sinais cobram de quem escreve software robusto.
+
+105
+00:09:50.253 --> 00:09:55.203
+Vale contar um pouco da história, porque ela explica por que esse terreno é tão acidentado.
+
+106
+00:09:55.203 --> 00:10:00.516
+Nos primeiros Unix, lá nos anos setenta, os sinais eram ainda mais traiçoeiros.
+
+107
+00:10:00.516 --> 00:10:06.866
+Quando um sinal chegava e disparava o seu tratador, o sistema redefinia aquele sinal de volta para a ação padrão.
+
+108
+00:10:06.866 --> 00:10:13.553
+Então, se você quisesse continuar tratando, tinha que registrar o tratador de novo, dentro do próprio tratador.
+
+109
+00:10:13.553 --> 00:10:22.141
+E existia uma janela, uma fresta minúscula de tempo, entre o disparo e o novo registro, em que um segundo sinal chegando mataria o processo.
+
+110
+00:10:22.141 --> 00:10:25.403
+Era uma condição de corrida embutida no próprio modelo.
+
+111
+00:10:25.403 --> 00:10:28.991
+Ficaram conhecidos como os sinais "não confiáveis".
+
+112
+00:10:28.991 --> 00:10:42.691
+O pessoal de Berkeley, no BSD, consertou isso nos anos oitenta com o que chamaram de sinais confiáveis, introduzindo a ideia de bloquear temporariamente um sinal em vez de reverter para o padrão, e de ter uma máscara de sinais que você controla.
+
+113
+00:10:42.691 --> 00:10:50.316
+O POSIX depois padronizou tudo isso numa chamada chamada sigaction, que é a maneira correta de registrar tratadores até hoje.
+
+114
+00:10:50.316 --> 00:10:58.641
+Se você ainda usa a função antiga e simples, o signal, o comportamento dela varia entre sistemas justamente por causa dessa herança histórica.
+
+115
+00:10:58.641 --> 00:11:05.428
+A recomendação moderna é clara: use sigaction, seja explícito sobre o que você quer, não confie no padrão.
+
+116
+00:11:05.522 --> 00:11:09.947
+E como o mundo lidou, no fim das contas, com toda essa fragilidade?
+
+117
+00:11:09.947 --> 00:11:13.097
+Com truques elegantes e com interfaces novas.
+
+118
+00:11:13.097 --> 00:11:26.122
+Um truque clássico e muito usado é o do autopipe, o self-pipe: você cria um pipe no início do programa, e o seu tratador de sinal faz a única coisa realmente segura que pode fazer, que é escrever um único byte nesse pipe.
+
+119
+00:11:26.122 --> 00:11:35.372
+O seu laço principal, então, monitora a ponta de leitura do pipe junto com todos os outros descritores, usando as funções normais de multiplexação.
+
+120
+00:11:35.372 --> 00:11:43.522
+Assim o evento assíncrono do sinal é transformado num evento síncrono e bem-comportado de entrada e saída, tratado no lugar certo.
+
+121
+00:11:43.522 --> 00:11:54.559
+Mais tarde, o Linux introduziu uma interface que faz isso de forma embutida, o signalfd, que te entrega sinais lendo de um descritor de arquivo, eliminando quase toda a dança perigosa.
+
+122
+00:11:54.559 --> 00:11:57.397
+Então vamos fechar amarrando as pontas.
+
+123
+00:11:57.397 --> 00:12:07.034
+Um sinal do Unix é um número, uma notificação assíncrona que o kernel entrega ligando um bit de pendência e aplicando o efeito na fronteira entre o kernel e o seu código.
+
+124
+00:12:07.034 --> 00:12:12.122
+Os sinais clássicos não formam fila, então podem se perder quando chegam em rajada.
+
+125
+00:12:12.122 --> 00:12:21.322
+E o perigo dos tratadores vem de uma única verdade simples: eles rodam entre duas instruções quaisquer do seu programa, então quase nada é seguro lá dentro.
+
+126
+00:12:21.322 --> 00:12:30.034
+A disciplina que resolve quase tudo é fazer o tratador minúsculo: levantar uma bandeira e sair correndo, deixando o trabalho de verdade para o fluxo normal.
+
+127
+00:12:30.034 --> 00:12:32.047
+E fica aqui o pensamento final.
+
+128
+00:12:32.047 --> 00:12:39.272
+Os sinais nasceram como uma forma espartana de levar notificações a um processo numa época de memória escassa e máquinas simples.
+
+129
+00:12:39.272 --> 00:12:51.122
+Eles sobreviveram cinquenta anos quase intactos, cheios de arestas, e nós aprendemos não a confiar neles, mas a domá-los, transformando o assíncrono imprevisível em algo síncrono e tratável.
+
+130
+00:12:51.122 --> 00:12:59.334
+Às vezes a melhor engenharia não é consertar o mecanismo perigoso; é construir, com cuidado, uma ponte segura para atravessá-lo.
+

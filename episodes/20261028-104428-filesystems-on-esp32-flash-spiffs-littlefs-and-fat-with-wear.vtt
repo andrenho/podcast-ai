@@ -1,0 +1,802 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:03.537
+Imagine um pequeno sensor preso na parede de uma estufa.
+
+2
+00:00:03.537 --> 00:00:08.787
+Ele roda um ESP trinta e dois e grava a temperatura num arquivo a cada minuto.
+
+3
+00:00:08.787 --> 00:00:11.037
+Durante semanas tudo funciona.
+
+4
+00:00:11.037 --> 00:00:15.650
+Um dia, alguém tropeça no cabo de energia bem no meio de uma gravação.
+
+5
+00:00:15.650 --> 00:00:18.500
+Quando o aparelho volta, o arquivo sumiu.
+
+6
+00:00:18.500 --> 00:00:21.975
+Ou pior: o sistema de arquivos nem monta mais.
+
+7
+00:00:21.975 --> 00:00:25.925
+Quem já trabalhou com microcontroladores conhece essa sensação.
+
+8
+00:00:25.925 --> 00:00:32.887
+E quase sempre, por trás dela, existe uma escolha que parecia pequena: qual sistema de arquivos usar na memória flash.
+
+9
+00:00:32.887 --> 00:00:34.912
+Olá, e seja bem-vindo.
+
+10
+00:00:34.912 --> 00:00:39.925
+Hoje a gente vai falar de sistemas de arquivos na flash do ESP trinta e dois.
+
+11
+00:00:39.925 --> 00:00:42.462
+São três candidatos principais.
+
+12
+00:00:42.462 --> 00:00:46.325
+O primeiro é o SPIFFS, que foi o padrão por muitos anos.
+
+13
+00:00:46.325 --> 00:00:49.950
+O segundo é o Little FS, que tomou o lugar dele.
+
+14
+00:00:49.950 --> 00:00:55.737
+O terceiro é o velho e conhecido FAT, acompanhado de uma camada de nivelamento de desgaste.
+
+15
+00:00:55.737 --> 00:00:59.675
+No caminho, a gente vai entender por que o SPIFFS caiu em desuso.
+
+16
+00:00:59.675 --> 00:01:06.737
+Mais do que isso, vamos entender o que a própria memória flash exige de qualquer sistema de arquivos que queira sobreviver nela.
+
+17
+00:01:06.737 --> 00:01:10.850
+Vamos começar pelo chão onde tudo isso pisa: a memória flash.
+
+18
+00:01:10.850 --> 00:01:18.875
+Na maioria das placas, o ESP trinta e dois usa um chip de flash externo, do tipo NOR, ligado por um barramento serial.
+
+19
+00:01:18.875 --> 00:01:23.750
+O tamanho mais comum é de quatro megabytes, mas existem placas com mais.
+
+20
+00:01:23.750 --> 00:01:29.525
+Ali dentro ficam o programa, as configurações e, se você quiser, um sistema de arquivos.
+
+21
+00:01:29.525 --> 00:01:35.337
+O detalhe que muda tudo é este: a flash não deixa você simplesmente sobrescrever um byte.
+
+22
+00:01:35.337 --> 00:01:39.675
+Uma gravação só consegue transformar bits um em bits zero.
+
+23
+00:01:39.675 --> 00:01:42.875
+Para voltar um bit para um, você precisa apagar.
+
+24
+00:01:42.875 --> 00:01:45.250
+E não dá para apagar um byte sozinho.
+
+25
+00:01:45.250 --> 00:01:52.362
+O apagamento acontece em blocos inteiros, chamados setores, que nesse tipo de chip costumam ter quatro kilobytes.
+
+26
+00:01:52.362 --> 00:01:55.437
+Pense numa folha de caderno escrita a caneta.
+
+27
+00:01:55.437 --> 00:01:58.637
+Você pode acrescentar coisas nos espaços em branco.
+
+28
+00:01:58.637 --> 00:02:05.437
+Mas, para corrigir uma única palavra, precisa arrancar a folha inteira e reescrever tudo numa folha nova.
+
+29
+00:02:05.437 --> 00:02:07.275
+E tem um segundo problema.
+
+30
+00:02:07.275 --> 00:02:12.025
+Cada setor aguenta um número limitado de apagamentos antes de começar a falhar.
+
+31
+00:02:12.025 --> 00:02:18.512
+Para flash NOR, o valor típico informado pelos fabricantes fica na ordem de cem mil ciclos por setor.
+
+32
+00:02:18.512 --> 00:02:23.850
+O número exato varia de chip para chip, então vale consultar a folha de dados do seu.
+
+33
+00:02:23.850 --> 00:02:25.750
+Cem mil parece muito.
+
+34
+00:02:25.750 --> 00:02:30.587
+Mas imagine um programa ingênuo que atualiza o mesmo setor a cada segundo.
+
+35
+00:02:30.587 --> 00:02:34.012
+Um dia tem pouco mais de oitenta e seis mil segundos.
+
+36
+00:02:34.012 --> 00:02:37.400
+Em pouco mais de um dia, aquele setor chega no limite.
+
+37
+00:02:37.400 --> 00:02:42.362
+Daí surge a ideia de nivelamento de desgaste, ou "wear leveling", em inglês.
+
+38
+00:02:42.362 --> 00:02:49.162
+O objetivo é espalhar as gravações pela memória inteira, para que nenhum setor envelheça muito antes dos outros.
+
+39
+00:02:49.162 --> 00:02:51.500
+Uma observação importante.
+
+40
+00:02:51.500 --> 00:02:55.387
+Um cartão SD, ou um pen drive, também usa flash.
+
+41
+00:02:55.387 --> 00:03:02.450
+Só que esses dispositivos têm um controlador interno que faz o nivelamento de desgaste e esconde toda essa complexidade.
+
+42
+00:03:02.450 --> 00:03:05.850
+A flash do ESP trinta e dois não tem nada disso.
+
+43
+00:03:05.850 --> 00:03:07.337
+É memória crua.
+
+44
+00:03:07.337 --> 00:03:09.850
+Quem cuida do desgaste é o software.
+
+45
+00:03:09.850 --> 00:03:14.487
+Ou seja, é o sistema de arquivos, ou alguma camada logo abaixo dele.
+
+46
+00:03:14.487 --> 00:03:18.450
+Mais uma peça de contexto antes dos personagens principais.
+
+47
+00:03:18.450 --> 00:03:24.587
+No ESP trinta e dois, a flash é dividida em partições, descritas numa tabela de partições.
+
+48
+00:03:24.587 --> 00:03:27.062
+Uma partição guarda o aplicativo.
+
+49
+00:03:27.062 --> 00:03:32.425
+Outra guarda o armazenamento de chave e valor da Espressif, chamado NVS.
+
+50
+00:03:32.425 --> 00:03:36.600
+E você pode reservar uma partição de dados para um sistema de arquivos.
+
+51
+00:03:36.600 --> 00:03:41.337
+É dentro dessa partição que SPIFFS, Little FS ou FAT vão viver.
+
+52
+00:03:41.337 --> 00:03:47.450
+O framework oficial, o ESP IDF, tem uma camada de sistema de arquivos virtual.
+
+53
+00:03:47.450 --> 00:03:56.725
+Graças a ela, você monta essa partição num caminho, por exemplo barra dados, e usa as funções comuns da linguagem C para abrir, ler e escrever arquivos.
+
+54
+00:03:56.725 --> 00:03:57.875
+Muito bem.
+
+55
+00:03:57.875 --> 00:04:01.175
+Agora vamos ao primeiro personagem: o SPIFFS.
+
+56
+00:04:01.274 --> 00:04:05.911
+O nome significa algo como "sistema de arquivos para flash serial".
+
+57
+00:04:05.911 --> 00:04:16.036
+Ele foi criado pelo desenvolvedor sueco Peter Andersson, pensando exatamente nesse cenário: microcontroladores com pouquíssima memória RAM e flash NOR serial.
+
+58
+00:04:16.036 --> 00:04:23.911
+E ele cumpre bem esse papel. Consome pouca RAM, foi feito para a regra de apagar antes de gravar e já traz nivelamento de desgaste embutido.
+
+59
+00:04:23.911 --> 00:04:26.611
+Como ele funciona, de forma resumida?
+
+60
+00:04:26.611 --> 00:04:31.386
+O SPIFFS divide a partição em blocos, e cada bloco em páginas menores.
+
+61
+00:04:31.386 --> 00:04:34.599
+Os dados dos arquivos são gravados em páginas.
+
+62
+00:04:34.599 --> 00:04:39.186
+Quando você modifica um arquivo, o SPIFFS não reescreve a página antiga.
+
+63
+00:04:39.186 --> 00:04:42.899
+Ele grava uma página nova e marca a antiga como apagada.
+
+64
+00:04:42.899 --> 00:04:45.986
+Lembra que gravar só transforma uns em zeros?
+
+65
+00:04:45.986 --> 00:04:52.999
+Marcar uma página como morta é exatamente isso: virar alguns bits para zero, sem precisar apagar nada.
+
+66
+00:04:52.999 --> 00:04:56.561
+Com o tempo, os blocos acumulam páginas mortas.
+
+67
+00:04:56.561 --> 00:04:59.586
+Em algum momento é preciso recuperar esse espaço.
+
+68
+00:04:59.586 --> 00:05:01.774
+Aí entra o coletor de lixo.
+
+69
+00:05:01.774 --> 00:05:07.774
+Ele escolhe um bloco, copia as páginas ainda vivas para outro lugar e então apaga o bloco inteiro.
+
+70
+00:05:07.774 --> 00:05:11.124
+Essa abordagem funciona, mas cobra seu preço.
+
+71
+00:05:11.124 --> 00:05:15.686
+E é aqui que começam os motivos pelos quais o SPIFFS perdeu popularidade.
+
+72
+00:05:15.686 --> 00:05:19.061
+O primeiro motivo é que o SPIFFS não tem diretórios.
+
+73
+00:05:19.061 --> 00:05:21.011
+O espaço de nomes é plano.
+
+74
+00:05:21.011 --> 00:05:27.586
+Se você cria um arquivo chamado barra logs barra hoje ponto txt, a barra é só mais um caractere no nome.
+
+75
+00:05:27.586 --> 00:05:30.236
+Não existe uma pasta logs de verdade.
+
+76
+00:05:30.236 --> 00:05:34.361
+Dá para conviver com isso, mas fica estranho quando o projeto cresce.
+
+77
+00:05:34.361 --> 00:05:38.686
+E o tamanho máximo do nome também é curto, na configuração padrão.
+
+78
+00:05:38.686 --> 00:05:42.099
+O segundo motivo é a imprevisibilidade no tempo.
+
+79
+00:05:42.099 --> 00:05:49.974
+Quando o sistema está cheio e o coletor de lixo precisa trabalhar, uma gravação que normalmente leva milissegundos pode levar muito mais.
+
+80
+00:05:49.974 --> 00:05:54.711
+A própria documentação da Espressif avisa que isso pode chegar a vários segundos.
+
+81
+00:05:54.711 --> 00:05:59.424
+Para um equipamento que precisa responder em tempo previsível, isso é um problema sério.
+
+82
+00:05:59.424 --> 00:06:02.086
+O terceiro motivo é o espaço útil.
+
+83
+00:06:02.086 --> 00:06:08.774
+Como o SPIFFS precisa de folga para o coletor de lixo funcionar, você não consegue usar a partição inteira com segurança.
+
+84
+00:06:08.774 --> 00:06:14.824
+A documentação da Espressif fala em algo perto de setenta e cinco por cento do espaço como uso confiável.
+
+85
+00:06:14.824 --> 00:06:16.999
+O quarto motivo é a montagem.
+
+86
+00:06:16.999 --> 00:06:22.561
+Para montar o sistema, o SPIFFS precisa varrer as estruturas espalhadas pela partição.
+
+87
+00:06:22.561 --> 00:06:26.199
+Quanto maior a partição, mais demorada fica essa etapa.
+
+88
+00:06:26.199 --> 00:06:30.199
+Abrir um arquivo também envolve procurar nas tabelas de busca.
+
+89
+00:06:30.199 --> 00:06:35.199
+Ele simplesmente não escala bem para partições grandes, com muitos arquivos.
+
+90
+00:06:35.199 --> 00:06:37.874
+O quinto motivo é a queda de energia.
+
+91
+00:06:37.874 --> 00:06:44.074
+O SPIFFS tenta se proteger, e existe uma rotina de verificação que procura corrigir inconsistências.
+
+92
+00:06:44.074 --> 00:06:49.561
+Mas ele não foi projetado com garantias fortes de consistência em caso de perda de energia.
+
+93
+00:06:49.561 --> 00:06:54.874
+E, na prática, a comunidade registrou vários relatos de corrupção nesse cenário.
+
+94
+00:06:54.874 --> 00:06:58.661
+Esse é exatamente o sensor da estufa do começo do episódio.
+
+95
+00:06:58.661 --> 00:07:03.161
+E o sexto motivo não é técnico, mas pesa muito: manutenção.
+
+96
+00:07:03.161 --> 00:07:07.186
+O projeto original praticamente parou de evoluir faz anos.
+
+97
+00:07:07.186 --> 00:07:13.936
+Quando uma biblioteca de armazenamento para de receber correções, as pessoas ficam compreensivelmente nervosas.
+
+98
+00:07:13.936 --> 00:07:15.624
+Vale ser justo aqui.
+
+99
+00:07:15.624 --> 00:07:17.599
+O SPIFFS não é um vilão.
+
+100
+00:07:17.599 --> 00:07:22.449
+O nivelamento de desgaste dele é razoável, e ele roda em pouquíssima memória.
+
+101
+00:07:22.449 --> 00:07:29.774
+Para guardar uns poucos arquivos que raramente mudam, como páginas de uma interface web, ele funcionou bem para muita gente.
+
+102
+00:07:29.774 --> 00:07:34.999
+O problema é que surgiu uma alternativa que resolve quase todas essas dores ao mesmo tempo.
+
+103
+00:07:34.999 --> 00:07:38.686
+Se você se distraiu no trânsito, aqui vai um resumo rápido.
+
+104
+00:07:38.686 --> 00:07:45.174
+A flash só pode ser apagada em setores inteiros, e cada setor aguenta um número limitado de apagamentos.
+
+105
+00:07:45.174 --> 00:07:55.661
+O SPIFFS lida com isso, mas não tem diretórios, tem pausas imprevisíveis, desperdiça espaço, monta devagar em partições grandes e é frágil diante de quedas de energia.
+
+106
+00:07:55.661 --> 00:07:57.936
+Agora, o substituto.
+
+107
+00:07:58.034 --> 00:08:05.571
+O Little FS foi criado em dois mil e dezessete por Christopher Haster, dentro da equipe do sistema operacional Mbed, da Arm.
+
+108
+00:08:05.571 --> 00:08:10.109
+O objetivo de projeto foi declarado de forma bem clara desde o início.
+
+109
+00:08:10.109 --> 00:08:13.246
+Primeiro, ser resistente a quedas de energia.
+
+110
+00:08:13.246 --> 00:08:16.246
+Segundo, fazer nivelamento de desgaste.
+
+111
+00:08:16.246 --> 00:08:23.396
+Terceiro, usar uma quantidade de memória RAM limitada e previsível, que não cresce com o tamanho do sistema de arquivos.
+
+112
+00:08:23.396 --> 00:08:29.296
+Para alcançar a resistência a quedas de energia, o Little FS usa duas ideias principais.
+
+113
+00:08:29.296 --> 00:08:34.521
+A primeira ideia é a cópia na gravação, que em inglês se chama "copy on write".
+
+114
+00:08:34.521 --> 00:08:39.146
+Em vez de alterar dados no lugar, ele escreve a nova versão em outro bloco.
+
+115
+00:08:39.146 --> 00:08:44.409
+Só depois que tudo está gravado, ele atualiza a referência que aponta para a versão nova.
+
+116
+00:08:44.409 --> 00:08:48.834
+Se a energia cair no meio, a referência antiga continua válida.
+
+117
+00:08:48.834 --> 00:08:53.671
+O arquivo fica no estado anterior, inteiro, em vez de ficar pela metade.
+
+118
+00:08:53.671 --> 00:08:56.396
+A segunda ideia é o par de metadados.
+
+119
+00:08:56.396 --> 00:09:03.009
+As informações de diretórios, como nomes de arquivos e onde eles estão, ficam guardadas em pares de blocos.
+
+120
+00:09:03.009 --> 00:09:12.984
+Dentro de cada par, as mudanças são registradas como um pequeno diário, uma sequência de entradas acrescentadas ao final, cada uma com uma verificação de integridade.
+
+121
+00:09:12.984 --> 00:09:19.046
+Quando o bloco enche, o Little FS compacta o conteúdo no outro bloco do par e alterna entre os dois.
+
+122
+00:09:19.046 --> 00:09:25.271
+Se a energia cai durante uma entrada, aquela entrada incompleta falha na verificação e é ignorada.
+
+123
+00:09:25.271 --> 00:09:28.534
+O sistema volta para o último estado consistente.
+
+124
+00:09:28.534 --> 00:09:33.459
+Com isso, o Little FS ganha de presente coisas que faziam falta no SPIFFS.
+
+125
+00:09:33.459 --> 00:09:35.709
+Ele tem diretórios de verdade.
+
+126
+00:09:35.709 --> 00:09:38.809
+Monta rápido, porque não precisa varrer tudo.
+
+127
+00:09:38.809 --> 00:09:47.821
+E consegue detectar blocos defeituosos: depois de gravar, ele pode conferir o que foi escrito e, se encontrar erro, desviar para outro bloco.
+
+128
+00:09:47.821 --> 00:09:52.709
+Quanto ao desgaste, o Little FS faz o que se chama de nivelamento dinâmico.
+
+129
+00:09:52.709 --> 00:09:57.121
+As novas gravações vão sendo distribuídas pelos blocos livres.
+
+130
+00:09:57.121 --> 00:10:01.659
+Os dados que nunca mudam, porém, tendem a ficar parados onde estão.
+
+131
+00:10:01.659 --> 00:10:06.121
+Para a maioria dos projetos com microcontroladores, isso é suficiente.
+
+132
+00:10:06.121 --> 00:10:09.734
+Agora, os pontos fracos, porque eles existem.
+
+133
+00:10:09.734 --> 00:10:12.896
+Cada diretório ocupa pelo menos um par de blocos.
+
+134
+00:10:12.896 --> 00:10:19.471
+Então, com blocos de quatro kilobytes, criar muitas pastas pequenas gasta espaço rapidamente.
+
+135
+00:10:19.471 --> 00:10:27.684
+Arquivos muito pequenos podem ser guardados diretamente dentro dos metadados, o que ajuda, mas o custo dos diretórios continua.
+
+136
+00:10:27.684 --> 00:10:31.196
+Modificar o meio de um arquivo grande também pode sair caro.
+
+137
+00:10:31.196 --> 00:10:36.971
+Por causa da cópia na gravação, o sistema pode precisar reescrever o trecho dali até o fim.
+
+138
+00:10:36.971 --> 00:10:43.346
+E a compactação dos metadados também gera, de vez em quando, uma gravação mais lenta que as outras.
+
+139
+00:10:43.346 --> 00:10:49.459
+Ou seja, o Little FS é bem mais previsível que o SPIFFS, mas não é perfeitamente constante.
+
+140
+00:10:49.459 --> 00:10:52.271
+Na prática, o ecossistema decidiu.
+
+141
+00:10:52.271 --> 00:11:02.559
+No núcleo Arduino para o ESP oito mil, oitocentos e sessenta e seis, o SPIFFS foi oficialmente marcado como obsoleto, com a recomendação de migrar para o Little FS.
+
+142
+00:11:02.559 --> 00:11:08.246
+No núcleo Arduino para o ESP trinta e dois, o Little FS também passou a vir incluído.
+
+143
+00:11:08.246 --> 00:11:17.396
+E, no ESP IDF, ele está disponível como componente pronto para usar, enquanto o SPIFFS continua presente, mas sem a mesma recomendação.
+
+144
+00:11:17.396 --> 00:11:23.921
+Existem até ferramentas para gerar uma imagem do sistema de arquivos no computador e gravar direto na partição.
+
+145
+00:11:23.921 --> 00:11:28.821
+Agora vamos ao terceiro caminho, que tem uma história diferente: o FAT.
+
+146
+00:11:28.821 --> 00:11:35.084
+O FAT é o sistema de arquivos dos disquetes, dos cartões de memória e de incontáveis pen drives.
+
+147
+00:11:35.084 --> 00:11:43.759
+O ESP IDF usa uma implementação muito popular chamada FatFs, escrita por um desenvolvedor japonês conhecido como ChaN.
+
+148
+00:11:43.759 --> 00:11:47.046
+A grande vantagem do FAT é a compatibilidade.
+
+149
+00:11:47.046 --> 00:11:49.059
+Qualquer computador sabe ler.
+
+150
+00:11:49.059 --> 00:11:50.734
+Ele tem diretórios.
+
+151
+00:11:50.734 --> 00:11:54.046
+Com a opção certa, aceita nomes longos.
+
+152
+00:11:54.046 --> 00:11:59.196
+E o mesmo código serve tanto para a flash interna quanto para um cartão SD ligado à placa.
+
+153
+00:11:59.282 --> 00:12:05.544
+O problema é que o FAT foi pensado para discos, onde reescrever um setor no lugar é barato e repetível.
+
+154
+00:12:05.544 --> 00:12:12.832
+Ele tem regiões muito quentes, principalmente a tabela de alocação, que dá nome ao sistema, e as entradas de diretório.
+
+155
+00:12:12.832 --> 00:12:15.869
+Essas regiões são atualizadas o tempo todo.
+
+156
+00:12:15.869 --> 00:12:21.707
+Em flash crua, sem proteção, esses poucos setores seriam destruídos muito antes do resto.
+
+157
+00:12:21.707 --> 00:12:28.969
+Por isso, a Espressif colocou uma camada intermediária entre o FAT e a flash: o componente de nivelamento de desgaste.
+
+158
+00:12:28.969 --> 00:12:30.719
+A ideia é elegante.
+
+159
+00:12:30.719 --> 00:12:35.782
+O FAT continua achando que está falando com setores fixos, numerados em ordem.
+
+160
+00:12:35.782 --> 00:12:40.694
+Por baixo, a camada mantém um mapeamento entre setores lógicos e físicos.
+
+161
+00:12:40.694 --> 00:12:46.932
+Ela reserva um setor de folga e, a cada certo número de gravações, desloca os dados um passo.
+
+162
+00:12:46.932 --> 00:12:51.294
+Com isso, o mapeamento inteiro vai girando lentamente pela partição.
+
+163
+00:12:51.294 --> 00:12:57.919
+Assim, aquela tabela de alocação que o FAT martela sem parar não fica presa sempre no mesmo lugar físico.
+
+164
+00:12:57.919 --> 00:13:04.882
+Alguns setores da partição ficam reservados para guardar o estado dessa camada, em duas cópias, por segurança.
+
+165
+00:13:04.882 --> 00:13:06.494
+E tem mais um detalhe.
+
+166
+00:13:06.494 --> 00:13:13.157
+O FAT pode trabalhar com setores de quinhentos e doze bytes, mas a flash apaga em blocos de quatro kilobytes.
+
+167
+00:13:13.157 --> 00:13:17.982
+Gravar um setor pequeno exige então ler o bloco inteiro, apagar e regravar.
+
+168
+00:13:17.982 --> 00:13:20.857
+A Espressif oferece dois modos para isso.
+
+169
+00:13:20.857 --> 00:13:26.244
+No modo de desempenho, o conteúdo fica temporariamente na RAM durante essa operação.
+
+170
+00:13:26.244 --> 00:13:32.007
+É rápido, mas, se a energia cair bem nessa hora, os dados daquele bloco podem se perder.
+
+171
+00:13:32.007 --> 00:13:37.682
+No modo de segurança, o conteúdo é copiado antes para um setor reservado na própria flash.
+
+172
+00:13:37.682 --> 00:13:40.407
+É mais lento, mas sobrevive à queda.
+
+173
+00:13:40.407 --> 00:13:47.182
+Se você configura o FAT com setores de quatro kilobytes, iguais ao bloco da flash, esse problema desaparece.
+
+174
+00:13:47.182 --> 00:13:53.944
+Mas atenção: mesmo com essa camada, o FAT em si não tem garantias de consistência como as do Little FS.
+
+175
+00:13:53.944 --> 00:14:00.082
+Uma queda de energia no meio da atualização da tabela e do diretório pode deixar o sistema inconsistente.
+
+176
+00:14:00.082 --> 00:14:06.057
+Por isso, o FAT com nivelamento de desgaste faz mais sentido quando a compatibilidade é o que importa.
+
+177
+00:14:06.057 --> 00:14:18.719
+Por exemplo, quando você quer gerar a imagem no computador com ferramentas comuns, compartilhar código com um cartão SD, ou expor os arquivos como se fossem um pen drive pela porta USB, nos modelos que oferecem esse recurso.
+
+178
+00:14:18.719 --> 00:14:24.169
+E existe ainda uma opção mais simples: montar uma partição FAT somente para leitura.
+
+179
+00:14:24.169 --> 00:14:29.232
+Nesse caso, nem é preciso a camada de nivelamento, porque nada vai ser gravado.
+
+180
+00:14:29.232 --> 00:14:32.069
+Então, juntando tudo, como escolher?
+
+181
+00:14:32.069 --> 00:14:39.669
+Se você só precisa guardar algumas configurações, como a senha do wi-fi ou um contador, talvez nem precise de sistema de arquivos.
+
+182
+00:14:39.669 --> 00:14:46.282
+O NVS, aquele armazenamento de chave e valor, já faz nivelamento de desgaste e foi feito para isso.
+
+183
+00:14:46.282 --> 00:14:54.269
+Se você precisa de arquivos de verdade, que mudam com o tempo, num projeto novo, o Little FS é a recomendação mais segura hoje.
+
+184
+00:14:54.269 --> 00:14:59.869
+Ele aguenta quedas de energia, tem diretórios, monta rápido e é mantido ativamente.
+
+185
+00:14:59.869 --> 00:15:11.469
+Se a compatibilidade com computadores, com cartões SD ou com USB pesa mais que tudo, o FAT com nivelamento de desgaste é uma boa escolha, desde que você aceite os riscos em caso de queda de energia.
+
+186
+00:15:11.469 --> 00:15:12.557
+E o SPIFFS?
+
+187
+00:15:12.557 --> 00:15:16.369
+Ele ainda funciona, e existe muito projeto antigo usando.
+
+188
+00:15:16.369 --> 00:15:22.694
+Se o seu projeto só lê arquivos fixos, como uma página web embutida, ele continua fazendo o trabalho.
+
+189
+00:15:22.694 --> 00:15:26.407
+Mas, para algo novo, há pouca razão para escolhê-lo.
+
+190
+00:15:26.407 --> 00:15:27.844
+Vamos ao resumo.
+
+191
+00:15:27.844 --> 00:15:35.557
+A flash do ESP trinta e dois só apaga em setores inteiros e se desgasta com o uso, e não há nenhum controlador para esconder isso.
+
+192
+00:15:35.557 --> 00:15:39.682
+O SPIFFS foi pioneiro, leve e com nivelamento de desgaste.
+
+193
+00:15:39.682 --> 00:15:51.607
+Mas caiu em desuso pela falta de diretórios, pelas pausas imprevisíveis, pelo desperdício de espaço, pela montagem lenta, pela fragilidade diante de quedas de energia e pela falta de manutenção.
+
+194
+00:15:51.607 --> 00:15:57.182
+O Little FS resolveu boa parte disso com cópia na gravação e pares de metadados.
+
+195
+00:15:57.182 --> 00:16:05.032
+E o FAT continua vivo graças à compatibilidade, apoiado numa camada da Espressif que vai girando os setores para espalhar o desgaste.
+
+196
+00:16:05.138 --> 00:16:06.988
+E fica uma última ideia.
+
+197
+00:16:06.988 --> 00:16:11.775
+Um bom sistema de arquivos para flash não é aquele que funciona quando tudo dá certo.
+
+198
+00:16:11.775 --> 00:16:15.588
+É aquele que continua de pé no dia em que alguém tropeça no cabo.
+
+199
+00:16:15.588 --> 00:16:20.538
+No fim das contas, a maior diferença entre esses três não está na velocidade.
+
+200
+00:16:20.538 --> 00:16:24.975
+Está em como cada um se comporta no pior segundo da vida do seu aparelho.
+

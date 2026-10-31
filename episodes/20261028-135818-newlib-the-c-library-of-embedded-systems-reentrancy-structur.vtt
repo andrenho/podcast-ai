@@ -1,0 +1,658 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:07.750
+Você escreve uma linha de código que qualquer estudante de programação conhece de cor: um printf com a frase "olá, mundo".
+
+2
+00:00:07.700 --> 00:00:12.275
+Compila, grava no microcontrolador, liga a placa e espera.
+
+3
+00:00:12.275 --> 00:00:14.137
+Nada aparece.
+
+4
+00:00:14.137 --> 00:00:18.000
+Nenhuma tela, nenhum terminal, nenhum texto.
+
+5
+00:00:18.000 --> 00:00:22.250
+Às vezes é pior: a placa trava logo na primeira chamada.
+
+6
+00:00:22.250 --> 00:00:28.212
+E aí vem a pergunta que todo mundo que trabalha com sistemas embarcados acaba fazendo um dia.
+
+7
+00:00:28.212 --> 00:00:34.712
+Num chip sem sistema operacional, sem tela e sem arquivos, para onde vai o texto do printf?
+
+8
+00:00:34.712 --> 00:00:44.225
+A resposta passa por uma biblioteca discreta que está dentro de uma enorme quantidade de produtos: a Newlib, a biblioteca C de muitos sistemas embarcados.
+
+9
+00:00:44.225 --> 00:00:47.512
+Neste episódio vamos fazer três paradas.
+
+10
+00:00:47.512 --> 00:00:51.237
+Primeiro, o que é a Newlib e por que ela existe.
+
+11
+00:00:51.237 --> 00:00:58.162
+Depois, as estruturas de reentrância, uma solução engenhosa para um problema antigo da linguagem C.
+
+12
+00:00:58.162 --> 00:01:04.325
+E por fim as chamadas de sistema que a Newlib não implementa e deixa para você, os famosos stubs.
+
+13
+00:01:04.325 --> 00:01:11.125
+No final, vamos seguir um printf, passo a passo, desde a sua função até os fios da porta serial.
+
+14
+00:01:11.125 --> 00:01:13.650
+Vamos começar pela origem.
+
+15
+00:01:13.650 --> 00:01:25.450
+No começo dos anos noventa, uma empresa chamada Cygnus, conhecida por dar suporte comercial às ferramentas da GNU, precisava de uma biblioteca C para processadores embarcados.
+
+16
+00:01:25.450 --> 00:01:29.950
+A biblioteca C do mundo Linux, a glibc, não servia.
+
+17
+00:01:29.950 --> 00:01:37.062
+Ela é grande, pressupõe um kernel completo por baixo e tem uma licença que muitos fabricantes preferiam evitar.
+
+18
+00:01:37.062 --> 00:01:47.500
+A Cygnus juntou então código de várias fontes, boa parte vindo do mundo BSD, e montou uma biblioteca compacta, portável e com licenças permissivas.
+
+19
+00:01:47.500 --> 00:01:52.275
+Esse é o motivo de a Newlib ser tão popular entre fabricantes de chips.
+
+20
+00:01:52.275 --> 00:01:59.525
+Depois a Cygnus foi comprada pela Red Hat, e a biblioteca continua mantida até hoje como projeto aberto.
+
+21
+00:01:59.525 --> 00:02:07.887
+A ideia central da Newlib é uma divisão em duas camadas, e vale guardar essa imagem, porque ela explica todo o resto do episódio.
+
+22
+00:02:07.887 --> 00:02:11.000
+A camada de cima é enorme e portável.
+
+23
+00:02:11.000 --> 00:02:20.475
+Ela tem as funções de texto, as funções matemáticas, a alocação de memória, a formatação do printf e todo o sistema de entrada e saída padrão.
+
+24
+00:02:20.475 --> 00:02:27.275
+A camada de baixo é minúscula: um punhado de funções que falam com o hardware ou com o sistema operacional.
+
+25
+00:02:27.275 --> 00:02:31.900
+A Newlib entrega a camada de cima pronta e deixa a de baixo para você.
+
+26
+00:02:31.900 --> 00:02:39.275
+Existe ainda uma variante chamada Newlib nano, criada inicialmente pela ARM para os seus compiladores embarcados.
+
+27
+00:02:39.275 --> 00:02:42.012
+Ela troca recursos por tamanho.
+
+28
+00:02:42.012 --> 00:02:50.050
+O printf dela, por exemplo, não formata números de ponto flutuante por padrão, e isso vai voltar a aparecer daqui a pouco.
+
+29
+00:02:50.050 --> 00:03:00.412
+Então, primeira ideia guardada: a Newlib é uma biblioteca C com uma parte de cima grande e portável e uma parte de baixo pequena, que depende da sua plataforma.
+
+30
+00:03:00.412 --> 00:03:04.200
+Agora vamos para a segunda parada, a reentrância.
+
+31
+00:03:04.200 --> 00:03:10.075
+Para entender por que ela importa, precisamos falar de um defeito de nascença da linguagem C.
+
+32
+00:03:10.075 --> 00:03:17.437
+A biblioteca padrão do C foi desenhada nos anos setenta, num mundo em que um programa tinha uma única linha de execução.
+
+33
+00:03:17.437 --> 00:03:22.337
+Por isso várias funções guardam estado em variáveis globais escondidas.
+
+34
+00:03:22.337 --> 00:03:26.675
+O exemplo mais famoso é a variável errno, de "error number".
+
+35
+00:03:26.675 --> 00:03:34.137
+Quando uma função falha, ela grava um código de erro nessa variável global, e você consulta o valor logo em seguida.
+
+36
+00:03:34.137 --> 00:03:40.750
+Imagine agora um sistema operacional de tempo real, com duas tarefas rodando no mesmo processador.
+
+37
+00:03:40.750 --> 00:03:45.125
+A tarefa A chama uma função que falha e grava um código de erro.
+
+38
+00:03:45.125 --> 00:03:49.775
+Antes que ela leia esse código, o escalonador troca para a tarefa B.
+
+39
+00:03:49.775 --> 00:03:54.375
+A tarefa B também chama uma função que falha e sobrescreve o código.
+
+40
+00:03:54.375 --> 00:03:59.412
+Quando a tarefa A volta e lê a variável, encontra o erro da outra tarefa.
+
+41
+00:03:59.412 --> 00:04:03.887
+É um bug silencioso, raro e muito difícil de reproduzir.
+
+42
+00:04:03.887 --> 00:04:06.225
+E a errno não é a única.
+
+43
+00:04:06.225 --> 00:04:12.350
+A função strtok, que quebra uma string em pedaços, lembra onde parou entre uma chamada e outra.
+
+44
+00:04:12.350 --> 00:04:16.200
+O gerador de números aleatórios guarda a sua semente.
+
+45
+00:04:16.200 --> 00:04:20.662
+Algumas funções de data devolvem um ponteiro para um buffer estático.
+
+46
+00:04:20.662 --> 00:04:28.800
+E os próprios fluxos de entrada e saída, a saída padrão, a entrada padrão e a saída de erro, são estado compartilhado.
+
+47
+00:04:28.948 --> 00:04:34.348
+A solução da Newlib é pegar todo esse estado espalhado e reunir numa única estrutura.
+
+48
+00:04:34.298 --> 00:04:37.948
+Ela se chama reent, abreviação de reentrante.
+
+49
+00:04:37.948 --> 00:04:50.498
+Dentro dela ficam o código de erro, a posição da strtok, a semente do gerador aleatório, buffers temporários e, dependendo da versão e da configuração, informações ligadas aos fluxos padrão.
+
+50
+00:04:50.498 --> 00:04:56.635
+Existe também um ponteiro global com um nome curioso: impure pointer, o ponteiro impuro.
+
+51
+00:04:56.635 --> 00:05:00.798
+Ele aponta para a estrutura reent que está em uso naquele momento.
+
+52
+00:05:00.798 --> 00:05:05.760
+Quando o seu código usa errno, aquilo não é mais uma variável simples.
+
+53
+00:05:05.760 --> 00:05:11.498
+É uma macro que segue o ponteiro impuro até a estrutura atual e acessa o campo de erro lá dentro.
+
+54
+00:05:11.498 --> 00:05:14.135
+É aqui que a coisa fica elegante.
+
+55
+00:05:14.135 --> 00:05:22.073
+Se cada tarefa tiver a sua própria estrutura reent, basta o sistema operacional atualizar o ponteiro impuro a cada troca de contexto.
+
+56
+00:05:22.073 --> 00:05:28.985
+É exatamente isso que o FreeRTOS faz quando você liga a opção de reentrância da Newlib na configuração.
+
+57
+00:05:28.985 --> 00:05:38.835
+Cada tarefa ganha uma estrutura reent própria, guardada junto com os dados de controle da tarefa, e o escalonador redireciona o ponteiro sempre que troca de tarefa.
+
+58
+00:05:38.835 --> 00:05:46.735
+De repente, a errno da tarefa A e a errno da tarefa B são coisas diferentes, sem que você mude uma linha do seu código.
+
+59
+00:05:46.735 --> 00:05:54.348
+Por baixo disso, a Newlib tem versões internas de muitas funções com o sufixo "underline r", de reentrante.
+
+60
+00:05:54.348 --> 00:05:59.273
+Elas recebem a estrutura reent como primeiro parâmetro, explicitamente.
+
+61
+00:05:59.273 --> 00:06:07.310
+O printf que você chama é um invólucro fino: ele pega a estrutura atual e chama a versão reentrante, passando essa estrutura adiante.
+
+62
+00:06:07.310 --> 00:06:12.798
+Esse detalhe vai ser importante quando seguirmos o caminho do texto até a porta serial.
+
+63
+00:06:12.798 --> 00:06:16.535
+Mas há um custo, e é bom falar dele com clareza.
+
+64
+00:06:16.535 --> 00:06:19.623
+A estrutura reent completa não é pequena.
+
+65
+00:06:19.623 --> 00:06:23.848
+Na configuração cheia ela pode chegar perto de um kilobyte.
+
+66
+00:06:23.848 --> 00:06:29.310
+O tamanho exato varia com a versão, a arquitetura e as opções de compilação.
+
+67
+00:06:29.310 --> 00:06:34.798
+Num microcontrolador com poucos kilobytes de memória e dez tarefas, isso pesa.
+
+68
+00:06:34.798 --> 00:06:42.310
+Por isso existe uma versão reduzida, usada pela Newlib nano, que aloca algumas partes só quando são necessárias.
+
+69
+00:06:42.310 --> 00:06:52.585
+Versões recentes da Newlib também oferecem a opção de usar armazenamento local de thread no lugar do ponteiro impuro, mas o modelo clássico continua sendo o mais comum.
+
+70
+00:06:52.585 --> 00:06:59.198
+Outro ponto importante: a estrutura reent separa o estado de cada tarefa, mas não resolve tudo.
+
+71
+00:06:59.198 --> 00:07:04.123
+O alocador de memória, por exemplo, tem um único heap compartilhado.
+
+72
+00:07:04.123 --> 00:07:10.310
+Para ele, a Newlib chama funções de trava, como uma que trava e outra que destrava o malloc.
+
+73
+00:07:10.310 --> 00:07:16.310
+Por padrão elas não fazem nada, e cabe ao sistema operacional fornecer versões de verdade.
+
+74
+00:07:16.310 --> 00:07:22.923
+Versões mais novas da Newlib têm um mecanismo de travas redefiníveis justamente para facilitar isso.
+
+75
+00:07:22.923 --> 00:07:29.548
+Se ninguém fornecer essas travas, duas tarefas podem chamar malloc ao mesmo tempo e corromper o heap.
+
+76
+00:07:29.548 --> 00:07:34.748
+Um pequeno resumo antes de seguir, caso sua atenção tenha ido para o trânsito.
+
+77
+00:07:34.748 --> 00:07:39.110
+A linguagem C tem estado global escondido, como a errno.
+
+78
+00:07:39.110 --> 00:07:43.010
+A Newlib reúne esse estado numa estrutura chamada reent.
+
+79
+00:07:43.010 --> 00:07:50.610
+Um ponteiro global indica qual estrutura está ativa, e um sistema de tempo real troca esse ponteiro a cada mudança de tarefa.
+
+80
+00:07:50.610 --> 00:07:55.698
+O estado compartilhado de verdade, como o heap, precisa de travas.
+
+81
+00:07:55.698 --> 00:08:01.110
+Agora a terceira parada: as chamadas de sistema, a tal camada de baixo.
+
+82
+00:08:01.276 --> 00:08:09.151
+Num computador com Linux, quando a biblioteca C precisa escrever algo na tela, ela pede ao kernel com uma chamada de sistema.
+
+83
+00:08:09.101 --> 00:08:14.176
+Num microcontrolador sem sistema operacional, não há kernel a quem pedir.
+
+84
+00:08:14.176 --> 00:08:19.663
+A Newlib resolve isso declarando uma lista de funções que ela espera que alguém forneça.
+
+85
+00:08:19.663 --> 00:08:26.951
+São mais ou menos duas dezenas, com nomes herdados do mundo Unix e quase sempre com um sublinhado na frente.
+
+86
+00:08:26.951 --> 00:08:32.513
+Há uma para escrever, uma para ler, uma para abrir e outra para fechar arquivos.
+
+87
+00:08:32.513 --> 00:08:40.401
+Há uma para mover a posição num arquivo, uma para obter informações sobre um arquivo e uma que pergunta se um descritor é um terminal.
+
+88
+00:08:40.401 --> 00:08:46.926
+Há uma para encerrar o programa, uma para obter o identificador do processo e uma para enviar sinais.
+
+89
+00:08:46.926 --> 00:08:53.038
+E há uma que vai merecer atenção especial: a função sbrk, que aumenta o heap.
+
+90
+00:08:53.038 --> 00:08:58.526
+A camada de cima da Newlib chama essas funções através de invólucros reentrantes.
+
+91
+00:08:58.526 --> 00:09:11.188
+Por exemplo, existe uma função write com sufixo "underline r" que recebe a estrutura reent, chama a sua função write e, se algo falhar, copia o código de erro para dentro da estrutura da tarefa certa.
+
+92
+00:09:11.188 --> 00:09:15.051
+É assim que as duas metades do episódio se encontram.
+
+93
+00:09:15.051 --> 00:09:17.888
+Quem fornece as funções de baixo?
+
+94
+00:09:17.888 --> 00:09:22.338
+Existem algumas opções, e é aqui que muita gente se perde.
+
+95
+00:09:22.338 --> 00:09:31.288
+A primeira opção é uma biblioteca companheira chamada libgloss, que vem junto com a Newlib e contém implementações para várias placas e simuladores.
+
+96
+00:09:31.288 --> 00:09:36.613
+Dentro dela há um conjunto chamado nosys, de "no system", sem sistema.
+
+97
+00:09:36.613 --> 00:09:43.863
+São stubs no sentido mais puro: funções que existem só para o programa ligar, mas não fazem nada útil.
+
+98
+00:09:43.863 --> 00:09:49.151
+Em geral elas devolvem erro e marcam o código como "função não implementada".
+
+99
+00:09:49.151 --> 00:09:56.788
+Se você já viu o ligador avisar que a função write não está implementada e sempre vai falhar, foi esse conjunto que você puxou.
+
+100
+00:09:56.788 --> 00:10:00.626
+O programa compila, mas o printf escreve no vazio.
+
+101
+00:10:00.626 --> 00:10:03.526
+A segunda opção é o semihosting.
+
+102
+00:10:03.526 --> 00:10:13.738
+Nesse modo, as funções de baixo executam uma instrução especial de ponto de parada, e o depurador conectado ao chip intercepta o pedido e o executa no seu computador.
+
+103
+00:10:13.738 --> 00:10:18.238
+O texto aparece no console da sua ferramenta de desenvolvimento.
+
+104
+00:10:18.238 --> 00:10:24.076
+É prático para testes, mas é muito lento, porque o processador para a cada pedido.
+
+105
+00:10:24.076 --> 00:10:33.113
+E há uma armadilha clássica: se você desconectar o depurador, aquela instrução especial não encontra ninguém do outro lado, e o chip trava.
+
+106
+00:10:33.113 --> 00:10:38.226
+Muito produto já saiu da bancada funcionando e travou no campo por causa disso.
+
+107
+00:10:38.226 --> 00:10:42.201
+A terceira opção é escrever as suas próprias funções.
+
+108
+00:10:42.201 --> 00:10:49.101
+Muitas ferramentas de fabricantes já geram um arquivo com esqueletos prontos, e você só preenche o que importa.
+
+109
+00:10:49.101 --> 00:10:52.701
+É esse o caminho que leva o printf até a UART.
+
+110
+00:10:52.701 --> 00:10:55.451
+Então vamos à viagem completa.
+
+111
+00:10:55.451 --> 00:11:00.338
+Siga comigo, porque são vários passos, e eu vou numerar cada um.
+
+112
+00:11:00.338 --> 00:11:02.088
+Primeiro passo.
+
+113
+00:11:02.088 --> 00:11:05.651
+Você chama printf com uma string e alguns valores.
+
+114
+00:11:05.651 --> 00:11:14.451
+O printf pega a estrutura reent atual pelo ponteiro impuro e chama a versão reentrante da rotina de formatação, passando a saída padrão como destino.
+
+115
+00:11:14.451 --> 00:11:16.413
+Segundo passo.
+
+116
+00:11:16.413 --> 00:11:19.788
+A rotina de formatação percorre a string.
+
+117
+00:11:19.788 --> 00:11:29.888
+Onde há um marcador, ela converte o valor correspondente em caracteres: um inteiro em dígitos decimais, um número em hexadecimal, e assim por diante.
+
+118
+00:11:29.888 --> 00:11:33.488
+Esses caracteres não vão direto para lugar nenhum.
+
+119
+00:11:33.488 --> 00:11:36.476
+Eles vão para o buffer da saída padrão.
+
+120
+00:11:36.476 --> 00:11:40.051
+Terceiro passo, e é aqui que mora uma surpresa.
+
+121
+00:11:40.051 --> 00:11:45.101
+Na primeira vez que a saída padrão é usada, esse buffer ainda não existe.
+
+122
+00:11:45.101 --> 00:11:47.438
+A Newlib precisa criá-lo.
+
+123
+00:11:47.438 --> 00:11:52.613
+Para decidir como, ela chama a função que obtém informações sobre o descritor.
+
+124
+00:11:52.613 --> 00:12:00.188
+Se a resposta disser que aquilo é um dispositivo de caracteres, como um terminal, a saída fica com buffer de linha.
+
+125
+00:12:00.188 --> 00:12:03.526
+Caso contrário, fica com buffer completo.
+
+126
+00:12:03.526 --> 00:12:06.476
+Depois ela aloca o buffer com malloc.
+
+127
+00:12:06.628 --> 00:12:08.340
+Quarto passo.
+
+128
+00:12:08.290 --> 00:12:12.378
+O malloc, na primeira chamada, não tem memória nenhuma.
+
+129
+00:12:12.378 --> 00:12:16.290
+Ele chama a sua função sbrk e pede um pedaço.
+
+130
+00:12:16.290 --> 00:12:24.665
+Uma implementação típica de sbrk usa um símbolo definido no script do ligador, que marca o fim das variáveis globais.
+
+131
+00:12:24.665 --> 00:12:28.190
+O heap começa ali e cresce em direção à pilha.
+
+132
+00:12:28.190 --> 00:12:34.465
+Uma boa implementação verifica se o heap não vai encostar na pilha e devolve erro se isso acontecer.
+
+133
+00:12:34.465 --> 00:12:40.528
+Repare no que isso significa: o seu inocente printf pode acabar alocando memória dinâmica.
+
+134
+00:12:40.528 --> 00:12:46.740
+Se a sbrk estiver ausente ou com defeito, o primeiro printf falha, ou trava a placa.
+
+135
+00:12:46.740 --> 00:12:51.740
+Esse é um dos motivos mais comuns daquela tela vazia do começo do episódio.
+
+136
+00:12:51.740 --> 00:12:53.440
+Quinto passo.
+
+137
+00:12:53.440 --> 00:12:57.390
+Com o buffer criado, os caracteres vão se acumulando.
+
+138
+00:12:57.390 --> 00:13:04.590
+Quando aparece uma quebra de linha num fluxo com buffer de linha, ou quando o buffer enche, a Newlib despeja o conteúdo.
+
+139
+00:13:04.590 --> 00:13:18.115
+Ela chama a função interna de escrita do fluxo, que chama o write reentrante, que finalmente chama a sua função write, com o descritor número um, o da saída padrão, um ponteiro para os dados e a quantidade de bytes.
+
+140
+00:13:18.115 --> 00:13:21.790
+Sexto e último passo: a sua função write.
+
+141
+00:13:21.790 --> 00:13:25.290
+Aqui acabou a biblioteca e começou o hardware.
+
+142
+00:13:25.290 --> 00:13:29.578
+Na versão mais simples, você faz um laço sobre os bytes.
+
+143
+00:13:29.578 --> 00:13:39.465
+Para cada um, espera até um bit no registrador de status da UART indicar que o transmissor está livre, e então escreve o byte no registrador de dados.
+
+144
+00:13:39.465 --> 00:13:42.090
+O periférico cuida do resto.
+
+145
+00:13:42.090 --> 00:13:49.865
+Ele serializa o byte, acrescenta o bit de início e o de parada, e pulsa o pino de transmissão na velocidade configurada.
+
+146
+00:13:49.865 --> 00:13:57.465
+Do outro lado, um conversor serial para USB entrega os bytes ao seu terminal, e o "olá, mundo" aparece.
+
+147
+00:13:57.465 --> 00:14:03.928
+No fim, a função devolve quantos bytes escreveu, e a Newlib dá a tarefa por concluída.
+
+148
+00:14:03.928 --> 00:14:13.453
+Em muitas ferramentas, essa função write chama uma função que envia um único caractere, e tudo o que você precisa escrever é essa função de um caractere.
+
+149
+00:14:13.453 --> 00:14:20.440
+Para fechar esta parte, três armadilhas clássicas, todas consequência direta da viagem que acabamos de fazer.
+
+150
+00:14:20.440 --> 00:14:27.015
+A primeira: se você imprime sem quebra de linha, o texto pode ficar parado no buffer e nunca aparecer.
+
+151
+00:14:27.015 --> 00:14:35.140
+Você pode forçar o despejo com fflush, ou desligar o buffer da saída padrão logo no início do programa com a função setvbuf.
+
+152
+00:14:35.140 --> 00:14:41.440
+A segunda: na Newlib nano, imprimir um número com casas decimais não funciona por padrão.
+
+153
+00:14:41.440 --> 00:14:43.428
+Aparece vazio.
+
+154
+00:14:43.428 --> 00:14:53.340
+Para habilitar, você precisa pedir ao ligador que inclua explicitamente o suporte a ponto flutuante do printf, sabendo que isso aumenta bastante o tamanho do programa.
+
+155
+00:14:53.340 --> 00:14:58.628
+A terceira: chamar printf dentro de uma rotina de interrupção é pedir problema.
+
+156
+00:14:58.628 --> 00:15:05.540
+Pode haver alocação de memória, travas e espera ativa pela UART, tudo no pior lugar possível.
+
+157
+00:15:05.540 --> 00:15:07.540
+Vamos recapitular.
+
+158
+00:15:07.540 --> 00:15:17.703
+A Newlib é uma biblioteca C compacta, nascida na Cygnus, com uma camada de cima grande e portável e uma camada de baixo pequena, que é sua responsabilidade.
+
+159
+00:15:17.703 --> 00:15:27.653
+A estrutura reent reúne o estado global escondido da linguagem C, e um sistema de tempo real troca o ponteiro impuro a cada tarefa para que cada uma tenha a sua própria errno.
+
+160
+00:15:27.653 --> 00:15:34.178
+As chamadas de sistema são um contrato: stubs vazios, semihosting ou implementações suas.
+
+161
+00:15:34.178 --> 00:15:42.715
+E o caminho de um printf passa por formatação, buffer, malloc, sbrk e write, até chegar a um registrador de hardware.
+
+162
+00:15:42.715 --> 00:15:45.215
+E fica um pensamento final.
+
+163
+00:15:45.215 --> 00:15:54.815
+Quando você chama printf num microcontrolador, a biblioteca faz quase todo o trabalho, mas a última linha, a que toca o hardware, é sempre sua.
+
+164
+00:15:54.815 --> 00:16:00.503
+Entender essa fronteira é o que transforma uma tela vazia num problema que você sabe resolver.
+

@@ -1,0 +1,530 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:02.900
+Imagine que estamos no fim dos anos setenta. Você entra numa loja de computadores e vê uma dúzia de máquinas diferentes, de fabricantes diferentes. Cada uma
+
+2
+00:00:02.850 --> 00:00:08.812
+Você entra numa loja de computadores e vê uma dúzia de máquinas diferentes, de fabricantes diferentes. Cada uma tem seu próprio controlador de disco, seu próprio terminal e seu próprio jeito de organizar a memória.
+
+3
+00:00:08.812 --> 00:00:15.300
+Cada uma tem seu próprio controlador de disco, seu próprio terminal e seu próprio jeito de organizar a memória. Mesmo assim, o mesmo programa de planilha, o mesmo processador de texto e o mesmo compilador rodam em quase tod
+
+4
+00:00:15.300 --> 00:00:23.787
+Mesmo assim, o mesmo programa de planilha, o mesmo processador de texto e o mesmo compilador rodam em quase todas elas, sem mudar uma linha. Hoje isso parece banal. Naquela época era quase mágica. O responsável por essa mágica foi um sistema operaciona
+
+5
+00:00:23.787 --> 00:00:25.487
+Hoje isso parece banal. Naquela época era quase mágica. O responsável por essa mágica foi um sistema operacional pequeno, que cabia em 
+
+6
+00:00:25.487 --> 00:00:27.712
+Naquela época era quase mágica. O responsável por essa mágica foi um sistema operacional pequeno, que cabia em poucos kilobytes, chamado CPM. E
+
+7
+00:00:27.712 --> 00:00:34.625
+O responsável por essa mágica foi um sistema operacional pequeno, que cabia em poucos kilobytes, chamado CPM. Escreve-se com uma barra entre o P e o M. No coração desse sistema havia uma camada com um nome que você talvez
+
+8
+00:00:34.625 --> 00:00:43.800
+Escreve-se com uma barra entre o P e o M. No coração desse sistema havia uma camada com um nome que você talvez já tenha visto ao ligar o seu computador: o BIOS.
+Neste episódio, vamos abrir o capô do CPM. Primeiro, um pouco de contexto sobre quem o criou e por quê. Depois
+
+9
+00:00:43.800 --> 00:00:46.937
+Neste episódio, vamos abrir o capô do CPM. Primeiro, um pouco de contexto sobre quem o criou e por quê. Depois, as três peças que formam o sistema. Em se
+
+10
+00:00:46.937 --> 00:00:50.300
+Primeiro, um pouco de contexto sobre quem o criou e por quê. Depois, as três peças que formam o sistema. Em seguida, como a memória era organizada e como um programa conve
+
+11
+00:00:50.300 --> 00:00:53.187
+Depois, as três peças que formam o sistema. Em seguida, como a memória era organizada e como um programa conversava com o sistema operacional. Aí chegamos
+
+12
+00:00:53.187 --> 00:00:58.825
+Em seguida, como a memória era organizada e como um programa conversava com o sistema operacional. Aí chegamos ao prato principal: o BIOS, sua famosa tabela de saltos e o jeito engenhoso como o CPM se adaptava
+
+13
+00:00:58.825 --> 00:01:08.162
+Aí chegamos ao prato principal: o BIOS, sua famosa tabela de saltos e o jeito engenhoso como o CPM se adaptava a discos completamente diferentes. Vamos passar também pelo sistema de arquivos, pelo processo de inicialização e, no fim, pelo legado que o CPM 
+
+14
+00:01:08.162 --> 00:01:18.062
+Vamos passar também pelo sistema de arquivos, pelo processo de inicialização e, no fim, pelo legado que o CPM deixou e que você ainda carrega no seu computador hoje.
+Vamos começar pela história.
+O CPM foi criado por Gary Kildall, um cientista da computação que dava aulas na
+
+15
+00:01:18.062 --> 00:01:19.887
+Vamos começar pela história.
+O CPM foi criado por Gary Kildall, um cientista da computação que dava aulas na Escola de Pós-Graduação Nava
+
+16
+00:01:19.887 --> 00:01:27.862
+O CPM foi criado por Gary Kildall, um cientista da computação que dava aulas na Escola de Pós-Graduação Naval, na Califórnia. No começo dos anos setenta, Kildall prestava consultoria para a Intel e tinha criado uma linguagem de progra
+
+17
+00:01:27.862 --> 00:01:35.837
+No começo dos anos setenta, Kildall prestava consultoria para a Intel e tinha criado uma linguagem de programação chamada PL barra M, pensada para os novos microprocessadores da empresa. Para desenvolver e testar software num microcomputador 
+
+18
+00:01:35.837 --> 00:01:39.000
+pensada para os novos microprocessadores da empresa. Para desenvolver e testar software num microcomputador com unidade de disquete, ele precisava de um programa
+
+19
+00:01:39.000 --> 00:01:46.025
+Para desenvolver e testar software num microcomputador com unidade de disquete, ele precisava de um programa de controle. Por volta de mil novecentos e setenta e quatro, escreveu a primeira versão do CPM para o processador Intel o
+
+20
+00:01:46.025 --> 00:01:53.650
+Por volta de mil novecentos e setenta e quatro, escreveu a primeira versão do CPM para o processador Intel oitenta-oitenta. O nome costuma ser explicado como "Control Program for Microcomputers", ou seja, programa de controle para m
+
+21
+00:01:53.650 --> 00:02:01.375
+O nome costuma ser explicado como "Control Program for Microcomputers", ou seja, programa de controle para microcomputadores. Algumas fontes antigas citam outra expansão, mas a ideia é a mesma.
+Junto com a esposa, Dorothy McEwen, Kil
+
+22
+00:02:01.375 --> 00:02:05.825
+Algumas fontes antigas citam outra expansão, mas a ideia é a mesma.
+Junto com a esposa, Dorothy McEwen, Kildall fundou a empresa que viria a se chamar Digital <lang xml:lang="
+
+23
+00:03:40.108 --> 00:03:41.670
+Uma analogia ajuda.
+
+24
+00:03:41.620 --> 00:03:51.320
+Pense no BDOS como um arquiteto que conhece todas as regras de como uma casa deve ser organizada, mas não sabe onde ficam os canos e os fios de nenhuma casa específica.
+
+25
+00:03:51.320 --> 00:03:56.095
+O BIOS é o eletricista local, que conhece a fiação daquela casa em particular.
+
+26
+00:03:56.095 --> 00:04:04.320
+O arquiteto dá ordens genéricas, do tipo "leia o setor tal da trilha tal", e o eletricista executa do jeito que aquele hardware exige.
+
+27
+00:04:04.320 --> 00:04:07.283
+Essa separação era o segredo da portabilidade.
+
+28
+00:04:07.283 --> 00:04:13.408
+Um fabricante que quisesse rodar CPM na sua máquina não precisava reescrever o sistema operacional.
+
+29
+00:04:13.408 --> 00:04:18.745
+Bastava escrever um BIOS, geralmente de alguns poucos kilobytes em linguagem de montagem.
+
+30
+00:04:18.745 --> 00:04:20.383
+Todo o resto vinha pronto.
+
+31
+00:04:20.383 --> 00:04:32.520
+Se você se distraiu agora, guarde só isto: CCP é a interface com o usuário, BDOS é a lógica dos arquivos e é sempre igual, e BIOS é a ponte com o hardware, que cada fabricante escrevia.
+
+32
+00:04:32.520 --> 00:04:34.258
+Vamos agora para a memória.
+
+33
+00:04:34.258 --> 00:04:42.208
+Os processadores oitenta-oitenta e Zilog Zê Oitenta, que dominavam essa época, endereçavam no máximo sessenta e quatro kilobytes.
+
+34
+00:04:42.208 --> 00:04:45.920
+O CPM organizava esse espaço de um jeito bem simples.
+
+35
+00:04:45.920 --> 00:04:51.195
+Os primeiros duzentos e cinquenta e seis bytes da memória formavam a chamada página zero.
+
+36
+00:04:51.195 --> 00:04:54.108
+Ali ficavam algumas informações essenciais.
+
+37
+00:04:54.108 --> 00:05:00.383
+No endereço zero havia uma instrução de salto que levava à rotina de reinicialização a quente do sistema.
+
+38
+00:05:00.383 --> 00:05:06.983
+Um programa que quisesse terminar e devolver o controle ao CPM podia simplesmente saltar para o endereço zero.
+
+39
+00:05:06.983 --> 00:05:13.920
+No endereço cinco havia outro salto, e este era o mais importante de todos: ele levava à porta de entrada do BDOS.
+
+40
+00:05:13.920 --> 00:05:33.333
+Mais adiante na página zero ficavam uma área para descrever o arquivo informado na linha de comando e um buffer onde o CCP deixava o restante do que o usuário tinha digitado.
+Logo depois da página zero, exatamente no byte de número duzentos e cinquenta e seis, começava a área de programas transientes, conhecida pela sigla TPA.
+
+41
+00:05:33.333 --> 00:05:40.408
+Todo programa executável do CPM, os arquivos com extensão ponto com, era carregado ali e começava a rodar ali.
+
+42
+00:05:40.408 --> 00:05:43.808
+Não havia relocação, não havia cabeçalho complexo.
+
+43
+00:05:43.808 --> 00:05:48.920
+O arquivo era copiado byte a byte para a memória e o processador saltava para o início.
+
+44
+00:05:48.920 --> 00:05:51.208
+Simples e brutalmente eficiente.
+
+45
+00:05:51.208 --> 00:05:56.833
+No topo da memória ficavam o CCP, o BDOS e o BIOS, nessa ordem, de baixo para cima.
+
+46
+00:05:56.833 --> 00:05:58.783
+E aqui há um truque interessante.
+
+47
+00:05:58.783 --> 00:06:03.970
+Um programa grande podia sobrescrever o CCP para ganhar uns dois kilobytes extras.
+
+48
+00:06:03.970 --> 00:06:08.245
+Quando o programa terminava, o sistema recarregava o CCP do disco.
+
+49
+00:06:08.245 --> 00:06:11.833
+Em máquinas com tão pouca memória, cada kilobyte importava.
+
+50
+00:06:11.833 --> 00:06:14.770
+Agora, como um programa pedia algo ao sistema?
+
+51
+00:06:14.770 --> 00:06:17.783
+Era aqui que entrava aquele salto no endereço cinco.
+
+52
+00:06:17.783 --> 00:06:27.945
+O programa colocava o número da função desejada num registrador do processador, o registrador C, e um eventual parâmetro em outro par de registradores, o par D E.
+
+53
+00:06:27.945 --> 00:06:31.020
+Em seguida, fazia uma chamada ao endereço cinco.
+
+54
+00:06:31.020 --> 00:06:34.795
+A função dois, por exemplo, escrevia um caractere no console.
+
+55
+00:06:34.795 --> 00:06:42.108
+A função nove escrevia uma frase inteira, e um detalhe curioso é que essa frase precisava terminar com o caractere cifrão.
+
+56
+00:06:42.108 --> 00:06:49.195
+Havia funções para abrir arquivo, ler o próximo registro, criar arquivo, selecionar drive e assim por diante.
+
+57
+00:06:49.195 --> 00:06:51.133
+Repare na elegância disso.
+
+58
+00:06:51.133 --> 00:06:55.508
+O programa nunca precisava saber onde o BDOS estava de verdade na memória.
+
+59
+00:06:55.508 --> 00:06:59.558
+Numa máquina com trinta e dois kilobytes, o BDOS ficava num lugar.
+
+60
+00:06:59.558 --> 00:07:02.220
+Numa máquina com sessenta e quatro, em outro.
+
+61
+00:07:02.220 --> 00:07:06.795
+Mas o endereço cinco era sempre o mesmo e sempre apontava para o lugar certo.
+
+62
+00:07:06.795 --> 00:07:12.445
+Os programas ainda podiam ler o destino desse salto para descobrir até onde ia a memória livre.
+
+63
+00:07:12.445 --> 00:07:16.883
+Esse pequeno contrato foi o que tornou possível um mercado inteiro de software.
+
+64
+00:07:16.883 --> 00:07:19.745
+E com isso chegamos ao BIOS propriamente dito.
+
+65
+00:07:19.745 --> 00:07:22.483
+O BIOS começava com uma tabela de saltos.
+
+66
+00:07:22.483 --> 00:07:28.220
+Era uma sequência de instruções de salto, uma depois da outra, cada uma ocupando três bytes.
+
+67
+00:07:28.220 --> 00:07:31.608
+A posição de cada salto na tabela definia a função.
+
+68
+00:07:31.608 --> 00:07:38.020
+O BDOS sabia, por exemplo, que o quarto salto era sempre "ler um caractere do console", qualquer que fosse a máquina.
+
+69
+00:07:38.020 --> 00:07:42.020
+Na versão dois ponto dois, eram dezessete entradas.
+
+70
+00:07:42.172 --> 00:07:47.147
+Vale passar por elas, em grupos, para você sentir o que o sistema esperava do hardware.
+
+71
+00:07:47.097 --> 00:07:49.797
+O primeiro grupo cuidava da inicialização.
+
+72
+00:07:49.797 --> 00:08:00.922
+Havia a partida a frio, executada uma única vez quando a máquina era ligada, e a partida a quente, executada sempre que um programa terminava ou quando o usuário apertava Control C no prompt.
+
+73
+00:08:00.922 --> 00:08:04.509
+O segundo grupo cuidava dos dispositivos de caracteres.
+
+74
+00:08:04.509 --> 00:08:08.159
+Uma função dizia se havia uma tecla esperando para ser lida.
+
+75
+00:08:08.159 --> 00:08:09.647
+Outra lia essa tecla.
+
+76
+00:08:09.647 --> 00:08:12.009
+Outra escrevia um caractere na tela.
+
+77
+00:08:12.009 --> 00:08:20.209
+Havia também funções para a impressora e para dois dispositivos com nomes que hoje soam pitorescos: perfurador e leitor de fita de papel.
+
+78
+00:08:20.209 --> 00:08:23.147
+Isso mostra bem a época em que o CPM nasceu.
+
+79
+00:08:23.147 --> 00:08:35.097
+Existia ainda um mecanismo opcional, chamado IOBYTE, que permitia redirecionar esses dispositivos lógicos para dispositivos físicos diferentes, por exemplo, mandar a saída da impressora para um terminal.
+
+80
+00:08:35.097 --> 00:08:38.172
+O terceiro grupo, o maior, cuidava do disco.
+
+81
+00:08:38.172 --> 00:08:44.222
+E aqui está um ponto que surpreende muita gente: o BIOS do CPM não sabia nada sobre arquivos.
+
+82
+00:08:44.222 --> 00:08:46.609
+Ele trabalhava num nível muito baixo.
+
+83
+00:08:46.609 --> 00:08:59.772
+Havia uma função para levar a cabeça do drive à trilha zero, uma para selecionar o drive, uma para escolher a trilha, uma para escolher o setor e uma para informar em que endereço de memória os dados deveriam ser lidos ou gravados.
+
+84
+00:08:59.772 --> 00:09:03.634
+Depois, finalmente, havia uma função para ler e outra para gravar.
+
+85
+00:09:03.634 --> 00:09:07.584
+Cada operação lidava com um setor de cento e vinte e oito bytes.
+
+86
+00:09:07.584 --> 00:09:16.409
+As duas últimas entradas, adicionadas na versão dois, eram uma consulta para saber se a impressora estava pronta e uma função de tradução de setores.
+
+87
+00:09:16.409 --> 00:09:18.497
+Esta última merece uma pausa.
+
+88
+00:09:18.497 --> 00:09:22.334
+Os drives da época eram lentos em relação ao disco que girava.
+
+89
+00:09:22.334 --> 00:09:32.759
+Se o sistema lesse o setor um e logo pedisse o setor dois, muitas vezes o setor dois já tinha passado debaixo da cabeça, e era preciso esperar uma volta inteira do disco.
+
+90
+00:09:32.759 --> 00:09:36.222
+A solução era o entrelaçamento, que em inglês se chama skew.
+
+91
+00:09:36.222 --> 00:09:41.034
+Os setores logicamente consecutivos eram espalhados fisicamente pela trilha.
+
+92
+00:09:41.034 --> 00:09:48.097
+No formato padrão de disquete de oito polegadas, o setor lógico seguinte ficava seis posições físicas adiante.
+
+93
+00:09:48.097 --> 00:09:54.922
+A função de tradução do BIOS convertia o número lógico no número físico, normalmente usando uma pequena tabela.
+
+94
+00:09:54.922 --> 00:09:59.659
+Recapitulando este trecho: o BIOS era uma lista fixa de pontos de entrada.
+
+95
+00:09:59.659 --> 00:10:08.022
+Uns cuidavam da partida, outros do console e da impressora, e a maioria do disco, sempre no nível de trilha e setor, nunca de arquivo.
+
+96
+00:10:08.022 --> 00:10:10.022
+Agora, uma pergunta natural.
+
+97
+00:10:10.022 --> 00:10:15.597
+Se o BDOS era sempre igual, como ele lidava com discos de tamanhos completamente diferentes?
+
+98
+00:10:15.597 --> 00:10:20.097
+Um disquete de oito polegadas, um de cinco e um quarto, um disco rígido.
+
+99
+00:10:20.097 --> 00:10:23.209
+Cada um tinha um número diferente de trilhas e setores.
+
+100
+00:10:23.209 --> 00:10:33.272
+A resposta, introduzida na versão dois, foram duas estruturas de dados que o BIOS fornecia ao BDOS: o cabeçalho de parâmetros de disco e o bloco de parâmetros de disco.
+
+101
+00:10:33.272 --> 00:10:38.534
+Quando o BDOS selecionava um drive, o BIOS devolvia um ponteiro para o cabeçalho daquele drive.
+
+102
+00:10:38.534 --> 00:10:44.897
+Esse cabeçalho, por sua vez, apontava para o bloco de parâmetros, que descrevia a geometria lógica do disco.
+
+103
+00:10:44.897 --> 00:10:48.484
+Quantos setores de cento e vinte e oito bytes havia por trilha.
+
+104
+00:10:48.484 --> 00:10:53.197
+Qual era o tamanho do bloco de alocação, que podia ir de um a dezesseis kilobytes.
+
+105
+00:10:53.197 --> 00:10:55.609
+Quantos blocos o disco tinha no total.
+
+106
+00:10:55.609 --> 00:10:57.884
+Quantas entradas cabiam no diretório.
+
+107
+00:10:57.884 --> 00:11:03.309
+E quantas trilhas, no início do disco, eram reservadas para o próprio sistema operacional.
+
+108
+00:11:03.309 --> 00:11:07.022
+O cabeçalho também apontava para áreas de trabalho na memória.
+
+109
+00:11:07.022 --> 00:11:14.359
+Uma delas era o vetor de alocação, um mapa de bits em que cada bit dizia se um bloco do disco estava ocupado ou livre.
+
+110
+00:11:14.359 --> 00:11:21.472
+Outra era o vetor de verificação, usado para detectar se o usuário tinha trocado o disquete sem avisar o sistema.
+
+111
+00:11:21.472 --> 00:11:32.797
+Se a troca fosse detectada, o disco era marcado como somente leitura para evitar corrupção, e daí vinha uma mensagem de erro que muitos usuários da época lembram com pouco carinho.
+
+112
+00:11:32.956 --> 00:11:36.531
+Com essas tabelas, o mesmo BDOS servia para qualquer disco. O fabricante só precisava descrever o seu hardware no BIOS. Essa ideia de separar o código genérico de uma desc
+
+113
+00:11:36.481 --> 00:11:40.206
+O fabricante só precisava descrever o seu hardware no BIOS. Essa ideia de separar o código genérico de uma descrição em dados é, até hoje, uma das boas lições de engenhari
+
+114
+00:11:40.206 --> 00:11:47.868
+Essa ideia de separar o código genérico de uma descrição em dados é, até hoje, uma das boas lições de engenharia de software.
+Outro detalhe técnico importante: muitos controladores usavam setores físicos maiores do que cento e vinte e o
+
+115
+00:11:47.868 --> 00:11:57.893
+Outro detalhe técnico importante: muitos controladores usavam setores físicos maiores do que cento e vinte e oito bytes, como duzentos e cinquenta e seis ou quinhentos e doze. Nesses casos, o BIOS precisava fazer o chamado blocking e deblocking, ou seja, juntar ou separar os pequenos r
+
+116
+00:11:57.893 --> 00:12:09.193
+Nesses casos, o BIOS precisava fazer o chamado blocking e deblocking, ou seja, juntar ou separar os pequenos registros lógicos dentro de um setor físico maior, com um buffer intermediário. A Digital research distribuía um código de exemplo para isso, porque fazer certo
+
+117
+00:15:26.620 --> 00:15:28.057
+Vamos recapitular.
+
+118
+00:15:28.007 --> 00:15:33.270
+O CPM foi criado por Gary Kildall nos anos setenta e se dividia em três partes.
+
+119
+00:15:33.270 --> 00:15:35.645
+O CCP conversava com o usuário.
+
+120
+00:15:35.645 --> 00:15:40.220
+O BDOS, idêntico em todas as máquinas, cuidava da lógica dos arquivos.
+
+121
+00:15:40.220 --> 00:15:46.720
+O BIOS, escrito por cada fabricante, fazia a ponte com o hardware por meio de uma tabela fixa de saltos.
+
+122
+00:15:46.720 --> 00:15:52.782
+Os programas começavam sempre no mesmo endereço e chamavam o sistema sempre pelo mesmo ponto de entrada.
+
+123
+00:15:52.782 --> 00:15:59.820
+E os discos eram descritos por tabelas de parâmetros, o que permitia ao mesmo código lidar com geometrias diferentes.
+
+124
+00:15:59.820 --> 00:16:01.945
+Para terminar, uma reflexão.
+
+125
+00:16:01.945 --> 00:16:06.532
+O grande feito do CPM não foi fazer muita coisa, porque ele fazia pouquíssimo.
+
+126
+00:16:06.532 --> 00:16:12.445
+O feito foi traçar uma linha clara entre o que muda e o que não muda, e transformar essa linha num contrato.
+
+127
+00:16:12.445 --> 00:16:16.145
+De um lado, o hardware, caótico e diferente em cada máquina.
+
+128
+00:16:16.145 --> 00:16:20.282
+Do outro, o software, que podia finalmente ignorar esse caos.
+
+129
+00:16:20.282 --> 00:16:23.882
+Essa linha tinha poucos kilobytes e um nome de quatro letras.
+
+130
+00:16:23.882 --> 00:16:30.720
+Toda vez que você vê a palavra BIOS na tela do seu computador, está olhando para o eco dessa ideia simples.
+

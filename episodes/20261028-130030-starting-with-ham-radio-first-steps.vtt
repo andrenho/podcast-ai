@@ -1,0 +1,726 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:05.562
+Imagine que você está em casa, numa noite qualquer, girando um botão devagar.
+
+2
+00:00:05.512 --> 00:00:11.075
+Do alto-falante sai um chiado, depois um assobio, e de repente uma voz.
+
+3
+00:00:11.075 --> 00:00:19.187
+É alguém no Japão, ou na Itália, ou numa ilha no meio do Atlântico, dizendo o próprio nome e perguntando se tem alguém escutando.
+
+4
+00:00:19.187 --> 00:00:21.187
+E você responde.
+
+5
+00:00:21.187 --> 00:00:27.225
+Não tem internet no meio, não tem operadora de celular, não tem satélite comercial.
+
+6
+00:00:27.225 --> 00:00:34.450
+Tem só o seu rádio, um pedaço de fio pendurado no quintal e a atmosfera do planeta fazendo o resto do trabalho.
+
+7
+00:00:34.450 --> 00:00:36.675
+Isso é radioamadorismo.
+
+8
+00:00:36.675 --> 00:00:44.575
+E, ao contrário do que muita gente pensa, não é coisa do passado nem de um clube fechado de senhores com fones gigantes.
+
+9
+00:00:44.575 --> 00:00:51.500
+É um hobby vivo, técnico, cheio de gente jovem chegando, e muito mais acessível do que parece.
+
+10
+00:00:51.500 --> 00:00:55.925
+Neste episódio, a gente vai conversar sobre os primeiros passos.
+
+11
+00:00:55.925 --> 00:01:00.700
+Primeiro, o que é o radioamadorismo e por que ele ainda faz sentido.
+
+12
+00:01:00.700 --> 00:01:05.650
+Depois, como começar só escutando, sem gastar quase nada.
+
+13
+00:01:05.650 --> 00:01:09.700
+Em seguida, como funciona a licença aqui no Brasil.
+
+14
+00:01:09.700 --> 00:01:13.512
+Depois, que equipamento faz sentido no começo.
+
+15
+00:01:13.512 --> 00:01:20.687
+E por fim, como é o seu primeiro contato no ar, aquele momento em que você aperta o botão e fala pela primeira vez.
+
+16
+00:01:20.687 --> 00:01:22.250
+Vamos lá.
+
+17
+00:01:22.250 --> 00:01:27.287
+Começando pelo básico: o que é, afinal, um radioamador?
+
+18
+00:01:27.287 --> 00:01:33.225
+É uma pessoa autorizada a transmitir em certas faixas de frequência reservadas para uso amador.
+
+19
+00:01:33.225 --> 00:01:37.062
+Amador aqui não quer dizer amadorismo no sentido ruim.
+
+20
+00:01:37.062 --> 00:01:39.925
+Quer dizer sem fins lucrativos.
+
+21
+00:01:39.925 --> 00:01:46.675
+Você não pode usar o rádio para fazer negócio, para vender nada, para transmitir música ou propaganda.
+
+22
+00:01:46.675 --> 00:01:55.825
+O objetivo é experimentação técnica, comunicação entre pessoas, aprendizado e, em situações de emergência, apoio à comunidade.
+
+23
+00:01:55.825 --> 00:02:02.562
+E aí vem a pergunta óbvia: por que alguém ia querer isso, se todo mundo tem um celular no bolso?
+
+24
+00:02:02.562 --> 00:02:04.812
+Tem algumas respostas.
+
+25
+00:02:04.812 --> 00:02:07.312
+A primeira é a independência.
+
+26
+00:02:07.312 --> 00:02:16.700
+Quando uma enchente derruba as torres de celular, ou quando a energia cai numa região inteira, o radioamador com uma bateria e uma antena continua se comunicando.
+
+27
+00:02:16.700 --> 00:02:22.812
+Isso já aconteceu muitas vezes no Brasil e no mundo, em desastres naturais de grande escala.
+
+28
+00:02:22.812 --> 00:02:25.737
+A segunda resposta é o aprendizado.
+
+29
+00:02:25.737 --> 00:02:33.425
+Pouca coisa ensina tanto sobre eletricidade, ondas e física quanto tentar fazer um sinal seu chegar do outro lado do mundo.
+
+30
+00:02:33.425 --> 00:02:38.237
+E a terceira resposta, talvez a mais honesta, é que é divertido.
+
+31
+00:02:38.237 --> 00:02:47.950
+Existe uma emoção muito particular em falar com alguém a milhares de quilômetros sabendo que foi você, com o seu equipamento e a sua antena, que fez aquilo acontecer.
+
+32
+00:02:47.950 --> 00:02:51.937
+Uma ideia técnica ajuda a entender tudo o que vem depois.
+
+33
+00:02:51.937 --> 00:02:55.950
+As frequências de rádio se comportam de jeitos diferentes.
+
+34
+00:02:55.950 --> 00:03:09.275
+As frequências mais baixas, na faixa chamada de ondas curtas, que os radioamadores chamam de HF, de "alta frequência", conseguem bater numa camada da atmosfera chamada ionosfera e voltar para a Terra lá longe.
+
+35
+00:03:09.275 --> 00:03:12.675
+É como uma bola de bilhar quicando na tabela.
+
+36
+00:03:12.675 --> 00:03:16.200
+É por isso que dá para falar com outro continente.
+
+37
+00:03:16.200 --> 00:03:26.975
+Já as frequências mais altas, chamadas de VHF e UHF, que são a "muito alta" e a "ultra alta frequência", tendem a atravessar a ionosfera e seguir para o espaço.
+
+38
+00:03:26.975 --> 00:03:34.075
+Na prática, elas funcionam mais em linha de visada, alcançando dezenas de quilômetros, não milhares.
+
+39
+00:03:34.075 --> 00:03:39.687
+Guarde essa diferença, porque ela vai aparecer de novo quando a gente falar de equipamento.
+
+40
+00:03:39.687 --> 00:03:43.387
+Então, primeiro passo de verdade: escutar.
+
+41
+00:03:43.387 --> 00:03:47.300
+E isso você pode fazer hoje, sem licença nenhuma.
+
+42
+00:03:47.300 --> 00:03:51.037
+Escutar as frequências de radioamador é permitido.
+
+43
+00:03:51.037 --> 00:03:58.550
+Existem receptores na internet, mantidos por radioamadores e universidades, que você acessa pelo navegador.
+
+44
+00:03:58.550 --> 00:04:05.025
+Você escolhe uma faixa, ajusta a frequência na tela e ouve o que está acontecendo naquela região do mundo.
+
+45
+00:04:05.025 --> 00:04:09.450
+Procure por "receptor web" ou "web SDR" no buscador.
+
+46
+00:04:09.450 --> 00:04:16.800
+SDR quer dizer rádio definido por software, que é um rádio em que boa parte do trabalho é feita por um computador.
+
+47
+00:04:16.948 --> 00:04:24.310
+Se quiser algo físico, existem pequenos receptores que se conectam no computador pela porta USB e custam pouco.
+
+48
+00:04:24.260 --> 00:04:28.860
+Ligados a uma antena simples, eles permitem ouvir muita coisa.
+
+49
+00:04:28.860 --> 00:04:38.623
+Nessa fase de escuta, você vai começar a reconhecer como as pessoas conversam no rádio, quais palavras elas usam, como se apresentam e como encerram.
+
+50
+00:04:38.623 --> 00:04:46.510
+Você vai notar, por exemplo, que em certos horários uma faixa está cheia de gente e, em outros, completamente vazia.
+
+51
+00:04:46.510 --> 00:04:48.773
+Isso não é aleatório.
+
+52
+00:04:48.773 --> 00:04:58.373
+A ionosfera muda com a luz do sol, com a hora do dia, com a estação do ano e até com um ciclo de atividade solar que dura cerca de onze anos.
+
+53
+00:04:58.373 --> 00:05:02.235
+Escutar é a melhor aula sobre propagação que existe.
+
+54
+00:05:02.235 --> 00:05:09.210
+Vou fazer uma pausa rápida para recapitular, caso você tenha se distraído com o trânsito ou com a panela no fogo.
+
+55
+00:05:09.210 --> 00:05:14.473
+Radioamadorismo é transmitir em faixas reservadas, sem fins lucrativos.
+
+56
+00:05:14.473 --> 00:05:18.585
+Ondas curtas podem dar a volta ao mundo quicando na atmosfera.
+
+57
+00:05:18.585 --> 00:05:22.560
+Frequências mais altas alcançam distâncias menores.
+
+58
+00:05:22.560 --> 00:05:29.060
+E o primeiro passo é escutar, coisa que você pode fazer hoje mesmo, de graça, pela internet.
+
+59
+00:05:29.060 --> 00:05:34.498
+Agora vamos ao segundo passo, que é onde muita gente trava: a licença.
+
+60
+00:05:34.498 --> 00:05:38.135
+Para transmitir, você precisa ser autorizado.
+
+61
+00:05:38.135 --> 00:05:44.048
+No Brasil, quem regula isso é a Anatel, a Agência Nacional de Telecomunicações.
+
+62
+00:05:44.048 --> 00:05:51.873
+Transmitir em faixa de radioamador sem licença é irregular e pode trazer problemas legais, então esse passo não é opcional.
+
+63
+00:05:51.873 --> 00:05:55.210
+O caminho, de forma geral, é este.
+
+64
+00:05:55.210 --> 00:06:00.810
+Você presta uma prova para obter o Certificado de Operador de Estação de Radioamador.
+
+65
+00:06:00.810 --> 00:06:09.848
+Depois, com o certificado em mãos, você solicita a autorização para operar e recebe o seu indicativo de chamada, que é o seu "nome" no ar.
+
+66
+00:06:09.848 --> 00:06:16.660
+Existem taxas envolvendo esse processo, então vale verificar os valores atualizados no site da Anatel.
+
+67
+00:06:16.660 --> 00:06:22.598
+Os radioamadores no Brasil são divididos em classes, chamadas de A, B e C.
+
+68
+00:06:22.598 --> 00:06:26.898
+Quem está começando entra na classe C, que é a de entrada.
+
+69
+00:06:26.898 --> 00:06:32.048
+A classe C tem permissão para usar uma parte das faixas e com potência limitada.
+
+70
+00:06:32.048 --> 00:06:41.485
+Com o tempo, e com novas provas, você pode subir para a classe B e depois para a classe A, ganhando acesso a mais faixas e mais potência.
+
+71
+00:06:41.485 --> 00:06:51.198
+Os detalhes exatos de quais faixas e quanta potência cada classe pode usar estão no regulamento, e esse regulamento já passou por mudanças ao longo dos anos.
+
+72
+00:06:51.198 --> 00:07:00.923
+Por isso, minha sugestão sincera é: confirme sempre as regras atuais direto na Anatel antes de comprar qualquer equipamento pensando numa faixa específica.
+
+73
+00:07:00.923 --> 00:07:03.223
+E a prova, como é?
+
+74
+00:07:03.223 --> 00:07:19.523
+Para a classe C, ela costuma cobrir legislação de telecomunicações, ou seja, as regras do serviço, e também técnica e ética operacional, que é basicamente como se comportar no ar, como fazer um contato, quais códigos usar e o que não se pode fazer.
+
+75
+00:07:19.523 --> 00:07:22.210
+Não é uma prova de engenharia.
+
+76
+00:07:22.210 --> 00:07:26.460
+É perfeitamente possível estudar sozinho em algumas semanas.
+
+77
+00:07:26.460 --> 00:07:32.785
+Existem apostilas, bancos de questões e cursos oferecidos por clubes de radioamadores.
+
+78
+00:07:32.785 --> 00:07:42.210
+Nos últimos anos, a Anatel passou a permitir a realização das provas pela internet, o que facilitou muito para quem mora longe dos grandes centros.
+
+79
+00:07:42.210 --> 00:07:47.260
+Antigamente, saber código Morse era exigência para avançar de classe.
+
+80
+00:07:47.260 --> 00:07:50.460
+Hoje isso não é necessário para começar.
+
+81
+00:07:50.460 --> 00:07:58.285
+Muita gente aprende Morse por gosto, porque é um modo de comunicação incrivelmente eficiente, mas não é barreira de entrada.
+
+82
+00:07:58.285 --> 00:08:00.685
+E o indicativo de chamada?
+
+83
+00:08:00.685 --> 00:08:03.673
+É uma combinação de letras e um número.
+
+84
+00:08:03.673 --> 00:08:10.373
+Os indicativos brasileiros começam com a letra P, e o número costuma indicar a região do país.
+
+85
+00:08:10.373 --> 00:08:17.910
+Para a classe C, o prefixo tradicionalmente usado é P U, seguido do número da região e de algumas letras.
+
+86
+00:08:17.910 --> 00:08:25.748
+Quando você ouvir alguém dizendo algo como "papa uniform dois", provavelmente é um colega iniciante de São Paulo, por exemplo.
+
+87
+00:08:25.900 --> 00:08:29.625
+Aqui entra uma dica valiosa: procure um clube.
+
+88
+00:08:29.575 --> 00:08:37.825
+No Brasil, a principal entidade é a LABRE, a Liga de Amadores Brasileiros de Radioemissão, que tem representações nos estados.
+
+89
+00:08:37.825 --> 00:08:41.775
+Além dela, existem muitos radioclubes locais.
+
+90
+00:08:41.775 --> 00:08:50.925
+Os clubes oferecem cursos, ajudam com a papelada, emprestam equipamento, e principalmente têm pessoas experientes dispostas a ajudar.
+
+91
+00:08:50.925 --> 00:08:55.437
+No radioamadorismo existe uma tradição muito bonita de mentoria.
+
+92
+00:08:55.437 --> 00:09:00.062
+O veterano que ajuda o novato é quase uma regra não escrita do hobby.
+
+93
+00:09:00.062 --> 00:09:03.775
+Então, terceiro passo: o equipamento.
+
+94
+00:09:03.775 --> 00:09:07.200
+E aqui eu quero tirar um peso das suas costas.
+
+95
+00:09:07.200 --> 00:09:10.362
+Você não precisa gastar muito para começar.
+
+96
+00:09:10.362 --> 00:09:16.962
+O ponto de partida mais comum é um rádio portátil, aquele que parece um walkie-talkie mais sofisticado.
+
+97
+00:09:16.962 --> 00:09:20.600
+Os radioamadores chamam carinhosamente de "handy".
+
+98
+00:09:20.600 --> 00:09:29.825
+Muitos deles operam em duas faixas, a de dois metros, que fica no VHF, e a de setenta centímetros, que fica no UHF.
+
+99
+00:09:29.825 --> 00:09:37.275
+Esses nomes, dois metros e setenta centímetros, vêm do tamanho aproximado da onda de rádio naquela frequência.
+
+100
+00:09:37.275 --> 00:09:40.925
+Os modelos de entrada custam relativamente pouco.
+
+101
+00:09:40.925 --> 00:09:50.500
+Um cuidado importante: prefira equipamentos homologados pela Anatel, e desconfie de promessas exageradas de alcance ou potência em rádios muito baratos.
+
+102
+00:09:50.500 --> 00:09:55.550
+Lembra que eu falei que essas frequências mais altas alcançam distâncias menores?
+
+103
+00:09:55.550 --> 00:09:56.962
+Pois é.
+
+104
+00:09:56.962 --> 00:10:01.525
+Então como alguém com um rádio de mão consegue falar com outra cidade?
+
+105
+00:10:01.525 --> 00:10:04.300
+A resposta são as repetidoras.
+
+106
+00:10:04.300 --> 00:10:10.125
+Uma repetidora é uma estação instalada num lugar alto, como um morro ou o topo de um prédio.
+
+107
+00:10:10.125 --> 00:10:18.762
+Ela escuta numa frequência e retransmite, ao mesmo tempo, em outra frequência, com mais potência e de uma posição privilegiada.
+
+108
+00:10:18.762 --> 00:10:26.037
+Assim, o seu rádio pequeno, que sozinho alcançaria poucos quilômetros, consegue cobrir uma região inteira.
+
+109
+00:10:26.037 --> 00:10:39.537
+Muitas cidades brasileiras têm repetidoras, e nelas acontecem as conversas do dia a dia, as rodadas, que são encontros marcados em que vários radioamadores se revezam na conversa, e também as redes de emergência.
+
+110
+00:10:39.537 --> 00:10:46.175
+Uma dica que faz uma diferença enorme: troque a antena original do rádio portátil por uma antena melhor.
+
+111
+00:10:46.175 --> 00:10:50.600
+A antena que vem de fábrica costuma ser um compromisso de tamanho.
+
+112
+00:10:50.600 --> 00:10:58.262
+Uma antena maior, ou uma antena externa no telhado ou na janela, melhora o seu sinal mais do que qualquer aumento de potência.
+
+113
+00:10:58.262 --> 00:11:03.775
+Existe um ditado entre radioamadores que diz que o melhor amplificador é uma boa antena.
+
+114
+00:11:03.775 --> 00:11:07.625
+E as ondas curtas, aquelas que dão a volta ao mundo?
+
+115
+00:11:07.625 --> 00:11:17.487
+Elas exigem um rádio maior, chamado transceptor de HF, e uma antena mais comprida, que pode ser simplesmente um fio esticado com o comprimento certo.
+
+116
+00:11:17.487 --> 00:11:21.650
+É um passo natural depois, mas não precisa ser o primeiro.
+
+117
+00:11:21.650 --> 00:11:26.987
+E aqui vale citar os modos digitais, que mudaram o hobby nos últimos anos.
+
+118
+00:11:26.987 --> 00:11:39.075
+Um deles, chamado FT oito, permite que o rádio, ligado a um computador, troque mensagens curtíssimas com outras estações usando sinais tão fracos que um ouvido humano nem perceberia.
+
+119
+00:11:39.075 --> 00:11:45.987
+Com pouca potência e uma antena simples, gente do mundo inteiro tem feito contatos com outros continentes.
+
+120
+00:11:45.987 --> 00:11:50.850
+É uma porta de entrada muito interessante para quem gosta de tecnologia.
+
+121
+00:11:50.850 --> 00:11:54.162
+Mais uma pausa para respirar e recapitular.
+
+122
+00:11:54.162 --> 00:12:01.975
+Para transmitir, você precisa de licença da Anatel, que começa com uma prova acessível e leva você para a classe C.
+
+123
+00:12:01.975 --> 00:12:05.525
+Procure a LABRE ou um radioclube da sua cidade.
+
+124
+00:12:05.525 --> 00:12:15.525
+E como primeiro equipamento, um rádio portátil de duas faixas, de preferência com uma antena melhor, já permite usar as repetidoras e conversar com a sua região.
+
+125
+00:12:15.525 --> 00:12:20.875
+Agora, o quarto passo, o mais emocionante: o seu primeiro contato.
+
+126
+00:12:20.875 --> 00:12:24.537
+Os radioamadores chamam um contato de QSO.
+
+127
+00:12:24.537 --> 00:12:32.875
+Esse "Q" vem do chamado código Q, um conjunto de abreviações de três letras que nasceu na época da telegrafia para economizar tempo.
+
+128
+00:12:32.875 --> 00:12:35.875
+Algumas delas aparecem o tempo todo.
+
+129
+00:12:35.875 --> 00:12:39.225
+Q T H quer dizer a sua localização.
+
+130
+00:12:39.225 --> 00:12:42.250
+Q R M quer dizer interferência.
+
+131
+00:12:42.250 --> 00:12:45.912
+Q S L quer dizer "entendido" ou "confirmado".
+
+132
+00:12:45.912 --> 00:12:50.975
+Você vai pegar isso rapidinho, principalmente se passou um tempo escutando.
+
+133
+00:12:51.124 --> 00:12:55.399
+Outra ferramenta essencial é o alfabeto fonético internacional.
+
+134
+00:12:55.349 --> 00:13:03.249
+Em vez de dizer as letras do seu indicativo, que podem se confundir num sinal ruim, você usa palavras padronizadas.
+
+135
+00:13:03.249 --> 00:13:09.311
+A vira alfa, B vira bravo, C vira charlie, e assim por diante, até zulu.
+
+136
+00:13:09.311 --> 00:13:11.949
+Vale decorar logo no começo.
+
+137
+00:13:11.949 --> 00:13:16.361
+Você vai usar para soletrar o seu indicativo dezenas de vezes.
+
+138
+00:13:16.361 --> 00:13:18.774
+Como é, na prática?
+
+139
+00:13:18.774 --> 00:13:25.899
+Primeiro você escuta a frequência por um tempo, para ter certeza de que ela está livre e ninguém está no meio de uma conversa.
+
+140
+00:13:25.899 --> 00:13:27.949
+Depois você chama.
+
+141
+00:13:27.949 --> 00:13:33.736
+Na repetidora, muitas vezes basta dizer o seu indicativo e avisar que está na escuta.
+
+142
+00:13:33.736 --> 00:13:38.136
+Alguém responde, chamando o seu indicativo e dizendo o dele.
+
+143
+00:13:38.136 --> 00:13:46.724
+Vocês trocam o nome, a localização, como está chegando o sinal de cada um, e às vezes conversam sobre o equipamento ou sobre o tempo.
+
+144
+00:13:46.724 --> 00:13:51.361
+E no fim cada um se despede, sempre dizendo o próprio indicativo.
+
+145
+00:13:51.361 --> 00:13:55.361
+Identificar-se é uma obrigação, não uma formalidade.
+
+146
+00:13:55.361 --> 00:13:57.249
+Vai dar nervoso.
+
+147
+00:13:57.249 --> 00:14:06.111
+Todo radioamador lembra do próprio primeiro contato, e quase todo mundo lembra que gaguejou, esqueceu alguma coisa ou falou rápido demais.
+
+148
+00:14:06.111 --> 00:14:07.549
+Tudo bem.
+
+149
+00:14:07.549 --> 00:14:12.224
+A comunidade costuma ser muito receptiva com quem está começando.
+
+150
+00:14:12.224 --> 00:14:15.786
+Se quiser, diga que é o seu primeiro contato.
+
+151
+00:14:15.786 --> 00:14:21.274
+É bem provável que a pessoa do outro lado fique feliz em fazer parte desse momento.
+
+152
+00:14:21.274 --> 00:14:24.574
+Alguns cuidados de etiqueta ajudam muito.
+
+153
+00:14:24.574 --> 00:14:27.061
+Escute antes de transmitir.
+
+154
+00:14:27.061 --> 00:14:31.111
+Seja breve na repetidora, porque ela é compartilhada.
+
+155
+00:14:31.111 --> 00:14:36.061
+Evite discutir política, religião ou qualquer assunto que vire briga.
+
+156
+00:14:36.061 --> 00:14:40.186
+Nada de palavrão, nada de música, nada de propaganda.
+
+157
+00:14:40.186 --> 00:14:46.561
+E respeite as prioridades: se alguém anunciar uma situação de emergência, a frequência é dela.
+
+158
+00:14:46.561 --> 00:14:52.199
+Existe ainda uma tradição charmosa que sobrevive até hoje, o cartão QSL.
+
+159
+00:14:52.199 --> 00:14:57.374
+É um cartão, físico ou digital, que confirma que um contato aconteceu.
+
+160
+00:14:57.374 --> 00:15:07.049
+Tem gente que coleciona cartões de dezenas ou centenas de países, e existem diplomas para quem consegue confirmar contatos com muitos lugares diferentes.
+
+161
+00:15:07.049 --> 00:15:10.624
+É um jeito divertido de dar objetivos ao hobby.
+
+162
+00:15:10.624 --> 00:15:12.861
+E para onde ir depois?
+
+163
+00:15:12.861 --> 00:15:15.461
+O radioamadorismo é enorme.
+
+164
+00:15:15.461 --> 00:15:19.861
+Tem gente que se especializa em fazer contatos com lugares raros.
+
+165
+00:15:19.861 --> 00:15:23.511
+Tem gente que constrói os próprios rádios e antenas.
+
+166
+00:15:23.511 --> 00:15:35.999
+Tem gente que fala com satélites de radioamador, e existe até a possibilidade de, em momentos programados, falar com astronautas na Estação Espacial Internacional por meio de um programa voltado para isso.
+
+167
+00:15:35.999 --> 00:15:42.699
+Tem gente que participa de concursos, que são competições para fazer o maior número de contatos num período.
+
+168
+00:15:42.699 --> 00:15:48.724
+E tem gente que se dedica às redes de emergência, treinando para ajudar quando tudo o mais falha.
+
+169
+00:15:48.724 --> 00:15:51.324
+Você não precisa escolher agora.
+
+170
+00:15:51.324 --> 00:15:53.861
+O hobby vai mostrando o caminho.
+
+171
+00:15:53.861 --> 00:15:58.111
+Então, para fechar, uma recapitulação rápida.
+
+172
+00:15:58.111 --> 00:16:05.586
+Radioamadorismo é comunicação por rádio sem fins lucrativos, com espaço para técnica, amizade e serviço.
+
+173
+00:16:05.586 --> 00:16:09.724
+O primeiro passo é escutar, e isso você pode fazer hoje.
+
+174
+00:16:09.724 --> 00:16:15.324
+O segundo é estudar e prestar a prova da Anatel, de preferência com a ajuda de um clube.
+
+175
+00:16:15.324 --> 00:16:22.686
+O terceiro é conseguir um equipamento simples, como um rádio portátil de duas faixas, e cuidar bem da antena.
+
+176
+00:16:22.686 --> 00:16:29.286
+E o quarto é o seu primeiro contato, com calma, escutando antes de falar e se identificando sempre.
+
+177
+00:16:29.286 --> 00:16:31.536
+E fica a última ideia.
+
+178
+00:16:31.536 --> 00:16:38.911
+Hoje a gente se comunica o tempo inteiro, mas quase sempre através de sistemas que não entendemos e que não controlamos.
+
+179
+00:16:38.911 --> 00:16:49.511
+O radioamadorismo devolve uma coisa rara: a sensação de que a conversa depende de você, do seu conhecimento, do seu fio esticado no quintal e do céu lá em cima.
+
+180
+00:16:49.511 --> 00:16:56.174
+Em algum lugar, agora mesmo, tem alguém girando o botão do rádio e perguntando se tem alguém escutando.
+
+181
+00:16:56.174 --> 00:16:59.636
+Um dia desses, quem vai responder é você.
+

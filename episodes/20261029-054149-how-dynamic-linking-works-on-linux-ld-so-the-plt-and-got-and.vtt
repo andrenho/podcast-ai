@@ -1,0 +1,606 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:01.675
+Faça um teste mental.
+
+2
+00:00:01.625 --> 00:00:06.787
+Você escreve o programa mais simples possível em C, aquele que imprime uma linha na tela.
+
+3
+00:00:06.787 --> 00:00:11.450
+Compila no Linux e olha o tamanho do executável: uns dezesseis kilobytes.
+
+4
+00:00:11.450 --> 00:00:15.375
+Só que a biblioteca C que ele usa tem mais de dois megabytes.
+
+5
+00:00:15.375 --> 00:00:23.925
+A função de imprimir texto formatado, sozinha, depende de uma montanha de código: formatação de números, tratamento de localidade, buffers.
+
+6
+00:00:23.925 --> 00:00:25.987
+Nada disso está no seu binário.
+
+7
+00:00:25.987 --> 00:00:27.412
+Então, onde está?
+
+8
+00:00:27.412 --> 00:00:29.325
+E tem um detalhe mais curioso.
+
+9
+00:00:29.325 --> 00:00:37.412
+Na primeira vez que o seu programa chama essa função, o processador executa centenas, talvez milhares de instruções antes de chegar nela.
+
+10
+00:00:37.412 --> 00:00:39.900
+Na segunda vez, são só umas poucas.
+
+11
+00:00:39.900 --> 00:00:42.937
+Alguma coisa, no meio do caminho, se reescreveu.
+
+12
+00:00:42.937 --> 00:00:45.075
+Hoje a gente vai seguir esse caminho.
+
+13
+00:00:45.075 --> 00:00:51.612
+Primeiro, o que acontece entre o momento em que você manda executar um programa e o momento em que a função principal começa.
+
+14
+00:00:51.612 --> 00:00:57.612
+Depois, o problema que o carregador dinâmico precisa resolver, e por que ele é mais difícil do que parece.
+
+15
+00:00:57.612 --> 00:01:06.175
+Aí vem o coração da história: duas tabelas, a P L T e a G O T, e a coreografia exata da primeira chamada a uma função de biblioteca.
+
+16
+00:01:06.175 --> 00:01:14.462
+No fim, a gente fala de segurança, de desempenho e de um truque que permite trocar o alocador de memória de qualquer programa sem recompilar nada.
+
+17
+00:01:14.462 --> 00:01:16.175
+Vamos começar pelo porquê.
+
+18
+00:01:16.175 --> 00:01:20.062
+Quem trabalha com microcontrolador está acostumado com o mundo oposto.
+
+19
+00:01:20.062 --> 00:01:23.800
+No firmware, o linker resolve tudo em tempo de compilação.
+
+20
+00:01:23.800 --> 00:01:31.875
+Cada chamada vira um endereço fixo, cada variável tem seu lugar na RAM ou na flash, e o binário final é um bloco autossuficiente.
+
+21
+00:01:31.875 --> 00:01:35.600
+No Linux de desktop, isso seria um desperdício enorme.
+
+22
+00:01:35.600 --> 00:01:40.437
+Pense em quantos processos estão rodando agora na sua máquina usando a biblioteca C.
+
+23
+00:01:40.437 --> 00:01:45.750
+Se cada um carregasse a própria cópia, seriam centenas de cópias idênticas na memória.
+
+24
+00:01:45.750 --> 00:01:52.412
+Com bibliotecas compartilhadas, o código existe uma vez só na RAM física, mapeado em todos os processos.
+
+25
+00:01:52.412 --> 00:01:58.387
+E quando sai uma correção de segurança, basta atualizar um arquivo, sem recompilar o sistema inteiro.
+
+26
+00:01:58.387 --> 00:02:00.375
+A ideia não nasceu no Linux.
+
+27
+00:02:00.375 --> 00:02:05.437
+O modelo que a gente usa hoje vem do SunOS, da Sun, no fim dos anos oitenta.
+
+28
+00:02:05.437 --> 00:02:11.750
+Ele foi formalizado no System cinco Release quatro, da A T e T, junto com o formato de executável ELF.
+
+29
+00:02:11.750 --> 00:02:23.137
+O Linux começou usando um formato mais antigo e limitado, o a out. Nele, cada biblioteca compartilhada precisava ocupar um endereço fixo, reservado numa espécie de registro central.
+
+30
+00:02:23.137 --> 00:02:25.250
+Era um pesadelo de coordenação.
+
+31
+00:02:25.250 --> 00:02:29.312
+A migração para o ELF, em meados dos anos noventa, acabou com isso.
+
+32
+00:02:29.312 --> 00:02:31.062
+Então vamos à execução.
+
+33
+00:02:31.062 --> 00:02:38.212
+Você digita o nome do programa, e o shell faz a chamada de sistema que substitui o processo atual por outro executável.
+
+34
+00:02:38.212 --> 00:02:46.512
+O kernel abre o arquivo, lê o cabeçalho ELF e percorre os cabeçalhos de programa, que descrevem os segmentos a serem mapeados na memória.
+
+35
+00:02:46.512 --> 00:02:51.012
+Entre eles há um especial, que diz: este programa tem um interpretador.
+
+36
+00:02:51.012 --> 00:02:56.512
+É a mesma ideia do shebang, aquela linha com cerquilha e exclamação no topo de um script.
+
+37
+00:02:56.512 --> 00:03:01.725
+Só que, aqui, o interpretador é o carregador dinâmico, o famoso L D ponto S O.
+
+38
+00:03:01.725 --> 00:03:07.462
+O kernel mapeia o seu executável, mapeia também o carregador, e aí vem a primeira surpresa.
+
+39
+00:03:07.462 --> 00:03:09.400
+Ele não pula para o seu programa.
+
+40
+00:03:09.400 --> 00:03:12.050
+Ele pula para o ponto de entrada do carregador.
+
+41
+00:03:12.050 --> 00:03:21.600
+Para o carregador saber onde está cada coisa, o kernel deixa na pilha, além dos argumentos e das variáveis de ambiente, uma pequena tabela chamada vetor auxiliar.
+
+42
+00:03:21.600 --> 00:03:29.587
+Nela vão a localização dos cabeçalhos do programa, o tamanho de página, o ponto de entrada do executável, entre outras informações.
+
+43
+00:03:29.587 --> 00:03:37.612
+Aliás, como o carregador é ele mesmo um executável, você pode chamá-lo direto na linha de comando, passando o seu programa como argumento.
+
+44
+00:03:37.612 --> 00:03:39.187
+Funciona.
+
+45
+00:03:39.340 --> 00:03:43.415
+O carregador enfrenta um problema de ovo e galinha logo na largada.
+
+46
+00:03:43.365 --> 00:03:48.815
+Ele próprio é uma biblioteca compartilhada, carregada num endereço que muda a cada execução.
+
+47
+00:03:48.815 --> 00:03:55.777
+Então, antes de qualquer outra coisa, ele precisa se relocar, ou seja, corrigir os próprios ponteiros internos.
+
+48
+00:03:55.777 --> 00:04:03.402
+Até terminar isso, o código dele não pode chamar funções da maneira normal nem tocar em variáveis globais que dependam de correção.
+
+49
+00:04:03.402 --> 00:04:10.690
+É um trecho escrito com muito cuidado, parecido com o código de boot de um microcontrolador antes de a RAM estar inicializada.
+
+50
+00:04:10.690 --> 00:04:17.527
+Depois disso, ele lê a seção dinâmica do seu executável, onde está a lista de bibliotecas de que o programa precisa.
+
+51
+00:04:17.527 --> 00:04:19.965
+Para cada uma, ele procura o arquivo.
+
+52
+00:04:19.965 --> 00:04:31.240
+Primeiro num caminho que pode estar gravado no próprio binário, depois num caminho indicado por variável de ambiente, depois num arquivo de cache que o sistema mantém, e por fim nos diretórios padrão.
+
+53
+00:04:31.240 --> 00:04:36.077
+Encontrou, ele mapeia o arquivo na memória com a chamada de sistema de mapeamento.
+
+54
+00:04:36.077 --> 00:04:41.727
+Depois repete o processo para as dependências de cada biblioteca, até fechar a árvore inteira.
+
+55
+00:04:41.727 --> 00:04:44.015
+Vamos parar um segundo para fixar.
+
+56
+00:04:44.015 --> 00:04:49.140
+Quando você roda um programa dinâmico no Linux, quem assume primeiro não é o seu código.
+
+57
+00:04:49.140 --> 00:04:50.840
+É o carregador dinâmico.
+
+58
+00:04:50.840 --> 00:04:52.827
+O kernel só prepara o terreno.
+
+59
+00:04:52.827 --> 00:04:56.052
+É o carregador que encontra e mapeia as bibliotecas.
+
+60
+00:04:56.052 --> 00:04:57.990
+E agora vem a parte difícil.
+
+61
+00:04:57.990 --> 00:05:01.690
+O código de uma biblioteca é compartilhado entre processos.
+
+62
+00:05:01.690 --> 00:05:07.690
+Para isso funcionar, as páginas de código precisam ser idênticas em todos eles, e somente leitura.
+
+63
+00:05:07.690 --> 00:05:16.177
+Mas, por causa da randomização do espaço de endereços, o A S L R, a mesma biblioteca cai num endereço diferente em cada processo.
+
+64
+00:05:16.177 --> 00:05:24.577
+E tem mais: quando a biblioteca C é compilada, ela não tem como saber onde o seu programa vai estar, nem onde vão estar as outras bibliotecas.
+
+65
+00:05:24.577 --> 00:05:33.465
+Se o carregador saísse corrigindo endereços dentro do código, como um linker faz, cada página corrigida viraria uma cópia privada daquele processo.
+
+66
+00:05:33.465 --> 00:05:35.365
+Lá se ia o compartilhamento.
+
+67
+00:05:35.365 --> 00:05:37.527
+A solução tem duas partes.
+
+68
+00:05:37.527 --> 00:05:41.202
+A primeira é o código independente de posição, o P I C.
+
+69
+00:05:41.202 --> 00:05:48.990
+O compilador gera código que não depende de endereços absolutos: tudo é calculado em relação ao lugar onde a própria instrução está.
+
+70
+00:05:48.990 --> 00:05:57.115
+Na arquitetura xis oitenta e seis de sessenta e quatro bits, isso é barato, porque existe endereçamento relativo ao contador de programa.
+
+71
+00:05:57.115 --> 00:06:01.277
+No xis oitenta e seis de trinta e dois bits, esse modo não existia.
+
+72
+00:06:01.277 --> 00:06:08.790
+O compilador precisava sacrificar um registrador inteiro, de um conjunto que já era pequeno, só para guardar um endereço de base.
+
+73
+00:06:08.790 --> 00:06:16.577
+Era uma perda de desempenho mensurável, e um dos motivos para muita gente da época torcer o nariz para código independente de posição.
+
+74
+00:06:16.577 --> 00:06:23.715
+A segunda parte é uma tabela de indireção que fica na área de dados, que é privada de cada processo e pode ser escrita.
+
+75
+00:06:23.715 --> 00:06:29.515
+Essa tabela é a G O T, a Global Offset Table, ou tabela global de deslocamentos.
+
+76
+00:06:29.515 --> 00:06:35.027
+Quando o código precisa do endereço de algo externo, ele não usa esse endereço diretamente.
+
+77
+00:06:35.027 --> 00:06:40.877
+Ele lê o endereço de uma entrada da G O T, que fica a uma distância fixa e conhecida do código.
+
+78
+00:06:40.877 --> 00:06:46.677
+Assim, o carregador só precisa preencher a G O T, que ocupa um punhado de páginas de dados.
+
+79
+00:06:46.677 --> 00:06:49.640
+O código continua intocado e compartilhado.
+
+80
+00:06:49.640 --> 00:06:54.290
+Para variáveis, o carregador preenche as entradas da G O T logo na carga.
+
+81
+00:06:54.290 --> 00:06:58.677
+Para funções, existe uma camada a mais, e é aqui que a coisa fica bonita.
+
+82
+00:06:58.677 --> 00:07:04.690
+Essa camada é a P L T, a Procedure Linkage Table, ou tabela de ligação de procedimentos.
+
+83
+00:07:04.690 --> 00:07:10.677
+Quando o seu código chama a função de imprimir, o compilador e o linker não geram um salto para a biblioteca.
+
+84
+00:07:10.677 --> 00:07:16.315
+Eles geram uma chamada para uma pequena entrada da P L T, que fica dentro do seu próprio executável.
+
+85
+00:07:16.315 --> 00:07:21.415
+Cada função externa tem a sua entrada, um pedacinho de código de uns dezesseis bytes.
+
+86
+00:07:21.415 --> 00:07:25.552
+E cada entrada tem uma posição correspondente na G O T.
+
+87
+00:07:25.708 --> 00:07:34.183
+O primeiro passo de uma entrada da P L T é um salto indireto: ela pula para o endereço que estiver escrito na posição correspondente da G O T.
+
+88
+00:07:34.133 --> 00:07:38.595
+Se essa posição já tiver o endereço real da função, pronto, você chegou.
+
+89
+00:07:38.595 --> 00:07:42.933
+Mas, quando o programa começa, essa posição ainda não tem o endereço real.
+
+90
+00:07:42.933 --> 00:07:49.120
+O que está lá, de propósito, é o endereço da instrução seguinte, dentro da própria entrada da P L T.
+
+91
+00:07:49.120 --> 00:07:54.183
+Ou seja, na primeira vez, o salto indireto simplesmente pula para a linha de baixo.
+
+92
+00:07:54.183 --> 00:07:57.345
+Parece inútil, mas é a peça central do mecanismo.
+
+93
+00:07:57.345 --> 00:08:00.183
+Vamos seguir essa primeira chamada passo a passo.
+
+94
+00:08:00.183 --> 00:08:02.858
+Seu código chama a entrada da P L T.
+
+95
+00:08:02.858 --> 00:08:06.795
+O salto indireto lê a G O T, que aponta para a linha de baixo.
+
+96
+00:08:06.795 --> 00:08:11.508
+Essa linha empilha um número: o índice dessa função na tabela de relocações.
+
+97
+00:08:11.508 --> 00:08:14.570
+É a forma de dizer qual função está sendo pedida.
+
+98
+00:08:14.570 --> 00:08:23.258
+Em seguida, ela salta para uma entrada especial, a primeira de todas da P L T, a entrada zero, que é compartilhada por todas as funções.
+
+99
+00:08:23.258 --> 00:08:31.720
+A entrada zero empilha mais uma coisa: um valor que identifica o módulo, ou seja, qual executável ou biblioteca está pedindo a resolução.
+
+100
+00:08:31.720 --> 00:08:35.683
+Depois, salta para um endereço guardado no começo da G O T.
+
+101
+00:08:35.683 --> 00:08:39.283
+As três primeiras posições da G O T são reservadas.
+
+102
+00:08:39.283 --> 00:08:47.320
+Na carga, o carregador preencheu duas delas: uma com esse identificador do módulo, outra com o endereço da sua rotina de resolução.
+
+103
+00:08:47.320 --> 00:08:55.033
+Agora estamos dentro do carregador dinâmico, no meio de uma chamada de função que, do ponto de vista do seu código, ainda não aconteceu.
+
+104
+00:08:55.033 --> 00:09:00.558
+Os argumentos que o seu código preparou estão nos registradores, prontos para a função de verdade.
+
+105
+00:09:00.558 --> 00:09:10.033
+Por isso, a primeira coisa que a rotina de resolução faz é salvar esses registradores, incluindo os vetoriais, porque argumentos de ponto flutuante passam por eles.
+
+106
+00:09:10.033 --> 00:09:16.958
+Em processadores modernos, com registradores vetoriais enormes, esse salvamento sozinho já é um custo considerável.
+
+107
+00:09:16.958 --> 00:09:22.633
+Depois, a rotina pega o índice que foi empilhado e encontra a entrada de relocação correspondente.
+
+108
+00:09:22.633 --> 00:09:26.908
+Ali está o número do símbolo, e do símbolo sai o nome, uma string.
+
+109
+00:09:26.908 --> 00:09:32.145
+É isso mesmo: no fim das contas, a ligação dinâmica é uma busca por nome, em texto.
+
+110
+00:09:32.145 --> 00:09:43.770
+Com o nome em mãos, o carregador calcula um hash e procura o símbolo nos módulos carregados, numa ordem definida: primeiro o executável, depois as bibliotecas, na ordem em que foram carregadas.
+
+111
+00:09:43.770 --> 00:09:46.658
+O primeiro módulo que definir aquele nome vence.
+
+112
+00:09:46.658 --> 00:09:53.833
+A tabela de hash usada hoje é a do formato GNU, que entrou em meados dos anos dois mil e inclui um filtro de Bloom.
+
+113
+00:09:53.833 --> 00:10:00.308
+Esse filtro permite descartar uma biblioteca inteira com uma ou duas leituras de memória, sem percorrer nada.
+
+114
+00:10:00.308 --> 00:10:05.008
+Isso acelerou bastante a carga de programas grandes, com dezenas de bibliotecas.
+
+115
+00:10:05.008 --> 00:10:14.633
+No meio do caminho ainda entra o versionamento de símbolos: a biblioteca C pode oferecer várias versões da mesma função, e o binário registra qual versão espera.
+
+116
+00:10:14.633 --> 00:10:18.483
+Encontrado o endereço, vem o passo que dá sentido a tudo isso.
+
+117
+00:10:18.483 --> 00:10:23.070
+O carregador escreve o endereço real na posição da G O T daquela função.
+
+118
+00:10:23.070 --> 00:10:29.458
+Em seguida, restaura os registradores, descarta os dois valores que foram empilhados e salta para a função.
+
+119
+00:10:29.458 --> 00:10:31.070
+Salta, e não chama.
+
+120
+00:10:31.070 --> 00:10:35.170
+O endereço de retorno que está na pilha continua sendo o do seu código.
+
+121
+00:10:35.170 --> 00:10:40.995
+Então, quando a função termina, ela volta direto para quem chamou, como se nada tivesse acontecido.
+
+122
+00:10:40.995 --> 00:10:42.458
+E a segunda chamada?
+
+123
+00:10:42.458 --> 00:10:45.133
+Seu código chama a entrada da P L T.
+
+124
+00:10:45.133 --> 00:10:50.670
+O salto indireto lê a G O T, que agora tem o endereço real, e pula direto para a função.
+
+125
+00:10:50.670 --> 00:10:56.720
+O custo é uma chamada mais um salto indireto, que o preditor de desvios acerta praticamente sempre.
+
+126
+00:10:56.720 --> 00:10:59.920
+Recapitulando, porque esse é o coração do episódio.
+
+127
+00:10:59.920 --> 00:11:04.270
+A P L T é código, fica no seu executável e é somente leitura.
+
+128
+00:11:04.270 --> 00:11:08.033
+A G O T é dados, gravável e privada de cada processo.
+
+129
+00:11:08.033 --> 00:11:12.145
+A entrada da P L T sempre salta pelo endereço que está na G O T.
+
+130
+00:11:12.145 --> 00:11:15.120
+Na primeira vez, a G O T manda para o resolvedor.
+
+131
+00:11:15.120 --> 00:11:19.170
+O resolvedor procura a função pelo nome e reescreve a G O T.
+
+132
+00:11:19.170 --> 00:11:21.520
+Daí em diante, o caminho é direto.
+
+133
+00:11:21.520 --> 00:11:25.283
+Isso se chama ligação preguiçosa, o lazy binding.
+
+134
+00:11:25.444 --> 00:11:26.894
+E por que preguiçosa? Porque um programa grande depende de dezenas de bibliotecas, com milhares de funções, e numa execução típica us
+
+135
+00:11:26.844 --> 00:11:34.869
+Porque um programa grande depende de dezenas de bibliotecas, com milhares de funções, e numa execução típica usa só uma fração delas. Resolver tudo na carga custaria tempo de inicialização à toa. Nos anos noventa, com máquinas lentas, isso fazia
+
+136
+00:11:34.869 --> 00:11:38.856
+Resolver tudo na carga custaria tempo de inicialização à toa. Nos anos noventa, com máquinas lentas, isso fazia uma diferença visível.
+Mas a preguiça tem um preço, e ele ap
+
+137
+00:11:38.856 --> 00:11:43.206
+Nos anos noventa, com máquinas lentas, isso fazia uma diferença visível.
+Mas a preguiça tem um preço, e ele aparece de três formas.
+A primeira é um bug 
+
+138
+00:11:43.206 --> 00:11:46.844
+Mas a preguiça tem um preço, e ele aparece de três formas.
+A primeira é um bug traiçoeiro. Imagine que uma função não exista em nenhuma bi
+
+139
+00:14:43.852 --> 00:14:45.952
+Então, recapitulando a jornada.
+
+140
+00:14:45.902 --> 00:14:51.752
+Quando você roda um programa dinâmico no Linux, o kernel entrega o controle ao carregador dinâmico.
+
+141
+00:14:51.752 --> 00:14:56.664
+O carregador se reloca sozinho, encontra as bibliotecas e as mapeia na memória.
+
+142
+00:14:56.664 --> 00:15:06.814
+O código continua compartilhado e intocado porque é independente de posição, e todo endereço externo passa pela G O T, uma tabela de dados privada de cada processo.
+
+143
+00:15:06.814 --> 00:15:12.114
+As chamadas de função passam pela P L T, que salta pelo endereço guardado na G O T.
+
+144
+00:15:12.114 --> 00:15:19.502
+Na primeira chamada, esse salto leva ao resolvedor, que procura a função pelo nome, reescreve a G O T e sai de cena.
+
+145
+00:15:19.502 --> 00:15:25.539
+Hoje, por segurança, muitos sistemas resolvem tudo de uma vez, logo na carga, e trancam a tabela.
+
+146
+00:15:25.539 --> 00:15:27.777
+E a ideia que vale guardar é esta.
+
+147
+00:15:27.777 --> 00:15:35.227
+Cada vez que um programa no seu computador chama uma função de biblioteca, ele segue uma placa que foi pintada em tempo de execução.
+
+148
+00:15:35.227 --> 00:15:38.914
+Na primeira chamada, a placa dizia: pergunte ao carregador.
+
+149
+00:15:38.914 --> 00:15:43.327
+O carregador procurou pelo nome, achou o endereço e repintou a placa.
+
+150
+00:15:43.327 --> 00:15:52.239
+A velocidade de todas as chamadas seguintes depende desse único momento em que o programa, literalmente, consertou o próprio caminho enquanto andava.
+

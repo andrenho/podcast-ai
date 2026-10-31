@@ -1,0 +1,523 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:02.775
+Imagine um pequeno controlador industrial. Dentro dele roda um sistema operacional de tempo real com várias tarefas. Uma lê um sensor de temperatura. Outr
+
+2
+00:00:02.725 --> 00:00:07.275
+Dentro dele roda um sistema operacional de tempo real com várias tarefas. Uma lê um sensor de temperatura. Outra cuida da comunicação pela rede. E uma terceira controla um motor, o tipo
+
+3
+00:00:07.275 --> 00:00:09.400
+Uma lê um sensor de temperatura. Outra cuida da comunicação pela rede. E uma terceira controla um motor, o tipo de coisa que, se der errado, mac
+
+4
+00:00:09.400 --> 00:00:11.762
+Outra cuida da comunicação pela rede. E uma terceira controla um motor, o tipo de coisa que, se der errado, machuca alguém. Agora imagine que a taref
+
+5
+00:00:11.762 --> 00:00:16.887
+E uma terceira controla um motor, o tipo de coisa que, se der errado, machuca alguém. Agora imagine que a tarefa de rede tem um bug bobo, um índice de vetor que passa 
+
+6
+00:03:45.004 --> 00:03:52.154
+Nos processadores Cortex M, a MPU é um componente opcional, que o fabricante do chip decide incluir ou não. A maioria dos chips de médio porte inclui. O processador tem dois modos de execução: o modo de tarefa, chamado 
+
+7
+00:03:52.104 --> 00:03:54.766
+A maioria dos chips de médio porte inclui. O processador tem dois modos de execução: o modo de tarefa, chamado de thread, e o modo de tratamento de interr
+
+8
+00:03:54.766 --> 00:04:03.166
+O processador tem dois modos de execução: o modo de tarefa, chamado de thread, e o modo de tratamento de interrupções, chamado de handler. O modo de interrupções é sempre privilegiado. Já o modo de tarefa pode rodar com ou sem privilégio, dependendo 
+
+9
+00:04:03.166 --> 00:04:06.204
+O modo de interrupções é sempre privilegiado. Já o modo de tarefa pode rodar com ou sem privilégio, dependendo de um bit num registrador de controle.
+Na ger
+
+10
+00:04:06.204 --> 00:04:12.341
+Já o modo de tarefa pode rodar com ou sem privilégio, dependendo de um bit num registrador de controle.
+Na geração mais antiga e ainda muito comum, a arquitetura ARM sete M, presente no Cortex M três, M quatro e M 
+
+11
+00:04:12.341 --> 00:04:20.891
+Na geração mais antiga e ainda muito comum, a arquitetura ARM sete M, presente no Cortex M três, M quatro e M sete, a MPU trabalha com um número pequeno de regiões, tipicamente oito, e em alguns modelos dezesseis. Cada região 
+
+12
+00:04:20.891 --> 00:04:27.204
+a MPU trabalha com um número pequeno de regiões, tipicamente oito, e em alguns modelos dezesseis. Cada região tem um endereço de início, um tamanho e um conjunto de atributos. Os atributos dizem se a região p
+
+13
+00:04:27.204 --> 00:04:31.829
+Cada região tem um endereço de início, um tamanho e um conjunto de atributos. Os atributos dizem se a região pode ser lida ou escrita, separando o que vale para código privilegiado e para 
+
+14
+00:04:31.829 --> 00:04:40.179
+Os atributos dizem se a região pode ser lida ou escrita, separando o que vale para código privilegiado e para código sem privilégio. Tem também um bit chamado execute never, que proíbe executar instruções dali. E tem informações sobre o tipo d
+
+15
+00:04:40.179 --> 00:04:44.754
+Tem também um bit chamado execute never, que proíbe executar instruções dali. E tem informações sobre o tipo de memória, se ela pode ir para cache, por exemplo.
+Aqui aparece a primeira do
+
+16
+00:04:44.754 --> 00:04:49.416
+E tem informações sobre o tipo de memória, se ela pode ir para cache, por exemplo.
+Aqui aparece a primeira dor de cabeça clássica. Nessa geração, o tamanho de cada região precisa ser uma potên
+
+17
+00:04:49.416 --> 00:04:52.254
+Aqui aparece a primeira dor de cabeça clássica. Nessa geração, o tamanho de cada região precisa ser uma potência de dois: trinta e dois bytes, sessenta e qua
+
+18
+00:04:52.254 --> 00:05:01.616
+Nessa geração, o tamanho de cada região precisa ser uma potência de dois: trinta e dois bytes, sessenta e quatro, cento e vinte e oito, e assim por diante. E mais: o endereço de início precisa estar alinhado a esse tamanho. Se você quer proteger uma pilha de três q
+
+19
+00:05:01.616 --> 00:05:05.591
+E mais: o endereço de início precisa estar alinhado a esse tamanho. Se você quer proteger uma pilha de três quilobytes, azar, vai ter que arredondar para quatro, e ainda posicio
+
+20
+00:05:05.591 --> 00:05:15.241
+Se você quer proteger uma pilha de três quilobytes, azar, vai ter que arredondar para quatro, e ainda posicionar essa pilha num endereço múltiplo de quatro quilobytes. Para aliviar isso, cada região grande pode ser dividida em oito sub-regiões, que podem ser desligadas individ
+
+21
+00:05:15.241 --> 00:05:22.604
+Para aliviar isso, cada região grande pode ser dividida em oito sub-regiões, que podem ser desligadas individualmente. Dá para fazer uns encaixes criativos, mas o desperdício de memória e a ginástica no arquivo de ligação são re
+
+22
+00:05:22.604 --> 00:05:29.404
+Dá para fazer uns encaixes criativos, mas o desperdício de memória e a ginástica no arquivo de ligação são reais.
+Outro detalhe importante é a chamada região de fundo. Existe uma opção que diz: se o código for privilegiado
+
+23
+00:05:29.404 --> 00:05:32.616
+Outro detalhe importante é a chamada região de fundo. Existe uma opção que diz: se o código for privilegiado e o acesso não cair em nenhuma região configurada, us
+
+24
+00:05:32.616 --> 00:05:42.041
+Existe uma opção que diz: se o código for privilegiado e o acesso não cair em nenhuma região configurada, use o mapa de memória padrão e deixe passar. Isso permite que o núcleo enxergue tudo sem gastar regiões, enquanto as tarefas sem privilégio ficam restrit
+
+25
+00:05:42.041 --> 00:05:51.204
+Isso permite que o núcleo enxergue tudo sem gastar regiões, enquanto as tarefas sem privilégio ficam restritas apenas ao que foi explicitamente liberado.
+Quando uma regra é violada, o processador gera uma exceção chamada falha de gerenciamento de memória. O tra
+
+26
+00:05:51.204 --> 00:05:57.041
+Quando uma regra é violada, o processador gera uma exceção chamada falha de gerenciamento de memória. O tratador dessa falha pode descobrir qual endereço causou o problema e decidir o que fazer: encerrar a tar
+
+27
+00:05:57.041 --> 00:06:06.204
+O tratador dessa falha pode descobrir qual endereço causou o problema e decidir o que fazer: encerrar a tarefa, registrar o erro, reiniciar o sistema.
+Na geração seguinte, a arquitetura ARM oito M, que aparece no Cortex M vinte e três, M trinta e três e M c
+
+28
+00:06:06.204 --> 00:06:17.379
+Na geração seguinte, a arquitetura ARM oito M, que aparece no Cortex M vinte e três, M trinta e três e M cinquenta e cinco, a ARM resolveu a dor de cabeça do alinhamento. Cada região passa a ser definida por um endereço base e um endereço limite, com granularidade de trinta e 
+
+29
+00:06:17.379 --> 00:06:24.491
+Cada região passa a ser definida por um endereço base e um endereço limite, com granularidade de trinta e dois bytes. Acabou a exigência de potência de dois. As sub-regiões saíram de cena, porque deixaram de ser necessárias.
+
+30
+00:06:24.491 --> 00:06:27.041
+Acabou a exigência de potência de dois. As sub-regiões saíram de cena, porque deixaram de ser necessárias. E, quando o chip tem a extensão de segu
+
+31
+00:06:27.041 --> 00:06:31.129
+As sub-regiões saíram de cena, porque deixaram de ser necessárias. E, quando o chip tem a extensão de segurança TrustZone, existem duas MPUs, uma para o mundo seguro e outra
+
+32
+00:06:31.129 --> 00:06:42.029
+E, quando o chip tem a extensão de segurança TrustZone, existem duas MPUs, uma para o mundo seguro e outra para o mundo não seguro, mas isso já é assunto para outro episódio.
+E como um sistema operacional usa tudo isso para isolar tarefas? O exemplo mais conhecido é o FreeRTOS na
+
+33
+00:06:42.029 --> 00:06:46.066
+E como um sistema operacional usa tudo isso para isolar tarefas? O exemplo mais conhecido é o FreeRTOS na sua variante com MPU. Você cria tarefas restritas, que rodam sem
+
+34
+00:06:46.066 --> 00:06:50.541
+O exemplo mais conhecido é o FreeRTOS na sua variante com MPU. Você cria tarefas restritas, que rodam sem privilégio, e para cada uma informa algumas regiões de memória
+
+35
+00:06:50.541 --> 00:06:59.791
+Você cria tarefas restritas, que rodam sem privilégio, e para cada uma informa algumas regiões de memória às quais ela tem direito, além da sua própria pilha. A cada troca de contexto, o núcleo reprograma parte da MPU com as regiões da próxima tarefa. A tarefa de 
+
+36
+00:06:59.791 --> 00:07:05.766
+A cada troca de contexto, o núcleo reprograma parte da MPU com as regiões da próxima tarefa. A tarefa de rede, então, só enxerga a própria pilha e os buffers dela. Se tentar escrever na variável do 
+
+37
+00:07:05.766 --> 00:07:10.141
+A tarefa de rede, então, só enxerga a própria pilha e os buffers dela. Se tentar escrever na variável do motor, o porteiro barra, e a falha aparece na hora, no ponto exato do <
+
+38
+00:07:26.836 --> 00:07:33.573
+Vou fazer uma pausa rápida para recapitular, caso você tenha se distraído no trânsito ou com a panela no fogo.
+
+39
+00:07:33.523 --> 00:07:38.811
+A MPU não traduz endereços, só verifica permissões, usando poucas regiões.
+
+40
+00:07:38.811 --> 00:07:44.536
+Na ARM, a geração mais antiga exige regiões com tamanho em potência de dois e alinhadas.
+
+41
+00:07:44.536 --> 00:07:47.698
+A mais nova usa início e fim, bem mais flexível.
+
+42
+00:07:47.698 --> 00:07:52.111
+E o sistema operacional reprograma essas regiões a cada troca de tarefa.
+
+43
+00:07:52.111 --> 00:07:55.198
+Agora, vamos atravessar para o mundo RISC-Five.
+
+44
+00:07:55.198 --> 00:08:03.961
+O RISC-Five é uma arquitetura aberta, e a especificação de privilégios dele define um mecanismo chamado PMP, proteção de memória física.
+
+45
+00:08:03.961 --> 00:08:09.961
+A ideia é a mesma da MPU da ARM, mas o desenho é diferente e, em alguns pontos, bem elegante.
+
+46
+00:08:09.961 --> 00:08:12.173
+Primeiro, os níveis de privilégio.
+
+47
+00:08:12.173 --> 00:08:20.648
+O RISC-Five define o modo máquina, que é o mais poderoso, o modo supervisor, usado por sistemas operacionais completos, e o modo usuário.
+
+48
+00:08:20.648 --> 00:08:24.961
+Num microcontrolador, é comum ter só o modo máquina e o modo usuário.
+
+49
+00:08:24.961 --> 00:08:30.298
+O núcleo do sistema roda em modo máquina, e as tarefas isoladas rodam em modo usuário.
+
+50
+00:08:30.298 --> 00:08:33.498
+A PMP é formada por um conjunto de entradas.
+
+51
+00:08:33.498 --> 00:08:40.261
+A especificação permite até sessenta e quatro, mas na prática é muito comum encontrar dezesseis, ou até menos.
+
+52
+00:08:40.261 --> 00:08:44.911
+Cada entrada tem um registrador de endereço e um pequeno byte de configuração.
+
+53
+00:08:44.911 --> 00:08:50.023
+Nesse byte estão três bits que você já imagina: leitura, escrita e execução.
+
+54
+00:08:50.023 --> 00:08:52.898
+Tem um campo que diz como interpretar o endereço.
+
+55
+00:08:52.898 --> 00:08:56.598
+E tem um bit de trava, que já vou explicar por que é tão importante.
+
+56
+00:08:56.598 --> 00:09:01.573
+O campo de interpretação do endereço tem algumas opções, e vale conhecer duas.
+
+57
+00:09:01.573 --> 00:09:03.761
+A primeira se chama topo de faixa.
+
+58
+00:09:03.761 --> 00:09:09.711
+Nela, a entrada atual guarda o fim da região, e o início é o endereço guardado na entrada anterior.
+
+59
+00:09:09.711 --> 00:09:18.948
+Com isso, você descreve faixas arbitrárias, com granularidade mínima de quatro bytes na especificação, embora muitos chips usem granularidade maior.
+
+60
+00:09:18.948 --> 00:09:22.236
+O preço é que uma faixa pode consumir duas entradas.
+
+61
+00:09:22.236 --> 00:09:27.498
+A segunda opção se chama, numa tradução livre, potência de dois alinhada naturalmente.
+
+62
+00:09:27.498 --> 00:09:32.473
+Ela parece a regra antiga da ARM: tamanho em potência de dois, endereço alinhado.
+
+63
+00:09:32.473 --> 00:09:42.411
+A vantagem é que uma única entrada descreve a região inteira, com um truque engenhoso de codificação: o tamanho fica embutido na quantidade de bits um no final do endereço.
+
+64
+00:09:42.411 --> 00:09:49.173
+Quando um acesso acontece, o hardware procura a entrada de menor número que cobre aquele endereço, e essa entrada decide.
+
+65
+00:09:49.173 --> 00:09:51.186
+A ordem, portanto, importa.
+
+66
+00:09:51.186 --> 00:09:56.961
+Você pode colocar uma regra específica antes de uma regra genérica, como exceções numa lista.
+
+67
+00:09:56.961 --> 00:09:59.673
+E o que acontece se nenhuma entrada combinar?
+
+68
+00:09:59.673 --> 00:10:04.486
+Para os modos usuário e supervisor, se a PMP existe, o acesso é negado.
+
+69
+00:10:04.486 --> 00:10:09.848
+Ou seja, por padrão, a tarefa não enxerga nada que não tenha sido liberado explicitamente.
+
+70
+00:10:09.848 --> 00:10:16.473
+Para o modo máquina, o padrão é o contrário: ele passa por cima da PMP, com uma exceção, o tal bit de trava.
+
+71
+00:10:16.473 --> 00:10:23.098
+Uma entrada travada passa a valer também para o modo máquina, e não pode mais ser alterada até o chip reiniciar.
+
+72
+00:10:23.098 --> 00:10:35.048
+Isso permite, por exemplo, que o código de inicialização trave a região do carregador de boot como somente leitura, e nem um código malicioso rodando com privilégio máximo consegue desfazer isso depois.
+
+73
+00:10:35.048 --> 00:10:42.911
+Quando uma regra é violada, o processador gera uma falha de acesso, que pode ser de busca de instrução, de leitura ou de escrita.
+
+74
+00:10:42.911 --> 00:10:45.761
+O tratador recebe o endereço culpado e age.
+
+75
+00:10:45.761 --> 00:10:51.498
+Existe ainda uma extensão mais recente, conhecida como PMP aprimorada, ou ePMP.
+
+76
+00:10:51.498 --> 00:10:59.073
+Ela adiciona regras para proteger o próprio modo máquina dele mesmo, como impedir que ele execute código que pertence ao modo usuário.
+
+77
+00:10:59.073 --> 00:11:06.436
+É uma defesa contra uma classe de ataques em que se engana o código privilegiado para pular para uma área controlada pelo atacante.
+
+78
+00:11:06.436 --> 00:11:11.848
+Chegamos então à terceira parada: a Espressif e a família ESP trinta e dois.
+
+79
+00:11:12.004 --> 00:11:16.341
+Aqui a história fica mais interessante, porque a família não é uma coisa só. Os primeiros chips, como o ESP trinta e dois original e depois o S dois e o S três, usam núcleos Xtensa, uma ar
+
+80
+00:11:16.291 --> 00:11:25.716
+Os primeiros chips, como o ESP trinta e dois original e depois o S dois e o S três, usam núcleos Xtensa, uma arquitetura licenciada da Cadence. Os chips mais recentes, como o C três, o C seis, o H dois e o P quatro, usam núcleos RISC-Five. E, por cima do 
+
+81
+00:11:25.716 --> 00:11:32.391
+Os chips mais recentes, como o C três, o C seis, o H dois e o P quatro, usam núcleos RISC-Five. E, por cima do núcleo, a Espressif coloca controles de permissão próprios, no nível do barramento e da memória 
+
+82
+00:11:32.391 --> 00:11:39.116
+E, por cima do núcleo, a Espressif coloca controles de permissão próprios, no nível do barramento e da memória interna.
+No ESP trinta e dois original, a proteção disponível era limitada e pouco aproveitada na prática para isolar t
+
+83
+00:11:39.116 --> 00:11:46.741
+No ESP trinta e dois original, a proteção disponível era limitada e pouco aproveitada na prática para isolar tarefas. A partir do S dois, e depois no C três, a Espressif introduziu um sistema de gerenciamento de permissões. Um d
+
+84
+00:11:46.741 --> 00:11:53.241
+A partir do S dois, e depois no C três, a Espressif introduziu um sistema de gerenciamento de permissões. Um dos usos mais visíveis no framework oficial, o ESP-IDF, é o recurso de proteção de memória que impõe uma re
+
+85
+00:11:53.241 --> 00:12:02.291
+Um dos usos mais visíveis no framework oficial, o ESP-IDF, é o recurso de proteção de memória que impõe uma regra conhecida em segurança: uma região pode ser gravável ou executável, mas não as duas ao mesmo tempo. A memória interna do chip é dividi
+
+86
+00:12:02.291 --> 00:12:07.266
+uma região pode ser gravável ou executável, mas não as duas ao mesmo tempo. A memória interna do chip é dividida por uma espécie de linha de corte. De um lado fica o código, que pode ser
+
+87
+00:12:07.266 --> 00:12:11.466
+A memória interna do chip é dividida por uma espécie de linha de corte. De um lado fica o código, que pode ser executado mas não alterado. Do outro ficam os dados, que podem ser alte
+
+88
+00:12:11.466 --> 00:12:15.566
+De um lado fica o código, que pode ser executado mas não alterado. Do outro ficam os dados, que podem ser alterados mas não executados. Isso dificulta muito um ataque clássico: 
+
+89
+00:12:15.566 --> 00:12:19.804
+Do outro ficam os dados, que podem ser alterados mas não executados. Isso dificulta muito um ataque clássico: injetar código num buffer e depois pular para ele.
+Repare que isso é
+
+90
+00:12:19.804 --> 00:12:25.316
+Isso dificulta muito um ataque clássico: injetar código num buffer e depois pular para ele.
+Repare que isso é um pouco diferente do isolamento entre tarefas. É uma proteção do sistema como um todo, con
+
+91
+00:12:25.316 --> 00:12:29.216
+Repare que isso é um pouco diferente do isolamento entre tarefas. É uma proteção do sistema como um todo, contra corrupção e contra exploração, e não uma bolha separada para c
+
+92
+00:12:29.216 --> 00:12:36.541
+É uma proteção do sistema como um todo, contra corrupção e contra exploração, e não uma bolha separada para cada tarefa. Na configuração padrão do ESP-IDF, as tarefas do FreeRTOS continuam compartilhando o mesmo espaço e rodando c
+
+93
+00:12:36.541 --> 00:12:44.966
+Na configuração padrão do ESP-IDF, as tarefas do FreeRTOS continuam compartilhando o mesmo espaço e rodando com privilégio. Isso surpreende muita gente.
+Nos chips RISC-Five mais novos, como o C seis, entram em cena a PMP do próprio 
+
+94
+00:12:44.966 --> 00:12:47.004
+Isso surpreende muita gente.
+Nos chips RISC-Five mais novos, como o C seis, entram em cena a PMP do próprio núcleo, de que acabamos de fa
+
+95
+00:12:47.004 --> 00:12:56.691
+Nos chips RISC-Five mais novos, como o C seis, entram em cena a PMP do próprio núcleo, de que acabamos de falar, e também um controlador de permissões de acesso, que a Espressif chama de APM. E aqui está um ponto muito importante, que vale para qualquer arquitetura: a M
+
+96
+00:12:56.691 --> 00:12:58.791
+que a Espressif chama de APM. E aqui está um ponto muito importante, que vale para qualquer arquitetura: a MPU da ARM e a PMP do RISC-Five
+
+97
+00:12:58.791 --> 00:13:07.591
+E aqui está um ponto muito importante, que vale para qualquer arquitetura: a MPU da ARM e a PMP do RISC-Five só fiscalizam o processador. Mas o processador não é o único que mexe na memória. Controladores de acesso direto à memória, o famoso DMA,
+
+98
+00:13:07.591 --> 00:13:10.704
+Mas o processador não é o único que mexe na memória. Controladores de acesso direto à memória, o famoso DMA, além de periféricos como o rádio e outros mestres de
+
+99
+00:13:10.704 --> 00:13:19.916
+Controladores de acesso direto à memória, o famoso DMA, além de periféricos como o rádio e outros mestres de barramento, também leem e escrevem. Se você isola uma tarefa no processador, mas ela pode mandar um DMA copiar dados para qualquer lugar, o isol
+
+100
+00:13:19.916 --> 00:13:28.379
+Se você isola uma tarefa no processador, mas ela pode mandar um DMA copiar dados para qualquer lugar, o isolamento tem um buraco enorme. Controles no nível do barramento, como o APM, servem justamente para fechar esse buraco, definindo o que cad
+
+101
+00:13:28.379 --> 00:13:36.379
+Controles no nível do barramento, como o APM, servem justamente para fechar esse buraco, definindo o que cada mestre pode acessar.
+Com essas peças, a Espressif vem construindo um ambiente de execução confiável, em que um pedaço pequeno e 
+
+102
+00:13:36.379 --> 00:13:46.816
+Com essas peças, a Espressif vem construindo um ambiente de execução confiável, em que um pedaço pequeno e sensível do sistema, por exemplo o que lida com chaves criptográficas, roda isolado do resto do firmware. Esse trabalho é relativamente recente, e os detalhes variam bastante de 
+
+103
+00:13:46.816 --> 00:13:49.054
+roda isolado do resto do firmware. Esse trabalho é relativamente recente, e os detalhes variam bastante de chip para chip, então, se você for 
+
+104
+00:13:49.054 --> 00:13:59.329
+Esse trabalho é relativamente recente, e os detalhes variam bastante de chip para chip, então, se você for usar, vale conferir a documentação do modelo específico.
+Antes de fechar, vamos falar com honestidade dos limites.
+O primeiro é o número de regiões. Oito ou dezes
+
+105
+00:13:59.329 --> 00:14:02.866
+Antes de fechar, vamos falar com honestidade dos limites.
+O primeiro é o número de regiões. Oito ou dezesseis parece muito até você listar o que uma tarefa precisa
+
+106
+00:14:02.866 --> 00:14:04.979
+O primeiro é o número de regiões. Oito ou dezesseis parece muito até você listar o que uma tarefa precisa: o código, as constantes, a pilha
+
+107
+00:14:04.979 --> 00:14:14.704
+Oito ou dezesseis parece muito até você listar o que uma tarefa precisa: o código, as constantes, a pilha, os dados próprios, um buffer compartilhado, um periférico. Acaba rápido, e o projeto da memória vira um quebra-cabeça.
+O segundo é o custo da troca de contexto. Re
+
+108
+00:14:14.704 --> 00:14:18.454
+Acaba rápido, e o projeto da memória vira um quebra-cabeça.
+O segundo é o custo da troca de contexto. Reprogramar regiões a cada troca de tarefa leva algumas instru
+
+109
+00:14:18.454 --> 00:14:21.016
+O segundo é o custo da troca de contexto. Reprogramar regiões a cada troca de tarefa leva algumas instruções a mais. Normalmente é pouco, mas em s
+
+110
+00:14:21.016 --> 00:14:25.629
+Reprogramar regiões a cada troca de tarefa leva algumas instruções a mais. Normalmente é pouco, mas em sistemas com trocas muito frequentes, isso aparece.
+O terceiro é que interr
+
+111
+00:14:25.629 --> 00:14:30.529
+Normalmente é pouco, mas em sistemas com trocas muito frequentes, isso aparece.
+O terceiro é que interrupções e drivers geralmente rodam com privilégio. Um bug<
+
+112
+00:14:30.529 --> 00:14:34.841
+O terceiro é que interrupções e drivers geralmente rodam com privilégio. Um bug num tratador de interrupção continua podendo derrubar tudo.
+O qua
+
+113
+00:14:50.020 --> 00:14:54.507
+E existe um debate legítimo na comunidade sobre quando tudo isso compensa. Há quem diga que, em sistemas pequenos e bem testados, o esforço não se paga. E há quem argumente que, com disp
+
+114
+00:14:54.457 --> 00:14:59.045
+Há quem diga que, em sistemas pequenos e bem testados, o esforço não se paga. E há quem argumente que, com dispositivos cada vez mais conectados, rodar tudo no mesmo espaço sem proteção é u
+
+115
+00:14:59.045 --> 00:15:07.020
+E há quem argumente que, com dispositivos cada vez mais conectados, rodar tudo no mesmo espaço sem proteção é uma aposta arriscada. As normas de segurança funcional, em áreas como a automotiva e a médica, costumam pedir alguma forma de separaç
+
+116
+00:15:07.020 --> 00:15:16.457
+As normas de segurança funcional, em áreas como a automotiva e a médica, costumam pedir alguma forma de separação entre componentes de criticidade diferente, e a MPU é uma das ferramentas mais usadas para isso.
+Vamos recapitular. Sem uma MMU, não existe tradução de en
+
+117
+00:15:16.457 --> 00:15:20.120
+e a MPU é uma das ferramentas mais usadas para isso.
+Vamos recapitular. Sem uma MMU, não existe tradução de endereços, mas ainda dá para proteger a memória com reg
+
+118
+00:15:20.120 --> 00:15:21.557
+Vamos recapitular. Sem uma MMU, não existe tradução de endereços, mas ainda dá para proteger a memória com regiões e permissões. 
+
+119
+00:15:21.557 --> 00:15:28.745
+Sem uma MMU, não existe tradução de endereços, mas ainda dá para proteger a memória com regiões e permissões. Na ARM, a MPU dos Cortex M começou com regiões em potência de dois e evoluiu para faixas de início e fim. No R
+
+120
+00:15:28.745 --> 00:15:35.670
+Na ARM, a MPU dos Cortex M começou com regiões em potência de dois e evoluiu para faixas de início e fim. No RISC-Five, a PMP oferece entradas ordenadas, com bits de leitura, escrita e execução, e um bit de trava que
+
+121
+00:15:35.670 --> 00:15:45.345
+No RISC-Five, a PMP oferece entradas ordenadas, com bits de leitura, escrita e execução, e um bit de trava que vale até para o modo mais privilegiado. Na Espressif, além do que o núcleo oferece, há controles próprios, que separam código de dados e fiscalizam ou
+
+122
+00:15:45.345 --> 00:15:54.007
+Na Espressif, além do que o núcleo oferece, há controles próprios, que separam código de dados e fiscalizam outros mestres do barramento, como o DMA. E em todos os casos, a proteção depende de níveis de privilégio bem definidos e de um sistema operacional que 
+
+123
+00:15:54.007 --> 00:16:01.145
+E em todos os casos, a proteção depende de níveis de privilégio bem definidos e de um sistema operacional que saiba usá-los.
+Voltando ao nosso controlador industrial, lá do começo. Com uma MPU bem configurada, aquele <lang xml:lang="e
+
+124
+00:16:01.145 --> 00:16:04.420
+Voltando ao nosso controlador industrial, lá do começo. Com uma MPU bem configurada, aquele bug na tarefa de rede continua existindo. O
+

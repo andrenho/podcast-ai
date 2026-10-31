@@ -1,0 +1,679 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:01.912
+Imagine a seguinte cena.
+
+2
+00:00:01.862 --> 00:00:05.912
+Você tem um projeto no ESP trinta e dois funcionando há semanas.
+
+3
+00:00:05.912 --> 00:00:10.412
+Aí você adiciona uma rotina que grava configurações na memória flash.
+
+4
+00:00:10.412 --> 00:00:12.437
+Tudo compila sem nenhum aviso.
+
+5
+00:00:12.437 --> 00:00:15.062
+Mas, de vez em quando, a placa reinicia.
+
+6
+00:00:15.062 --> 00:00:23.087
+No monitor serial aparece uma mensagem mais ou menos assim: "cache desabilitado, mas uma região de memória em cache foi acessada"
+
+7
+00:00:23.087 --> 00:00:25.987
+Você olha o código e não encontra nada de errado.
+
+8
+00:00:25.987 --> 00:00:28.750
+A lógica está certa e os ponteiros também.
+
+9
+00:00:28.750 --> 00:00:31.400
+O problema não está no que o seu código faz.
+
+10
+00:00:31.400 --> 00:00:32.875
+Está em onde ele mora.
+
+11
+00:00:32.875 --> 00:00:40.537
+Hoje vamos falar de um arquivo que quase ninguém abre, mas que decide o endereço de cada byte do seu firmware: o script do linker.
+
+12
+00:00:40.537 --> 00:00:45.387
+Primeiro, vamos ver o que o compilador entrega para o linker, que são as tais seções.
+
+13
+00:00:45.387 --> 00:00:49.375
+Depois, como o script descreve as regiões de memória do chip.
+
+14
+00:00:49.375 --> 00:00:57.587
+Em seguida, uma ideia que confunde muita gente: um mesmo dado pode ter dois endereços, um onde ele é guardado e outro onde ele é usado.
+
+15
+00:00:57.587 --> 00:01:05.375
+E, por fim, vamos aplicar tudo isso ao ESP trinta e dois e entender como o linker decide o que vai para a IRAM, para a DRAM ou para a flash.
+
+16
+00:01:05.375 --> 00:01:09.400
+Até o final, aquele reinício misterioso vai fazer todo o sentido.
+
+17
+00:01:09.400 --> 00:01:11.712
+Vamos começar pelo começo da cadeia.
+
+18
+00:01:11.712 --> 00:01:16.137
+Quando você compila um arquivo em C, o compilador não gera um programa pronto.
+
+19
+00:01:16.137 --> 00:01:19.687
+Ele gera um arquivo objeto, normalmente no formato ELF.
+
+20
+00:01:19.687 --> 00:01:24.525
+Pense nesse arquivo como uma caixa de mudança com várias divisórias etiquetadas.
+
+21
+00:01:24.525 --> 00:01:26.437
+Cada divisória é uma seção.
+
+22
+00:01:26.437 --> 00:01:30.525
+Existem quatro seções clássicas que vale a pena conhecer pelo nome.
+
+23
+00:01:30.525 --> 00:01:36.075
+A primeira se chama "text", e guarda o código, as instruções de máquina das suas funções.
+
+24
+00:01:36.075 --> 00:01:39.487
+A segunda se chama "rodata", de dados somente leitura.
+
+25
+00:01:39.487 --> 00:01:46.562
+Ali ficam as constantes, as tabelas fixas e as strings literais, aquele texto entre aspas que você passa para o printf.
+
+26
+00:01:46.562 --> 00:01:48.450
+A terceira se chama "data"
+
+27
+00:01:48.450 --> 00:01:53.700
+Ela guarda as variáveis globais e estáticas que têm um valor inicial diferente de zero.
+
+28
+00:01:53.700 --> 00:01:56.900
+Por exemplo, um contador global que começa em dez.
+
+29
+00:01:56.900 --> 00:01:58.837
+A quarta é a "bê ésse ésse"
+
+30
+00:01:58.837 --> 00:02:07.537
+Ela guarda as variáveis globais que começam em zero, ou que você nem inicializou, porque em C variáveis globais não inicializadas valem zero.
+
+31
+00:02:07.537 --> 00:02:10.337
+Repare num detalhe importante sobre essa última.
+
+32
+00:02:10.337 --> 00:02:13.625
+A seção bê ésse ésse não ocupa espaço no arquivo.
+
+33
+00:02:13.625 --> 00:02:16.362
+Não faz sentido gravar milhares de zeros.
+
+34
+00:02:16.362 --> 00:02:20.987
+O arquivo só anota que vai precisar de tantos bytes zerados naquele lugar.
+
+35
+00:02:20.987 --> 00:02:24.862
+Tem mais um detalhe que faz muita diferença em sistemas embarcados.
+
+36
+00:02:24.862 --> 00:02:35.850
+Com as opções certas do compilador, que no GCC se chamam "function sections" e "data sections", cada função e cada variável ganha a sua própria seção, com o nome dela no sufixo.
+
+37
+00:02:35.850 --> 00:02:41.125
+Em vez de uma divisória gigante chamada text, você tem uma divisória para cada função.
+
+38
+00:02:41.125 --> 00:02:44.600
+Isso permite que o linker jogue fora tudo o que ninguém usa.
+
+39
+00:02:44.600 --> 00:02:53.812
+É a chamada coleta de lixo de seções, e é um dos motivos pelos quais o seu firmware não carrega a biblioteca inteira só porque você chamou uma única função dela.
+
+40
+00:02:53.812 --> 00:02:59.562
+Então, primeira ideia para guardar: o compilador produz pedaços etiquetados, as seções.
+
+41
+00:02:59.562 --> 00:03:03.575
+Ele não sabe, e nem quer saber, em que endereço cada pedaço vai parar.
+
+42
+00:03:03.575 --> 00:03:05.350
+Quem decide isso é o linker.
+
+43
+00:03:05.350 --> 00:03:09.012
+E o linker, por sua vez, segue as instruções do script.
+
+44
+00:03:09.012 --> 00:03:12.637
+Um script do linker tem, essencialmente, duas partes.
+
+45
+00:03:12.637 --> 00:03:14.537
+A primeira descreve o terreno.
+
+46
+00:03:14.537 --> 00:03:17.162
+A segunda descreve como ocupar esse terreno.
+
+47
+00:03:17.162 --> 00:03:20.012
+A parte que descreve o terreno se chama MEMORY.
+
+48
+00:03:20.012 --> 00:03:23.237
+Nela você lista as regiões de memória que o chip tem.
+
+49
+00:03:23.237 --> 00:03:32.587
+Cada região tem um nome, um endereço de início, um tamanho e algumas permissões: se dá para ler, se dá para escrever e se dá para executar código a partir dela.
+
+50
+00:03:32.587 --> 00:03:42.862
+Num microcontrolador típico você teria, por exemplo, uma região chamada flash, que permite leitura e execução, e uma região chamada RAM, que permite leitura e escrita.
+
+51
+00:03:42.862 --> 00:03:47.337
+É literalmente um mapa do imóvel, com a metragem de cada cômodo.
+
+52
+00:03:47.500 --> 00:03:51.600
+A segunda parte se chama SECTIONS, e é onde a mágica acontece.
+
+53
+00:03:51.550 --> 00:03:56.475
+Ali você cria as seções de saída, ou seja, as divisórias do firmware final.
+
+54
+00:03:56.475 --> 00:04:03.987
+Para cada uma, você diz quais seções de entrada devem ser colocadas dentro dela e em qual região de memória ela deve morar.
+
+55
+00:04:03.987 --> 00:04:06.575
+E você faz isso com padrões e curingas.
+
+56
+00:04:06.575 --> 00:04:12.475
+Algo como: "pegue todas as seções text de todos os arquivos objeto e coloque aqui, na flash"
+
+57
+00:04:12.475 --> 00:04:15.162
+Três coisas dessa parte merecem atenção.
+
+58
+00:04:15.162 --> 00:04:17.200
+A primeira é que a ordem importa.
+
+59
+00:04:17.200 --> 00:04:23.437
+Quando uma seção de entrada combina com mais de um padrão, quem ganha é o primeiro padrão que aparece no script.
+
+60
+00:04:23.437 --> 00:04:27.562
+Isso é a base de todo o truque que vamos ver no ESP trinta e dois.
+
+61
+00:04:27.562 --> 00:04:34.525
+Se você escreve antes uma regra mais específica, ela captura aquela função antes que a regra genérica a pegue.
+
+62
+00:04:34.525 --> 00:04:37.962
+A segunda é a palavra-chave KEEP, que significa "manter"
+
+63
+00:04:37.962 --> 00:04:39.787
+Lembra da coleta de lixo?
+
+64
+00:04:39.787 --> 00:04:42.450
+O linker remove o que parece não ser usado.
+
+65
+00:04:42.450 --> 00:04:48.200
+Só que algumas coisas nunca são chamadas diretamente pelo seu código e, mesmo assim, são vitais.
+
+66
+00:04:48.200 --> 00:04:54.137
+O exemplo clássico é a tabela de vetores de interrupção, que quem lê é o hardware, não o seu programa.
+
+67
+00:04:54.137 --> 00:04:59.900
+Se você não marcar essa seção com KEEP, o linker pode simplesmente apagá-la, e o chip não liga.
+
+68
+00:04:59.900 --> 00:05:02.900
+A terceira é que o script pode criar símbolos.
+
+69
+00:05:02.900 --> 00:05:12.562
+Você pode dizer: "aqui, onde começa a seção data, crie um símbolo chamado início dos dados, e aqui, onde ela termina, crie outro chamado fim dos dados"
+
+70
+00:05:12.562 --> 00:05:15.387
+Esses símbolos não são variáveis de verdade.
+
+71
+00:05:15.387 --> 00:05:20.312
+São marcadores de endereço que o seu código em C ou em assembly consegue enxergar.
+
+72
+00:05:20.312 --> 00:05:23.250
+E é exatamente isso que permite a próxima ideia.
+
+73
+00:05:23.250 --> 00:05:26.937
+Se você se distraiu por um momento, aqui vai o resumo até agora.
+
+74
+00:05:26.937 --> 00:05:29.000
+O compilador entrega seções.
+
+75
+00:05:29.000 --> 00:05:37.875
+O script do linker descreve as regiões de memória, na parte chamada MEMORY, e distribui as seções entre essas regiões, na parte chamada SECTIONS.
+
+76
+00:05:37.875 --> 00:05:44.987
+A ordem das regras importa, KEEP protege o que não pode sumir, e o script consegue criar marcadores de endereço.
+
+77
+00:05:44.987 --> 00:05:50.425
+Agora vamos à ideia que costuma dar um nó na cabeça: um mesmo dado pode ter dois endereços.
+
+78
+00:05:50.425 --> 00:05:53.475
+Pense naquele contador global que começa em dez.
+
+79
+00:05:53.475 --> 00:05:58.137
+Ele é uma variável, então precisa ficar na RAM, porque o programa vai alterá-lo.
+
+80
+00:05:58.137 --> 00:05:59.787
+Só que a RAM é volátil.
+
+81
+00:05:59.787 --> 00:06:02.762
+Quando você desliga a placa, ela esquece tudo.
+
+82
+00:06:02.762 --> 00:06:07.500
+Então, onde é que o valor dez fica guardado enquanto a placa está desligada?
+
+83
+00:06:07.500 --> 00:06:08.875
+Na flash, claro.
+
+84
+00:06:08.875 --> 00:06:18.437
+Ou seja, a seção data tem um endereço de carga, que é onde ela está gravada, na flash, e um endereço de execução, que é onde o programa espera encontrá-la, na RAM.
+
+85
+00:06:18.437 --> 00:06:25.112
+No script, isso aparece como uma seção que diz: "eu rodo na região RAM, mas sou carregada na região flash"
+
+86
+00:06:25.112 --> 00:06:27.775
+E quem faz a mudança de um lugar para o outro?
+
+87
+00:06:27.775 --> 00:06:28.912
+Não é o linker.
+
+88
+00:06:28.912 --> 00:06:31.275
+O linker só calcula os endereços.
+
+89
+00:06:31.275 --> 00:06:36.950
+Quem faz a cópia é o código de inicialização, aquele trecho que roda antes da sua função main.
+
+90
+00:06:36.950 --> 00:06:40.500
+Ele usa justamente os marcadores criados pelo script.
+
+91
+00:06:40.500 --> 00:06:48.500
+Ele lê onde a seção data está guardada na flash, onde ela deve começar na RAM e qual é o tamanho dela, e copia byte por byte.
+
+92
+00:06:48.500 --> 00:06:53.400
+Depois, ele pega a região da seção bê ésse ésse e preenche tudo com zeros.
+
+93
+00:06:53.400 --> 00:06:55.350
+Só então ele chama a sua main.
+
+94
+00:06:55.350 --> 00:07:00.475
+É por isso que as suas variáveis globais já estão com o valor certo quando o programa começa.
+
+95
+00:07:00.475 --> 00:07:02.462
+Não é mágica da linguagem C.
+
+96
+00:07:02.462 --> 00:07:06.687
+É um laço de cópia escrito por alguém, guiado pelo script do linker.
+
+97
+00:07:06.687 --> 00:07:11.112
+Guarde essa imagem, porque ela volta com força no ESP trinta e dois.
+
+98
+00:07:11.112 --> 00:07:16.225
+Lá, além de dados, até código pode ser copiado da flash para a RAM antes de rodar.
+
+99
+00:07:16.225 --> 00:07:18.775
+Então vamos para o ESP trinta e dois.
+
+100
+00:07:18.775 --> 00:07:24.125
+Aqui o mapa do terreno é bem mais interessante do que num microcontrolador simples.
+
+101
+00:07:24.292 --> 00:07:25.804
+Primeiro, a flash.
+
+102
+00:07:25.754 --> 00:07:33.392
+Na maioria dos módulos ESP trinta e dois, a flash é um chip separado, conectado por um barramento serial, o SPI.
+
+103
+00:07:33.392 --> 00:07:36.129
+Isso é lento comparado com a memória interna.
+
+104
+00:07:36.129 --> 00:07:42.467
+Para o processador conseguir executar código direto da flash, existe um cache com uma unidade de mapeamento.
+
+105
+00:07:42.467 --> 00:07:48.342
+Esse mapeamento faz um pedaço da flash aparecer no espaço de endereços como se fosse memória comum.
+
+106
+00:07:48.342 --> 00:07:54.117
+Quando o processador pede uma instrução, o cache busca na flash, guarda uma cópia e entrega.
+
+107
+00:07:54.117 --> 00:07:56.179
+Isso se chama execução no local.
+
+108
+00:07:56.179 --> 00:08:05.317
+No jargão da Espressif, a região de código mapeada da flash costuma ser chamada de IROM, e a região de dados constantes mapeada da flash, de DROM.
+
+109
+00:08:05.317 --> 00:08:10.242
+É para lá que vão, por padrão, a maior parte do seu código e das suas constantes.
+
+110
+00:08:10.242 --> 00:08:12.592
+Depois, a memória interna, a SRAM.
+
+111
+00:08:12.592 --> 00:08:17.454
+No ESP trinta e dois original, essa memória é acessada por dois caminhos.
+
+112
+00:08:17.454 --> 00:08:24.104
+Pelo barramento de instruções, ela é a IRAM, a RAM de instruções, de onde o processador pode executar código.
+
+113
+00:08:24.104 --> 00:08:30.079
+Pelo barramento de dados, ela é a DRAM, a RAM de dados, onde ficam as variáveis, a pilha e o heap.
+
+114
+00:08:30.079 --> 00:08:38.167
+E aí está a pergunta central do episódio: se a flash já executa código através do cache, por que alguém colocaria uma função na IRAM?
+
+115
+00:08:38.167 --> 00:08:42.342
+A resposta tem duas partes: velocidade e disponibilidade.
+
+116
+00:08:42.342 --> 00:08:46.692
+Velocidade, porque código na IRAM roda sempre na velocidade máxima.
+
+117
+00:08:46.692 --> 00:08:53.704
+Código na flash roda rápido quando está no cache, mas, quando não está, o processador espera a busca pelo barramento serial.
+
+118
+00:08:53.704 --> 00:08:56.529
+Para a maior parte do programa isso não importa.
+
+119
+00:08:56.529 --> 00:09:03.892
+Mas para uma rotina de interrupção que precisa responder em tempo previsível, ou para um laço muito apertado, importa bastante.
+
+120
+00:09:03.892 --> 00:09:07.992
+Disponibilidade é a parte que explica o nosso reinício misterioso.
+
+121
+00:09:07.992 --> 00:09:18.592
+Quando o sistema grava ou apaga a flash, o cache da flash precisa ser desligado temporariamente, porque não dá para ler o chip e escrever nele ao mesmo tempo pelo mesmo caminho.
+
+122
+00:09:18.592 --> 00:09:23.092
+Durante esse intervalo, qualquer coisa que esteja na flash fica inacessível.
+
+123
+00:09:23.092 --> 00:09:30.879
+Se, nesse momento, chega uma interrupção cujo código mora na flash, o processador tenta buscar uma instrução que não está disponível.
+
+124
+00:09:30.879 --> 00:09:37.479
+Resultado: aquela mensagem de "cache desabilitado, mas uma região em cache foi acessada", e o reinício.
+
+125
+00:09:37.479 --> 00:09:38.992
+E não é só o código.
+
+126
+00:09:38.992 --> 00:09:47.367
+Se essa rotina de interrupção lê uma constante, digamos uma tabela fixa que o compilador colocou em rodata, na flash, o problema é o mesmo.
+
+127
+00:09:47.367 --> 00:09:51.667
+O código pode estar na IRAM, mas o dado que ele lê não pode estar na flash.
+
+128
+00:09:51.667 --> 00:09:55.729
+Então, como você diz ao linker que uma função deve ir para a IRAM?
+
+129
+00:09:55.729 --> 00:09:57.554
+É aqui que tudo se conecta.
+
+130
+00:09:57.554 --> 00:10:04.592
+No ESP-IDF, o framework oficial da Espressif, existe uma macro chamada IRAM underline ATTR.
+
+131
+00:10:04.592 --> 00:10:07.267
+Você coloca essa marca na frente da função.
+
+132
+00:10:07.267 --> 00:10:17.117
+O que ela faz, por baixo dos panos, é pedir ao compilador que coloque essa função numa seção com um nome especial, que começa com "iram um", em vez da seção text normal.
+
+133
+00:10:17.117 --> 00:10:27.504
+E o script do linker do ESP-IDF tem uma regra que captura tudo o que tem esse nome e coloca na região de IRAM, antes da regra genérica que mandaria o código para a flash.
+
+134
+00:10:27.504 --> 00:10:29.542
+Lembra da ordem dos padrões?
+
+135
+00:10:29.542 --> 00:10:30.992
+É exatamente isso.
+
+136
+00:10:30.992 --> 00:10:38.192
+Para dados existe a irmã dela, a DRAM underline ATTR, que força uma constante a ficar na DRAM em vez da flash.
+
+137
+00:10:38.192 --> 00:10:41.404
+Aquela tabela da rotina de interrupção, por exemplo.
+
+138
+00:10:41.404 --> 00:10:45.604
+E o que acontece com o código que foi para a IRAM no momento em que a placa liga?
+
+139
+00:10:45.604 --> 00:10:47.967
+A IRAM é volátil, como qualquer RAM.
+
+140
+00:10:47.967 --> 00:10:53.204
+Então esse código também tem um endereço de carga na flash e um endereço de execução na IRAM.
+
+141
+00:10:53.204 --> 00:11:00.492
+Na inicialização, ele é copiado da imagem gravada na flash para a IRAM, num processo bem parecido com o da seção data.
+
+142
+00:11:00.492 --> 00:11:04.492
+É a mesma ideia de dois endereços, só que aplicada a instruções.
+
+143
+00:11:04.492 --> 00:11:08.204
+Agora, marcar função por função funciona, mas não escala.
+
+144
+00:11:08.204 --> 00:11:11.579
+E se você quiser colocar uma biblioteca inteira na IRAM?
+
+145
+00:11:11.579 --> 00:11:15.042
+Ou tirar algo da IRAM que o sistema colocou lá por padrão?
+
+146
+00:11:15.042 --> 00:11:22.529
+Escrever o script na mão seria frágil, porque o script do ESP-IDF é gerado e muda entre versões.
+
+147
+00:11:22.684 --> 00:11:28.396
+Para isso, o ESP-IDF tem um mecanismo próprio chamado arquivos de fragmento do linker. Cada componente pode trazer um pequeno arquivo declarando regras do tipo: "estas funções, ou este arquivo, ou e
+
+148
+00:11:28.346 --> 00:11:38.484
+Cada componente pode trazer um pequeno arquivo declarando regras do tipo: "estas funções, ou este arquivo, ou esta biblioteca inteira, devem seguir o esquema sem flash". Na hora de compilar, uma ferramenta junta todos esses fragmentos e gera o script final, com as regras específi
+
+149
+00:11:38.484 --> 00:11:46.971
+Na hora de compilar, uma ferramenta junta todos esses fragmentos e gera o script final, com as regras específicas nos lugares certos. Várias opções do menu de configuração funcionam assim. Quando você liga uma opção do tipo "colocar tal driver n
+
+150
+00:11:46.971 --> 00:11:50.559
+Várias opções do menu de configuração funcionam assim. Quando você liga uma opção do tipo "colocar tal driver na IRAM", o que muda por trás é justamente uma regra de 
+
+151
+00:11:50.559 --> 00:11:58.134
+Quando você liga uma opção do tipo "colocar tal driver na IRAM", o que muda por trás é justamente uma regra de posicionamento.
+Agora, o custo. A IRAM é pequena. Estamos falando de algumas dezenas de quilobytes até pouco mais de uma cente
+
+152
+00:11:58.134 --> 00:11:59.509
+Agora, o custo. A IRAM é pequena. Estamos falando de algumas dezenas de quilobytes até pouco mais de uma centena, dependendo d
+
+153
+00:11:59.509 --> 00:12:00.834
+A IRAM é pequena. Estamos falando de algumas dezenas de quilobytes até pouco mais de uma centena, dependendo do chip e da config
+
+154
+00:12:00.834 --> 00:12:07.859
+Estamos falando de algumas dezenas de quilobytes até pouco mais de uma centena, dependendo do chip e da configuração. E aqui entra uma diferença entre gerações de chips que vale conhecer. No ESP trinta e dois original, IRAM e DR
+
+155
+00:12:07.859 --> 00:12:11.871
+E aqui entra uma diferença entre gerações de chips que vale conhecer. No ESP trinta e dois original, IRAM e DRAM ocupam, em grande parte, blocos separados da memória interna. Já em
+
+156
+00:12:11.871 --> 00:12:18.921
+No ESP trinta e dois original, IRAM e DRAM ocupam, em grande parte, blocos separados da memória interna. Já em chips mais novos, como o C três e o S três, a mesma memória física aparece em dois endereços diferentes:
+
+157
+00:12:18.921 --> 00:12:28.984
+Já em chips mais novos, como o C três e o S três, a mesma memória física aparece em dois endereços diferentes: um pelo barramento de instruções e outro pelo de dados. Nesse caso, o script do linker coloca o código de IRAM no começo da memória e faz a DRAM começar logo depois, 
+
+158
+00:12:28.984 --> 00:12:38.784
+Nesse caso, o script do linker coloca o código de IRAM no começo da memória e faz a DRAM começar logo depois, tomando cuidado para que as duas não se sobreponham. A consequência prática é direta: cada quilobyte que você coloca na IRAM é um quilobyte a menos de heap. Os det
+
+159
+00:12:38.784 --> 00:12:44.921
+A consequência prática é direta: cada quilobyte que você coloca na IRAM é um quilobyte a menos de heap. Os detalhes exatos variam de chip para chip e de versão para versão do framework, então, na dúvida, vale consu
+
+160
+00:12:44.921 --> 00:12:54.559
+Os detalhes exatos variam de chip para chip e de versão para versão do framework, então, na dúvida, vale consultar a documentação do seu chip específico.
+Mais uma curiosidade do ESP trinta e dois original. A IRAM dele só aceita acessos alinhados em palavras de qu
+
+161
+00:12:54.559 --> 00:12:57.996
+Mais uma curiosidade do ESP trinta e dois original. A IRAM dele só aceita acessos alinhados em palavras de quatro bytes. Se você tentar guardar ali um vetor de b
+
+162
+00:12:57.996 --> 00:13:02.371
+A IRAM dele só aceita acessos alinhados em palavras de quatro bytes. Se você tentar guardar ali um vetor de bytes comum e lê-lo byte a byte, o processador gera uma exceção. Por i
+
+163
+00:13:02.371 --> 00:13:08.834
+Se você tentar guardar ali um vetor de bytes comum e lê-lo byte a byte, o processador gera uma exceção. Por isso, IRAM é lugar de código, não de dados comuns.
+E como você descobre onde cada coisa foi parar? O lin
+
+164
+00:13:08.834 --> 00:13:12.284
+Por isso, IRAM é lugar de código, não de dados comuns.
+E como você descobre onde cada coisa foi parar? O linker pode gerar o arquivo de mapa, um relatório longo qu
+
+165
+00:13:12.284 --> 00:13:15.321
+E como você descobre onde cada coisa foi parar? O linker pode gerar o arquivo de mapa, um relatório longo que mostra cada seção, de qual arquivo ela veio e 
+
+166
+00:13:15.321 --> 00:13:23.309
+O linker pode gerar o arquivo de mapa, um relatório longo que mostra cada seção, de qual arquivo ela veio e em qual endereço caiu. No ESP-IDF, o comando de tamanho resume isso por região e por componente, e mostra quanto de IRAM, de DRAM e
+
+167
+00:13:23.309 --> 00:13:32.446
+No ESP-IDF, o comando de tamanho resume isso por região e por componente, e mostra quanto de IRAM, de DRAM e de flash você está usando. Quando a IRAM estoura, o erro do linker diz exatamente isso: a região tal transbordou em tantos bytes. Não é
+
+168
+00:13:32.446 --> 00:13:38.834
+Quando a IRAM estoura, o erro do linker diz exatamente isso: a região tal transbordou em tantos bytes. Não é um bug do seu código. É o terreno que acabou.
+Então vamos recapitular a
+

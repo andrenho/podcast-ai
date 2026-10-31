@@ -1,0 +1,702 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:03.125
+Imagine que estamos em mil novecentos e oitenta.
+
+2
+00:00:03.125 --> 00:00:11.062
+Você tem um computador em casa, uma daquelas máquinas de hobby, com um processador de oito bits e talvez quarenta e oito quilobytes de memória.
+
+3
+00:00:11.062 --> 00:00:13.387
+Não megabytes, quilobytes.
+
+4
+00:00:13.387 --> 00:00:17.525
+Os programas ficam num disquete que faz barulho a cada leitura.
+
+5
+00:00:17.525 --> 00:00:20.500
+E um belo dia chega pelo correio uma revista.
+
+6
+00:00:20.500 --> 00:00:27.112
+Dentro dela, página após página, está impresso o código-fonte completo de um compilador da linguagem C.
+
+7
+00:00:27.112 --> 00:00:36.762
+Você pode digitar aquilo, linha por linha, e de repente sua maquininha passa a falar uma linguagem que, até então, parecia coisa de computador grande de universidade.
+
+8
+00:00:36.762 --> 00:00:42.037
+O detalhe mais bonito é que esse compilador estava escrito na própria linguagem que ele compilava.
+
+9
+00:00:42.037 --> 00:00:44.500
+Ele era capaz de compilar a si mesmo.
+
+10
+00:00:44.500 --> 00:00:49.462
+Neste episódio, vamos falar sobre compiladores que cabem em máquinas minúsculas.
+
+11
+00:00:49.462 --> 00:00:57.287
+Primeiro, vamos voltar a mil novecentos e oitenta e conhecer o Small-C, o compilador que Ron Cain publicou na revista Doctor Dobb's.
+
+12
+00:00:57.287 --> 00:01:07.112
+Depois, vamos entender o que significa um compilador compilar a si mesmo, a ideia de auto-hospedagem, e por que isso é tão difícil e tão elegante em hardware limitado.
+
+13
+00:01:07.112 --> 00:01:15.437
+Em seguida, vamos pular vinte anos e conhecer o Tiny C Compiler, de Fabrice Bellard, que levou essa mesma filosofia para o mundo moderno.
+
+14
+00:01:15.437 --> 00:01:24.625
+E, no final, vamos ver por que esses compiladores pequenos voltaram a ser importantes hoje, numa discussão sobre confiança e segurança de software.
+
+15
+00:01:24.625 --> 00:01:26.612
+Vamos começar pelo cenário.
+
+16
+00:01:26.612 --> 00:01:31.412
+No fim da década de setenta, a linguagem C já existia havia alguns anos.
+
+17
+00:01:31.412 --> 00:01:37.900
+Ela tinha nascido no Bell Labs, junto com o sistema Unix, rodando em minicomputadores como o PDP-onze.
+
+18
+00:01:37.900 --> 00:01:43.937
+Para os padrões da época, eram máquinas sérias, caras, que ficavam em universidades e empresas.
+
+19
+00:01:43.937 --> 00:01:49.437
+O compilador C de verdade era um programa relativamente grande, pensado para esse ambiente.
+
+20
+00:01:49.437 --> 00:01:54.225
+Enquanto isso, do outro lado, existia o mundo dos microcomputadores.
+
+21
+00:01:54.225 --> 00:02:00.625
+Gente apaixonada montando máquinas com processadores como o Intel oito zero oito zero e o Zilog Zê oitenta.
+
+22
+00:02:00.625 --> 00:02:04.462
+Muitos usavam um sistema operacional chamado cê pê ême.
+
+23
+00:02:04.462 --> 00:02:10.037
+A linguagem mais comum era o BASIC, interpretado, lento, mas que cabia na memória.
+
+24
+00:02:10.037 --> 00:02:16.750
+Quem queria desempenho escrevia direto em assembly, que é a linguagem de montagem, instrução por instrução do processador.
+
+25
+00:02:16.750 --> 00:02:19.387
+Trabalhoso e cheio de armadilhas.
+
+26
+00:02:19.387 --> 00:02:21.350
+E é aqui que entra a revista.
+
+27
+00:02:21.350 --> 00:02:30.925
+A Doctor Dobb's Journal tinha nascido em mil novecentos e setenta e seis, originalmente dedicada ao Tiny BASIC, uma versão enxuta do BASIC para máquinas pequenas.
+
+28
+00:02:30.925 --> 00:02:39.137
+O nome original da revista era longo e cheio de trocadilhos, e um deles brincava com a ideia de "rodar leve, sem excesso de bytes".
+
+29
+00:02:39.137 --> 00:02:44.287
+Esse espírito de fazer muito com pouco era exatamente a identidade da publicação.
+
+30
+00:02:44.287 --> 00:02:52.612
+E era uma cultura de compartilhar código: listagens inteiras eram impressas para que qualquer leitor pudesse digitar, estudar e modificar.
+
+31
+00:02:52.612 --> 00:03:00.550
+Em maio de mil novecentos e oitenta, Ron Cain publicou ali um artigo apresentando um pequeno compilador C para o oito zero oito zero.
+
+32
+00:03:00.550 --> 00:03:05.637
+Esse compilador ficou conhecido como Small-C, ou seja, "C pequeno".
+
+33
+00:03:05.637 --> 00:03:08.450
+Então, o que exatamente era o Small-C?
+
+34
+00:03:08.450 --> 00:03:11.200
+Ele era um subconjunto da linguagem C.
+
+35
+00:03:11.200 --> 00:03:13.412
+Cain não tentou implementar tudo.
+
+36
+00:03:13.412 --> 00:03:17.025
+Ele escolheu com cuidado o que entrava e o que ficava de fora.
+
+37
+00:03:17.025 --> 00:03:20.862
+Entravam os tipos básicos: inteiros e caracteres.
+
+38
+00:03:20.862 --> 00:03:24.150
+Entravam ponteiros e vetores de uma dimensão.
+
+39
+00:03:24.150 --> 00:03:30.662
+Entravam funções, laços, condicionais, as operações aritméticas e lógicas do dia a dia.
+
+40
+00:03:30.662 --> 00:03:37.712
+Ficavam de fora coisas como números de ponto flutuante, estruturas, uniões e vetores com várias dimensões.
+
+41
+00:03:37.712 --> 00:03:40.525
+Pode parecer uma lista de ausências enorme.
+
+42
+00:03:40.525 --> 00:03:49.800
+Mas pense no que sobrou: com inteiros, caracteres, ponteiros e vetores, você consegue escrever praticamente qualquer programa de manipulação de texto.
+
+43
+00:03:49.800 --> 00:03:56.062
+E um compilador, no fundo, é exatamente isso: um programa que lê texto e escreve texto.
+
+44
+00:03:56.062 --> 00:03:58.375
+Essa é a chave da escolha de Cain.
+
+45
+00:03:58.375 --> 00:04:06.937
+O subconjunto foi desenhado para ser pequeno o bastante para caber na máquina, mas rico o bastante para que o próprio compilador pudesse ser escrito nele.
+
+46
+00:04:07.034 --> 00:04:12.559
+Vamos olhar rapidamente como ele funcionava por dentro, porque o design é uma aula de economia.
+
+47
+00:04:12.559 --> 00:04:15.634
+O Small-C era um compilador de uma passada só.
+
+48
+00:04:15.634 --> 00:04:21.659
+Ele lia o código-fonte do início ao fim uma única vez e, enquanto lia, já ia produzindo a saída.
+
+49
+00:04:21.659 --> 00:04:26.834
+Não construía uma representação completa do programa na memória para analisar depois.
+
+50
+00:04:26.834 --> 00:04:29.759
+Simplesmente não havia memória para isso.
+
+51
+00:04:29.759 --> 00:04:33.309
+A técnica de análise era a chamada descida recursiva.
+
+52
+00:04:33.309 --> 00:04:39.209
+A ideia é intuitiva: para cada regra da gramática da linguagem existe uma função no compilador.
+
+53
+00:04:39.209 --> 00:04:47.046
+Tem uma função que entende uma instrução, outra que entende uma expressão, outra que entende um termo dentro da expressão, e assim por diante.
+
+54
+00:04:47.046 --> 00:04:50.646
+Uma chama a outra, descendo pela estrutura do código.
+
+55
+00:04:50.646 --> 00:04:56.409
+É o tipo de coisa que você consegue ler e entender com calma, sem precisar de ferramentas especiais.
+
+56
+00:04:56.409 --> 00:04:59.184
+E a saída não era código de máquina pronto.
+
+57
+00:04:59.184 --> 00:05:03.171
+O Small-C gerava texto em assembly do oito zero oito zero.
+
+58
+00:05:03.171 --> 00:05:09.246
+Depois, um montador, que já existia no sistema, transformava aquilo em programa executável.
+
+59
+00:05:09.246 --> 00:05:14.259
+Isso tirava do compilador todo o trabalho chato de codificar instruções em bytes.
+
+60
+00:05:14.259 --> 00:05:18.434
+Para gerar esse assembly, o Small-C usava um modelo bem simples.
+
+61
+00:05:18.434 --> 00:05:28.521
+Ele tratava um registrador do processador como registrador primário, onde ficava o resultado atual, e outro como secundário, um ajudante para operações com dois valores.
+
+62
+00:05:28.521 --> 00:05:30.821
+Tudo que não cabia ali ia para a pilha.
+
+63
+00:05:30.821 --> 00:05:33.846
+O código gerado não era rápido nem elegante.
+
+64
+00:05:33.846 --> 00:05:36.171
+Era repetitivo e previsível.
+
+65
+00:05:36.171 --> 00:05:42.084
+Mas funcionava, era fácil de portar para outros processadores e, principalmente, cabia.
+
+66
+00:05:42.084 --> 00:05:54.384
+Se você se distraiu por um instante, aqui vai o resumo até agora: o Small-C era um C reduzido, compilado numa única passada, que gerava assembly simples e foi desenhado para ser pequeno o suficiente para se compilar.
+
+67
+00:05:54.384 --> 00:05:58.409
+E isso nos leva à ideia central do episódio: a auto-hospedagem.
+
+68
+00:05:58.409 --> 00:06:03.346
+Um compilador é auto-hospedado quando ele está escrito na mesma linguagem que compila.
+
+69
+00:06:03.346 --> 00:06:05.921
+O compilador de C escrito em C.
+
+70
+00:06:05.921 --> 00:06:09.146
+Isso cria um problema clássico de ovo e galinha.
+
+71
+00:06:09.146 --> 00:06:15.796
+Se o compilador está escrito em C, como você compila ele pela primeira vez, antes de existir um compilador de C?
+
+72
+00:06:15.796 --> 00:06:22.821
+A resposta se chama bootstrapping, uma referência à expressão em inglês sobre se levantar puxando a alça das próprias botas.
+
+73
+00:06:22.821 --> 00:06:26.296
+Na prática, alguém precisa dar o primeiro empurrão.
+
+74
+00:06:26.296 --> 00:06:33.709
+Pode ser escrevendo uma primeira versão em assembly, ou usando outro compilador já existente em outra máquina, ou até traduzindo à mão.
+
+75
+00:06:33.709 --> 00:06:41.621
+Uma vez que você tem um executável funcionando, ele compila o próprio código-fonte, e a partir daí o compilador se sustenta sozinho.
+
+76
+00:06:41.621 --> 00:06:44.659
+Cada nova versão é compilada pela anterior.
+
+77
+00:06:44.659 --> 00:06:48.284
+Por que isso importava tanto num computador de oito bits?
+
+78
+00:06:48.284 --> 00:06:49.909
+Por alguns motivos.
+
+79
+00:06:49.909 --> 00:06:53.471
+Primeiro, porque prova que a linguagem é útil de verdade.
+
+80
+00:06:53.471 --> 00:06:59.446
+Se um compilador inteiro pode ser escrito naquele subconjunto, então ele serve para programas sérios.
+
+81
+00:06:59.446 --> 00:07:02.071
+Segundo, porque dá independência.
+
+82
+00:07:02.071 --> 00:07:12.471
+Com o código-fonte em mãos e um compilador funcionando, qualquer leitor podia melhorar o Small-C usando o próprio Small-C, na própria máquina, sem depender de computador de universidade.
+
+83
+00:07:12.471 --> 00:07:16.109
+E terceiro, porque impõe uma disciplina fortíssima.
+
+84
+00:07:16.109 --> 00:07:22.959
+Todo recurso que você adiciona ao compilador também precisa ser suportado por ele, e também ocupa memória quando ele roda.
+
+85
+00:07:22.959 --> 00:07:28.409
+Num ambiente de poucas dezenas de quilobytes, cada funcionalidade tem um preço visível.
+
+86
+00:07:28.409 --> 00:07:30.609
+Você sente o peso de cada linha.
+
+87
+00:07:30.698 --> 00:07:34.773
+E as pessoas realmente pegaram o Small-C e levaram adiante.
+
+88
+00:07:34.773 --> 00:07:44.923
+O mais conhecido foi James Hendrix, que publicou uma versão ampliada na própria Doctor Dobb's, em mil novecentos e oitenta e dois, e depois escreveu livros detalhando o compilador.
+
+89
+00:07:44.923 --> 00:07:53.198
+As versões dele acrescentaram recursos e, mais tarde, levaram o Small-C para os processadores da Intel usados no PC com MS-DOS.
+
+90
+00:07:53.198 --> 00:07:58.160
+Outros programadores portaram o compilador para vários processadores diferentes.
+
+91
+00:07:58.160 --> 00:08:04.360
+O Small-C virou um pequeno ecossistema, e, talvez mais importante, virou material de estudo.
+
+92
+00:08:04.360 --> 00:08:12.785
+Para muita gente, foi a primeira vez em que um compilador deixou de ser uma caixa preta e virou algo que dava para ler numa tarde e entender numa semana.
+
+93
+00:08:12.785 --> 00:08:16.048
+Agora, vamos dar um salto de duas décadas.
+
+94
+00:08:16.048 --> 00:08:21.435
+No começo dos anos dois mil, os computadores já eram absurdamente mais potentes.
+
+95
+00:08:21.435 --> 00:08:24.523
+Memória medida em centenas de megabytes.
+
+96
+00:08:24.523 --> 00:08:28.398
+Ninguém precisava mais espremer compiladores em quilobytes.
+
+97
+00:08:28.398 --> 00:08:39.560
+E os compiladores principais, como o GCC, tinham crescido de forma proporcional: enormes, cheios de otimizações sofisticadas, levando um bom tempo para compilar programas grandes.
+
+98
+00:08:39.560 --> 00:08:42.560
+Foi nesse contexto que apareceu Fabrice Bellard.
+
+99
+00:08:42.560 --> 00:08:50.448
+Se o nome não for familiar, ele é um programador francês conhecido por projetos impressionantes, como o FFmpeg e o emulador QEMU.
+
+100
+00:08:50.448 --> 00:09:01.648
+Em dois mil e um, ele participou de um concurso curioso, o Concurso Internacional de Código C Ofuscado, em que os programadores competem para escrever o código mais criativo e difícil de ler.
+
+101
+00:09:01.648 --> 00:09:07.760
+A entrada de Bellard foi um compilador C minúsculo, chamado Obfuscated Tiny C Compiler.
+
+102
+00:09:07.760 --> 00:09:16.698
+Ele cabia em poucos milhares de caracteres e, sim, era capaz de compilar a si mesmo, mesmo suportando apenas um subconjunto pequeno da linguagem.
+
+103
+00:09:16.698 --> 00:09:19.048
+Perceba o paralelo com Ron Cain.
+
+104
+00:09:19.048 --> 00:09:25.385
+Um subconjunto de C, escolhido com cuidado, grande o suficiente para escrever o próprio compilador.
+
+105
+00:09:25.385 --> 00:09:32.635
+A partir dessa brincadeira, Bellard desenvolveu um projeto sério: o Tiny C Compiler, conhecido pela sigla tê cê cê.
+
+106
+00:09:32.635 --> 00:09:35.023
+E aqui a ambição cresceu bastante.
+
+107
+00:09:35.023 --> 00:09:43.898
+O tê cê cê implementa o padrão C de mil novecentos e oitenta e nove de forma praticamente completa e boa parte do padrão de mil novecentos e noventa e nove.
+
+108
+00:09:43.898 --> 00:09:46.785
+Ou seja, não é mais um C reduzido.
+
+109
+00:09:46.785 --> 00:09:48.448
+É um C de verdade.
+
+110
+00:09:48.448 --> 00:09:51.698
+Mas a filosofia continua a mesma do Small-C.
+
+111
+00:09:51.698 --> 00:09:54.985
+O tê cê cê também é essencialmente de uma passada.
+
+112
+00:09:54.985 --> 00:09:58.698
+Ele lê o código e gera o resultado quase imediatamente.
+
+113
+00:09:58.698 --> 00:10:05.785
+Só que, em vez de produzir texto em assembly para outro programa montar, ele gera código de máquina diretamente.
+
+114
+00:10:05.785 --> 00:10:12.398
+E ele traz embutidos um montador e um linkador, que é a peça que junta os pedaços do programa num executável final.
+
+115
+00:10:12.398 --> 00:10:15.848
+Tudo isso num binário de poucas centenas de quilobytes.
+
+116
+00:10:15.848 --> 00:10:18.723
+O resultado é velocidade de compilação.
+
+117
+00:10:18.723 --> 00:10:24.635
+O tê cê cê compila muitas vezes mais rápido que os compiladores tradicionais com otimização.
+
+118
+00:10:24.635 --> 00:10:30.410
+O código que ele gera não é tão rápido quanto o de um GCC otimizado, e isso é uma troca consciente.
+
+119
+00:10:30.410 --> 00:10:32.823
+Ele faz pouquíssima otimização.
+
+120
+00:10:32.823 --> 00:10:36.098
+A prioridade é compilar rápido e ser simples.
+
+121
+00:10:36.098 --> 00:10:39.460
+Essa velocidade permitiu truques bem divertidos.
+
+122
+00:10:39.460 --> 00:10:46.948
+O tê cê cê tem um modo em que ele compila e executa o programa na hora, direto da memória, como se C fosse uma linguagem de script.
+
+123
+00:10:46.948 --> 00:10:53.335
+Você pode escrever um arquivo em C, marcar como executável, e rodar como faria com um script de terminal.
+
+124
+00:10:53.335 --> 00:10:57.910
+E teve uma demonstração famosa, em dois mil e quatro, chamada TCCBOOT.
+
+125
+00:10:57.910 --> 00:11:06.573
+Era um carregador de inicialização que, na hora de ligar o computador, compilava o núcleo do Linux a partir do código-fonte e depois o executava.
+
+126
+00:11:06.573 --> 00:11:11.385
+Segundo Bellard, isso levava cerca de quinze segundos na máquina que ele usou.
+
+127
+00:11:11.385 --> 00:11:18.760
+Vale um detalhe honesto: para isso funcionar, foi preciso um núcleo Linux de uma versão específica, com alguns ajustes.
+
+128
+00:11:18.760 --> 00:11:24.748
+Mas a demonstração deixava claro o ponto: um compilador pequeno e rápido muda o que parece possível.
+
+129
+00:11:24.842 --> 00:11:30.467
+Bellard deixou de desenvolver ativamente o tê cê cê por volta de meados dos anos dois mil.
+
+130
+00:11:30.467 --> 00:11:33.129
+O projeto, porém, não morreu.
+
+131
+00:11:33.129 --> 00:11:45.129
+Uma comunidade de voluntários continuou mantendo o código, acrescentando suporte a outros processadores, como os de sessenta e quatro bits da família x oitenta e seis, os processadores ARM e o RISC-V.
+
+132
+00:11:45.129 --> 00:11:51.892
+O desenvolvimento é um pouco irregular, como acontece com muitos projetos mantidos por voluntários, mas segue vivo.
+
+133
+00:11:51.892 --> 00:11:55.017
+Vamos fazer uma pausa para conectar as pontas.
+
+134
+00:11:55.017 --> 00:12:03.379
+Small-C em mil novecentos e oitenta, tê cê cê nos anos dois mil. Separados por vinte anos e por uma diferença de memória de milhares de vezes.
+
+135
+00:12:03.379 --> 00:12:11.942
+E mesmo assim com a mesma ideia: uma passada, geração direta, pouca otimização, código-fonte legível, compilador que se compila.
+
+136
+00:12:11.942 --> 00:12:17.917
+A restrição de hardware desapareceu, mas a simplicidade continuou valendo a pena por si só.
+
+137
+00:12:17.917 --> 00:12:23.567
+E é aqui que a história dá uma volta interessante, porque a simplicidade virou uma questão de segurança.
+
+138
+00:12:23.567 --> 00:12:31.267
+Em mil novecentos e oitenta e quatro, Ken Thompson, um dos criadores do Unix, deu uma palestra famosa ao receber o Prêmio Turing.
+
+139
+00:12:31.267 --> 00:12:35.679
+O título era algo como "Reflexões sobre confiar na confiança".
+
+140
+00:12:35.679 --> 00:12:38.242
+Ele descreveu um ataque perturbador.
+
+141
+00:12:38.242 --> 00:12:46.392
+Imagine que alguém modifica um compilador para que ele insira uma porta dos fundos sempre que compilar, por exemplo, o programa de login do sistema.
+
+142
+00:12:46.392 --> 00:12:50.167
+Até aí, daria para descobrir lendo o código do compilador.
+
+143
+00:12:50.167 --> 00:12:57.454
+Mas agora imagine que o compilador também é modificado para reinserir essa modificação maliciosa sempre que compilar a si mesmo.
+
+144
+00:12:57.454 --> 00:13:01.942
+Depois disso, você pode apagar o código malicioso do código-fonte.
+
+145
+00:13:01.942 --> 00:13:03.767
+O código parece limpo.
+
+146
+00:13:03.767 --> 00:13:10.854
+Mas o executável continua contaminado, geração após geração, porque cada compilador é produzido pelo anterior.
+
+147
+00:13:10.854 --> 00:13:12.379
+Percebe a ligação?
+
+148
+00:13:12.379 --> 00:13:17.379
+A auto-hospedagem, que era tão elegante, também cria uma corrente de confiança.
+
+149
+00:13:17.379 --> 00:13:25.729
+Cada compilador que você usa foi compilado por um outro, que foi compilado por outro, voltando no tempo até algum binário que ninguém realmente inspecionou.
+
+150
+00:13:25.729 --> 00:13:30.954
+Até onde se sabe, esse tipo de ataque não é algo que se encontre com frequência na prática.
+
+151
+00:13:30.954 --> 00:13:38.292
+Mas a pergunta que Thompson levantou é séria: como você pode ter certeza de que o compilador que você usa é fiel ao código-fonte dele?
+
+152
+00:13:38.292 --> 00:13:46.467
+Uma das respostas modernas é um movimento chamado bootstrappable builds, algo como "compilações que podem ser reconstruídas do zero".
+
+153
+00:13:46.467 --> 00:13:51.592
+A ideia é partir de um ponto inicial tão pequeno que um ser humano consiga verificar à mão.
+
+154
+00:13:51.592 --> 00:14:00.604
+Em alguns projetos, esse ponto inicial é um programinha de algumas centenas de bytes, que só sabe transformar texto em hexadecimal em código de máquina.
+
+155
+00:14:00.604 --> 00:14:04.367
+Com ele, se constrói uma ferramenta um pouco mais capaz.
+
+156
+00:14:04.367 --> 00:14:06.592
+Com essa, outra um pouco maior.
+
+157
+00:14:06.592 --> 00:14:08.854
+Passo a passo, como uma escada.
+
+158
+00:14:08.854 --> 00:14:18.167
+Um dos degraus mais importantes dessa escada, em projetos como o GNU Mes e o live-bootstrap, é justamente o Tiny C Compiler, numa versão adaptada.
+
+159
+00:14:18.167 --> 00:14:19.017
+Por quê?
+
+160
+00:14:19.017 --> 00:14:27.304
+Porque ele é pequeno o bastante para ser compilado por ferramentas muito simples, e completo o bastante para compilar versões antigas do GCC.
+
+161
+00:14:27.304 --> 00:14:34.842
+E, a partir daí, o GCC vai compilando versões cada vez mais novas de si mesmo, até chegar a um sistema moderno.
+
+162
+00:14:34.842 --> 00:14:42.817
+O tê cê cê vira a ponte entre o mundo das ferramentas minúsculas, que um humano consegue auditar, e o mundo dos compiladores gigantes.
+
+163
+00:14:42.817 --> 00:14:55.379
+Ou seja, aquela mesma ideia de mil novecentos e oitenta, de um compilador pequeno o bastante para caber numa máquina limitada, reaparece agora como um compilador pequeno o bastante para caber na cabeça de quem precisa confiar nele.
+
+164
+00:14:55.379 --> 00:14:57.067
+Vamos recapitular.
+
+165
+00:14:57.067 --> 00:15:03.229
+Começamos em mil novecentos e oitenta, com Ron Cain publicando o Small-C na revista Doctor Dobb's.
+
+166
+00:15:03.229 --> 00:15:12.779
+Um subconjunto de C, com inteiros, caracteres, ponteiros e vetores simples, compilado numa única passada e gerando assembly para o oito zero oito zero.
+
+167
+00:15:12.779 --> 00:15:18.729
+Pequeno o bastante para caber em poucas dezenas de quilobytes e rico o bastante para compilar a si mesmo.
+
+168
+00:15:18.818 --> 00:15:29.830
+Entendemos a auto-hospedagem e o bootstrapping: o problema do ovo e da galinha de um compilador escrito na própria linguagem, e como isso dava independência e disciplina a quem trabalhava com pouco hardware.
+
+169
+00:15:29.830 --> 00:15:45.230
+Depois, saltamos para o Tiny C Compiler, de Fabrice Bellard, nascido de um concurso de código ofuscado e transformado num compilador C quase completo, extremamente rápido, que gera código de máquina diretamente e até compilou o Linux durante a inicialização.
+
+170
+00:15:45.230 --> 00:15:55.643
+E terminamos com a pergunta de Ken Thompson sobre confiança, e com o papel que compiladores pequenos têm hoje em reconstruir toda a cadeia de software a partir de algo que um ser humano consegue verificar.
+
+171
+00:15:55.643 --> 00:15:58.530
+Fica, então, um último pensamento.
+
+172
+00:15:58.530 --> 00:16:07.593
+Durante muito tempo, achamos que compiladores pequenos eram apenas uma resposta à pobreza de hardware, algo que deixaríamos para trás assim que as máquinas crescessem.
+
+173
+00:16:07.593 --> 00:16:12.093
+Mas as máquinas cresceram, e os compiladores pequenos continuam aqui.
+
+174
+00:16:12.093 --> 00:16:17.030
+Talvez porque a restrição mais importante nunca tenha sido a memória do computador.
+
+175
+00:16:17.030 --> 00:16:24.130
+Talvez a restrição mais importante seja a nossa capacidade de entender, de ponta a ponta, aquilo em que estamos confiando.
+

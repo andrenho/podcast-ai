@@ -1,0 +1,606 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:03.987
+Imagine um sábado de manhã, em mil novecentos e noventa e dois.
+
+2
+00:00:03.987 --> 00:00:11.262
+Você acabou de comprar um jogo novo, instala tudo a partir de uma pilha de disquetes, digita o nome do programa e aperta enter.
+
+3
+00:00:11.262 --> 00:00:19.525
+Na tela aparece uma mensagem seca: memória convencional insuficiente, são necessários pelo menos quinhentos e oitenta kilobytes livres.
+
+4
+00:00:19.525 --> 00:00:25.025
+Só que o seu computador tem quatro megabytes de RAM, mais de seis vezes o que o jogo pede.
+
+5
+00:00:25.025 --> 00:00:27.350
+E mesmo assim ele se recusa a rodar.
+
+6
+00:00:27.350 --> 00:00:40.500
+Quem viveu essa época lembra o que vinha depois: abrir os arquivos de configuração do boot, comentar drivers, reordenar linhas, criar um disquete de boot só para aquele jogo, reiniciar dez vezes até sobrar memória suficiente.
+
+7
+00:00:40.500 --> 00:00:44.600
+Parece absurdo, mas era o dia a dia de qualquer usuário de DOS.
+
+8
+00:00:44.600 --> 00:00:54.562
+Neste episódio, vamos entender de onde veio esse limite de seiscentos e quarenta kilobytes e as três grandes estratégias que os programadores inventaram para escapar dele.
+
+9
+00:00:54.562 --> 00:00:59.612
+Primeiro os overlays, um truque antigo de carregar código do disco sob demanda.
+
+10
+00:00:59.612 --> 00:01:04.237
+Depois a memória expandida, a E M S, que era bank switching puro.
+
+11
+00:01:04.237 --> 00:01:09.650
+E por fim a memória estendida, a X M S, que exigiu brigar com o próprio processador.
+
+12
+00:01:09.650 --> 00:01:20.462
+No caminho aparecem uma linha de endereço que precisava ser ligada e desligada pelo controlador de teclado e uma área de memória de exatamente sessenta e cinco mil, quinhentos e vinte bytes.
+
+13
+00:01:20.462 --> 00:01:22.950
+Vamos começar pela origem do problema.
+
+14
+00:01:22.950 --> 00:01:31.012
+O I B M PC de mil novecentos e oitenta e um usava o Intel oito zero oito oito, que tinha um barramento de endereços de vinte bits.
+
+15
+00:01:31.012 --> 00:01:33.987
+Isso dá um megabyte de espaço endereçável.
+
+16
+00:01:33.987 --> 00:01:46.350
+Os registradores eram de dezesseis bits, então a Intel resolveu o descompasso com a famosa segmentação: um valor de segmento deslocado quatro bits para a esquerda, somado a um deslocamento de dezesseis bits.
+
+17
+00:01:46.350 --> 00:01:51.887
+Você conhece o esquema, e conhece também a dor de cabeça que ele causava com ponteiros near e far.
+
+18
+00:01:51.887 --> 00:01:55.850
+O detalhe decisivo não veio da Intel, e sim da I B M.
+
+19
+00:01:55.850 --> 00:02:02.100
+Ao desenhar o mapa de memória do PC, a I B M reservou a parte de cima desse megabyte para o hardware.
+
+20
+00:02:02.100 --> 00:02:11.025
+A partir da marca de seiscentos e quarenta kilobytes ficavam a memória de vídeo, as ROMs das placas de expansão e, no topo, a BIOS.
+
+21
+00:02:11.025 --> 00:02:18.625
+Sobravam seiscentos e quarenta kilobytes contínuos, a partir do endereço zero, para o sistema operacional e os programas.
+
+22
+00:02:18.625 --> 00:02:21.375
+Isso passou a se chamar memória convencional.
+
+23
+00:02:21.375 --> 00:02:26.650
+Os trezentos e oitenta e quatro kilobytes de cima ganharam o nome de área de memória superior.
+
+24
+00:02:26.650 --> 00:02:30.850
+Em mil novecentos e oitenta e um, essa divisão parecia generosa.
+
+25
+00:02:30.850 --> 00:02:34.275
+O PC básico vinha com dezesseis kilobytes de RAM.
+
+26
+00:02:34.275 --> 00:02:37.600
+Seiscentos e quarenta era quarenta vezes isso.
+
+27
+00:02:37.600 --> 00:02:45.100
+Aliás, existe a frase famosa atribuída ao Bill Gates, de que seiscentos e quarenta kilobytes deveriam bastar para qualquer um.
+
+28
+00:02:45.100 --> 00:02:49.850
+Ele sempre negou ter dito isso, e ninguém nunca encontrou uma fonte confiável.
+
+29
+00:02:49.850 --> 00:02:52.125
+O mais provável é que seja lenda.
+
+30
+00:02:52.125 --> 00:02:57.900
+Mas a lenda pegou porque resumia bem a sensação de quem ficou preso nesse teto poucos anos depois.
+
+31
+00:02:57.900 --> 00:03:01.012
+E por que não dava simplesmente para mudar o mapa?
+
+32
+00:03:01.012 --> 00:03:03.237
+Por causa da compatibilidade.
+
+33
+00:03:03.237 --> 00:03:08.462
+Milhares de programas escreviam direto na memória de vídeo, em endereços fixos.
+
+34
+00:03:08.462 --> 00:03:10.962
+Mover essa região quebraria tudo.
+
+35
+00:03:10.962 --> 00:03:16.437
+Então o teto ficou, e a indústria inteira passou uma década contornando a mesma decisão.
+
+36
+00:03:16.437 --> 00:03:28.412
+Para quem se distraiu, a ideia central até aqui é esta: o processador enxergava um megabyte, mas a I B M reservou a parte de cima para o hardware, e sobraram seiscentos e quarenta kilobytes para os programas.
+
+37
+00:03:28.412 --> 00:03:32.800
+Tudo o que vem a seguir é uma forma de fingir que existe mais espaço do que isso.
+
+38
+00:03:32.800 --> 00:03:37.012
+A primeira forma é a mais antiga, e ela nem nasceu no DOS.
+
+39
+00:03:37.012 --> 00:03:38.675
+São os overlays.
+
+40
+00:03:38.762 --> 00:03:40.274
+A ideia é simples.
+
+41
+00:03:40.274 --> 00:03:44.549
+Um programa grande raramente precisa de todo o seu código ao mesmo tempo.
+
+42
+00:03:44.549 --> 00:03:52.274
+O módulo que imprime não precisa estar na memória enquanto o usuário digita, e o corretor ortográfico não precisa estar lá enquanto ele imprime.
+
+43
+00:03:52.274 --> 00:04:01.199
+Então você divide o programa em uma raiz, que fica sempre residente, e em vários pedaços chamados overlays, que se revezam em uma mesma região de memória.
+
+44
+00:04:01.199 --> 00:04:07.712
+Quando o programa precisa de uma função que está num overlay ausente, ele lê esse pedaço do disco por cima do anterior.
+
+45
+00:04:07.712 --> 00:04:10.962
+Daí o nome: um código sobreposto ao outro.
+
+46
+00:04:10.962 --> 00:04:17.474
+Isso já se fazia em mainframes nos anos sessenta e era comum no CP M, o sistema que reinava antes do DOS.
+
+47
+00:04:17.474 --> 00:04:26.537
+O WordStar, o processador de textos mais popular da época, vinha com arquivos de overlay separados e rodava em máquinas de sessenta e quatro kilobytes.
+
+48
+00:04:26.537 --> 00:04:29.812
+Quando foi portado para o DOS, levou o truque junto.
+
+49
+00:04:29.812 --> 00:04:33.074
+O mais interessante é como isso funcionava por baixo.
+
+50
+00:04:33.074 --> 00:04:42.574
+O próprio DOS oferecia uma variante da função que carrega programas, feita especificamente para carregar um overlay num endereço escolhido, sem criar um processo novo.
+
+51
+00:04:42.574 --> 00:04:45.687
+Mas a parte esperta ficava no linker e no runtime.
+
+52
+00:04:45.687 --> 00:04:52.512
+Quando você marcava módulos como overlays, o linker não deixava as chamadas para essas funções irem direto ao destino.
+
+53
+00:04:52.512 --> 00:04:57.124
+Ele as redirecionava para pequenos trechos de código na raiz, os stubs.
+
+54
+00:04:57.124 --> 00:05:00.774
+O stub verificava se o overlay certo estava carregado.
+
+55
+00:05:00.774 --> 00:05:09.012
+Se não estivesse, chamava o gerenciador, que lia o pedaço do disco, corrigia o que fosse preciso e só então saltava para a função real.
+
+56
+00:05:09.012 --> 00:05:11.562
+Daí vinham os problemas clássicos.
+
+57
+00:05:11.562 --> 00:05:13.549
+O primeiro era o desempenho.
+
+58
+00:05:13.549 --> 00:05:22.212
+Se a função A, num overlay, chamava a função B, em outro overlay que disputava a mesma região, cada chamada significava uma ida ao disco.
+
+59
+00:05:22.212 --> 00:05:27.212
+Num laço, isso virava thrashing, com o drive de disquete rangendo sem parar.
+
+60
+00:05:27.212 --> 00:05:30.312
+O segundo era a fragilidade dos ponteiros.
+
+61
+00:05:30.312 --> 00:05:36.724
+Um ponteiro de função que apontasse para dentro de um overlay ficava inválido assim que outro overlay ocupasse o lugar.
+
+62
+00:05:36.724 --> 00:05:43.262
+Os dados também não podiam morar ali, então o programador tinha que pensar com cuidado no que ia para cada pedaço.
+
+63
+00:05:43.262 --> 00:05:49.074
+Montar a árvore de overlays era quase uma arte, feita à mão no arquivo de configuração do linker.
+
+64
+00:05:49.074 --> 00:05:52.712
+A Borland levou essa ideia ao seu ponto mais sofisticado.
+
+65
+00:05:52.712 --> 00:06:02.374
+O Turbo Pascal tinha unidades de overlay bem integradas, e o Borland C mais mais, por volta de mil novecentos e noventa, trouxe um gerenciador dinâmico chamado VROOMM.
+
+66
+00:06:02.374 --> 00:06:15.699
+Em vez de regiões fixas definidas pelo programador, ele trabalhava com pedaços pequenos de código, carregados num buffer gerenciado em tempo de execução, e ainda conseguia guardar overlays em memória extra em vez de relê-los do disco.
+
+67
+00:06:15.699 --> 00:06:21.862
+Esse detalhe é importante, porque mostra que os overlays não morreram quando surgiram outras técnicas.
+
+68
+00:06:21.862 --> 00:06:24.349
+Eles passaram a conviver com elas.
+
+69
+00:06:24.349 --> 00:06:34.449
+Então, recapitulando: overlays resolvem o problema do código grande trocando pedaços de programa a partir do disco, ao custo de velocidade e de muito planejamento.
+
+70
+00:06:34.449 --> 00:06:39.137
+Mas eles não resolvem um problema diferente: e quando o que é grande são os dados?
+
+71
+00:06:39.137 --> 00:06:42.462
+Foi esse o problema que deu origem à memória expandida.
+
+72
+00:06:42.462 --> 00:06:48.462
+Em meados dos anos oitenta, o programa que vendia PCs para empresas era a planilha Lotus um dois três.
+
+73
+00:06:48.462 --> 00:06:50.337
+E planilhas crescem.
+
+74
+00:06:50.337 --> 00:06:56.899
+Os usuários corporativos batiam no teto de seiscentos e quarenta kilobytes com modelos financeiros enormes.
+
+75
+00:06:56.899 --> 00:07:08.299
+Em mil novecentos e oitenta e cinco, a Lotus e a Intel publicaram uma especificação, a Microsoft entrou logo depois, e nasceu a LIM E M S, de Lotus, Intel e Microsoft.
+
+76
+00:07:08.299 --> 00:07:10.937
+Expanded Memory Specification.
+
+77
+00:07:11.042 --> 00:07:20.067
+A solução era bank switching, algo que você provavelmente já usou em microcontroladores de oito bits com mais memória do que o espaço de endereços comporta.
+
+78
+00:07:20.067 --> 00:07:26.242
+Uma placa de expansão trazia megabytes de RAM que o processador não conseguia endereçar diretamente.
+
+79
+00:07:26.242 --> 00:07:37.292
+Em compensação, a placa abria uma janela de sessenta e quatro kilobytes em algum ponto livre da área de memória superior, aquela região entre seiscentos e quarenta kilobytes e um megabyte.
+
+80
+00:07:37.292 --> 00:07:43.104
+Essa janela, chamada de page frame, era dividida em quatro páginas de dezesseis kilobytes.
+
+81
+00:07:43.104 --> 00:07:49.429
+O programa pedia ao driver da placa algo como: coloque a página lógica número trezentos na janela dois.
+
+82
+00:07:49.429 --> 00:07:56.679
+A placa remapeava o hardware, e de repente aqueles dezesseis kilobytes passavam a mostrar outro pedaço da memória da placa.
+
+83
+00:07:56.679 --> 00:08:01.154
+Na primeira versão popular, isso permitia até oito megabytes.
+
+84
+00:08:01.154 --> 00:08:04.754
+Para mil novecentos e oitenta e cinco, era muita coisa.
+
+85
+00:08:04.754 --> 00:08:13.079
+O acesso era feito por meio de uma interrupção de software própria, atendida por um driver carregado no boot, o gerenciador de memória expandida.
+
+86
+00:08:13.079 --> 00:08:15.329
+Repare no preço dessa solução.
+
+87
+00:08:15.329 --> 00:08:18.779
+A memória expandida não aparece como memória comum.
+
+88
+00:08:18.779 --> 00:08:25.867
+O programa precisa ser escrito especificamente para usá-la, mapeando e desmapeando páginas explicitamente.
+
+89
+00:08:25.867 --> 00:08:31.042
+Um ponteiro para algo dentro da janela só vale enquanto a página certa estiver mapeada.
+
+90
+00:08:31.042 --> 00:08:35.829
+Estruturas que cruzam a fronteira de dezesseis kilobytes viram um pesadelo.
+
+91
+00:08:35.829 --> 00:08:43.854
+Era ótimo para guardar células de planilha, buffers e caches, e muito ruim para tudo que exigisse acesso aleatório e transparente.
+
+92
+00:08:43.854 --> 00:08:46.604
+Houve até uma pequena guerra de padrões.
+
+93
+00:08:46.604 --> 00:08:58.392
+Um grupo liderado pela AST Research criou uma versão estendida, mais flexível, e em mil novecentos e oitenta e sete a especificação quatro ponto zero da E M S incorporou boa parte dessas ideias.
+
+94
+00:08:58.392 --> 00:09:08.192
+Ela subiu o limite para trinta e dois megabytes e permitiu mapear páginas também dentro da memória convencional, o que abriu espaço para multitarefa rudimentar no DOS.
+
+95
+00:09:08.192 --> 00:09:16.942
+Ponto de situação: a memória expandida, a E M S, é bank switching através de uma janela de sessenta e quatro kilobytes na área superior.
+
+96
+00:09:16.942 --> 00:09:23.917
+Funciona em qualquer PC, até no oito zero oito oito, mas exige que o programa troque páginas manualmente.
+
+97
+00:09:23.917 --> 00:09:29.217
+Agora entra o terceiro personagem, que vem de uma direção completamente diferente.
+
+98
+00:09:29.217 --> 00:09:35.704
+Em mil novecentos e oitenta e quatro, a I B M lançou o PC AT, com o Intel duzentos e oitenta e seis.
+
+99
+00:09:35.704 --> 00:09:41.379
+Esse processador tinha vinte e quatro linhas de endereço, ou seja, dezesseis megabytes.
+
+100
+00:09:41.379 --> 00:09:45.442
+A memória acima de um megabyte passou a se chamar memória estendida.
+
+101
+00:09:45.442 --> 00:09:53.279
+A diferença em relação à expandida é fundamental: não há janela nem bank switching, é memória linear e endereçável de verdade.
+
+102
+00:09:53.279 --> 00:09:58.317
+O problema é que ela só era acessível no modo protegido, e o DOS rodava no modo real.
+
+103
+00:09:58.317 --> 00:10:02.404
+E aqui vem uma das decisões mais curiosas da história da Intel.
+
+104
+00:10:02.404 --> 00:10:09.579
+O duzentos e oitenta e seis entrava no modo protegido com uma instrução, mas não tinha uma forma oficial de voltar ao modo real.
+
+105
+00:10:09.579 --> 00:10:12.379
+A Intel imaginava que ninguém ia querer voltar.
+
+106
+00:10:12.379 --> 00:10:15.467
+Só que todo o software de DOS precisava voltar.
+
+107
+00:10:15.467 --> 00:10:26.679
+A solução da I B M foi quase cômica: para sair do modo protegido, o software gravava um código num byte da memória CMOS e mandava o controlador de teclado resetar o processador.
+
+108
+00:10:26.679 --> 00:10:35.004
+A BIOS, ao reiniciar, lia esse byte, percebia que não era um boot de verdade e devolvia o controle ao programa, já em modo real.
+
+109
+00:10:35.004 --> 00:10:42.342
+Mais tarde se descobriu que provocar de propósito uma falha tripla no processador era um caminho mais rápido para obter o mesmo reset.
+
+110
+00:10:42.342 --> 00:10:47.892
+Era assim que se lia memória estendida num duzentos e oitenta e seis: resetando a C P U.
+
+111
+00:10:48.002 --> 00:10:56.514
+Esse malabarismo era complicado demais para cada programa fazer sozinho, e vários programas tentando ao mesmo tempo era receita para desastre.
+
+112
+00:10:56.514 --> 00:11:06.927
+Então, em mil novecentos e oitenta e oito, a Microsoft, junto com a Lotus, a Intel e a AST, publicou a X M S, a Extended Memory Specification.
+
+113
+00:11:06.927 --> 00:11:12.452
+A ideia era um driver único, carregado no boot, que administrava a memória estendida.
+
+114
+00:11:12.452 --> 00:11:20.527
+O programa pedia um bloco, recebia um identificador e depois pedia ao driver para copiar dados entre a memória convencional e aquele bloco.
+
+115
+00:11:20.527 --> 00:11:23.277
+O driver cuidava de toda a troca de modo.
+
+116
+00:11:23.277 --> 00:11:30.252
+Note a diferença em relação à E M S: em vez de mapear uma janela, você copia blocos para dentro e para fora.
+
+117
+00:11:30.252 --> 00:11:34.139
+Junto com isso veio o truque mais engenhoso de toda essa história.
+
+118
+00:11:34.139 --> 00:11:36.202
+Lembra da segmentação?
+
+119
+00:11:36.202 --> 00:11:49.527
+No oito zero oito oito, se você pegava o segmento mais alto possível e somava um deslocamento grande, o resultado passava de um megabyte e simplesmente dava a volta para o endereço zero, porque não existia um vigésimo primeiro bit.
+
+120
+00:11:49.527 --> 00:11:52.914
+Alguns programas antigos dependiam desse comportamento.
+
+121
+00:11:52.914 --> 00:11:57.902
+No duzentos e oitenta e seis, esse bit existe: é a linha de endereço A vinte.
+
+122
+00:11:57.902 --> 00:12:07.664
+Para manter a compatibilidade, a I B M colocou uma porta lógica nessa linha e, por falta de lugar melhor, a controlou por um pino sobrando no controlador de teclado.
+
+123
+00:12:07.664 --> 00:12:11.589
+Desligada, a memória dava a volta como no PC original.
+
+124
+00:12:11.589 --> 00:12:19.164
+Ligada, aquele segmento mais alto alcançava quase sessenta e quatro kilobytes acima de um megabyte, em pleno modo real.
+
+125
+00:12:19.164 --> 00:12:30.102
+Essa região é a área de memória alta, a H M A, com exatamente sessenta e cinco mil, quinhentos e vinte bytes, ou seja, sessenta e quatro kilobytes menos dezesseis bytes.
+
+126
+00:12:30.102 --> 00:12:39.702
+A partir do DOS cinco, em mil novecentos e noventa e um, era possível carregar boa parte do próprio DOS ali, liberando dezenas de kilobytes de memória convencional.
+
+127
+00:12:39.702 --> 00:12:44.439
+Quem configurava o boot naquela época lembra da linha que colocava o DOS na memória alta.
+
+128
+00:12:44.439 --> 00:12:53.777
+O último capítulo começa com o trezentos e oitenta e seis, que trouxe duas coisas decisivas: paginação de memória e o modo oito zero oito seis virtual.
+
+129
+00:12:53.777 --> 00:13:04.039
+Com isso, um gerenciador de memória podia rodar o DOS dentro de uma máquina virtual e usar a paginação para fazer qualquer pedaço da memória estendida aparecer em qualquer endereço.
+
+130
+00:13:04.039 --> 00:13:17.877
+O primeiro resultado foi a emulação de E M S. Gerenciadores como o da própria Microsoft, que vinha com o DOS, ou o Q E M M, da Quarterdeck, pegavam memória estendida e a apresentavam como memória expandida, sem placa nenhuma.
+
+131
+00:13:17.877 --> 00:13:21.402
+O segundo resultado foram os blocos de memória superior.
+
+132
+00:13:21.402 --> 00:13:34.127
+Os buracos não usados entre seiscentos e quarenta kilobytes e um megabyte podiam ser preenchidos com RAM remapeada, e drivers de mouse, de C D ROM e de som podiam ser carregados ali, longe da memória convencional.
+
+133
+00:13:34.127 --> 00:13:37.189
+É daí que vem aquele ritual do começo do episódio.
+
+134
+00:13:37.189 --> 00:13:51.689
+Cada driver tinha que caber num buraco específico, a ordem de carregamento importava, a janela da E M S ocupava sessenta e quatro kilobytes preciosos da área superior, e um jogo podia exigir E M S enquanto outro exigia X M S.
+
+135
+00:13:51.689 --> 00:13:58.927
+A Microsoft chegou a incluir no DOS seis um utilitário que testava combinações automaticamente para otimizar a memória.
+
+136
+00:13:58.927 --> 00:14:02.339
+A saída definitiva veio com os extensores de DOS.
+
+137
+00:14:02.339 --> 00:14:13.289
+Em vez de ficar no modo real e espiar a memória de cima, o programa ia de vez para o modo protegido de trinta e dois bits, com memória plana, e só voltava ao modo real para chamar o DOS e a BIOS.
+
+138
+00:14:13.289 --> 00:14:24.827
+Para que isso convivesse com os gerenciadores de memória e com o Windows, surgiram padrões de interface, e o mais importante deles, chamado D P M I, se firmou por volta de mil novecentos e noventa.
+
+139
+00:14:24.827 --> 00:14:33.727
+O exemplo mais famoso é o Doom, de mil novecentos e noventa e três, que rodava sobre o extensor DOS quatro G W, distribuído com o compilador Watcom.
+
+140
+00:14:33.727 --> 00:14:39.114
+Para o Doom, o limite de seiscentos e quarenta kilobytes praticamente não existia.
+
+141
+00:14:39.218 --> 00:14:40.843
+Vamos recapitular.
+
+142
+00:14:40.843 --> 00:14:46.680
+O limite nasceu de uma decisão da I B M sobre onde colocar o hardware num espaço de um megabyte.
+
+143
+00:14:46.680 --> 00:14:51.630
+Os overlays atacaram o problema trocando pedaços de código a partir do disco.
+
+144
+00:14:51.630 --> 00:14:58.243
+A memória expandida, a E M S, usou bank switching por uma janela de sessenta e quatro kilobytes.
+
+145
+00:14:58.243 --> 00:15:08.593
+A memória estendida, a X M S, aproveitou a memória linear acima de um megabyte, primeiro com resets do processador e depois com a ajuda do trezentos e oitenta e seis.
+
+146
+00:15:08.593 --> 00:15:13.180
+E os extensores de DOS finalmente levaram os programas para o modo protegido.
+
+147
+00:15:13.180 --> 00:15:19.230
+Se tudo isso soa familiar, é porque as mesmas ideias continuam vivas nos microcontroladores.
+
+148
+00:15:19.230 --> 00:15:28.130
+Bank switching, código executado a partir de memória externa e copiado sob demanda para RAM, mapas de memória decididos por alguém anos antes de você.
+
+149
+00:15:28.130 --> 00:15:37.530
+A história dos seiscentos e quarenta kilobytes mostra que uma escolha de layout feita numa tarde de mil novecentos e oitenta e um pode moldar uma década inteira de engenharia.
+
+150
+00:15:37.530 --> 00:15:43.768
+E também mostra que, diante de um limite que não pode ser removido, os programadores não desistem.
+
+151
+00:15:43.768 --> 00:15:51.618
+Eles empilham camadas de esperteza por cima dele, até que um dia alguém olha para a pilha inteira e percebe que ela virou a própria história do PC.
+

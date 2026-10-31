@@ -1,0 +1,590 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:05.825
+Imagine uma fita com cem LEDs coloridos, pendurada atrás de uma estante.
+
+2
+00:00:05.775 --> 00:00:11.550
+Tudo funciona lindamente, até o momento em que o microcontrolador se conecta ao Wi-Fi.
+
+3
+00:00:11.550 --> 00:00:16.225
+A partir daí, de vez em quando, um LED pisca na cor errada.
+
+4
+00:00:16.225 --> 00:00:19.512
+Um verde vira rosa por um instante e volta.
+
+5
+00:00:19.512 --> 00:00:21.925
+Nada no seu código mudou.
+
+6
+00:00:21.925 --> 00:00:29.275
+O que mudou foi que, em algum lugar dentro do chip, alguém precisou esperar alguns microssegundos a mais do que devia.
+
+7
+00:00:29.275 --> 00:00:35.475
+Essa cena é tão comum que virou quase um rito de passagem pra quem trabalha com o E S P trinta e dois.
+
+8
+00:00:35.475 --> 00:00:41.062
+A solução mais conhecida passa por um periférico de nome curioso, o R M T.
+
+9
+00:00:41.062 --> 00:00:45.100
+A sigla vem de Remote Control, controle remoto.
+
+10
+00:00:45.100 --> 00:00:55.225
+É um bloco de hardware pensado pra conversar com televisores por luz infravermelha, e que acabou virando o jeito padrão de acender LEDs endereçáveis mundo afora.
+
+11
+00:00:55.225 --> 00:01:03.025
+Nos próximos minutos, a gente vai entender por que gerar pulsos com precisão é tão difícil num chip como o E S P trinta e dois.
+
+12
+00:01:03.025 --> 00:01:11.175
+Depois, vamos ver como o R M T funciona por dentro e por que essa arquitetura simples se encaixa tão bem nos LEDs.
+
+13
+00:01:11.175 --> 00:01:17.025
+Por fim, vamos passear pelos usos mais inesperados que a comunidade inventou pra ele.
+
+14
+00:01:17.025 --> 00:01:20.637
+Pra começar, vale lembrar o tamanho do problema.
+
+15
+00:01:20.637 --> 00:01:28.475
+Os LEDs mais famosos dessa categoria são os W S vinte e oito doze, também vendidos com o nome NeoPixel.
+
+16
+00:01:28.475 --> 00:01:32.825
+Eles recebem dados por um único fio, sem clock separado.
+
+17
+00:01:32.825 --> 00:01:39.712
+Cada bit dura cerca de um vírgula vinte e cinco microssegundos, o que dá uns oitocentos quilobits por segundo.
+
+18
+00:01:39.712 --> 00:01:43.200
+O valor do bit está na largura do pulso alto.
+
+19
+00:01:43.200 --> 00:01:49.637
+Um bit zero é um pulso alto curto, de uns quatrocentos nanossegundos, seguido de um baixo longo.
+
+20
+00:01:49.637 --> 00:01:55.825
+Um bit um é o contrário: alto por uns oitocentos nanossegundos e baixo pelo resto do período.
+
+21
+00:01:55.825 --> 00:02:02.525
+A tolerância informada nos datasheets fica na casa de cento e cinquenta nanossegundos, pra mais ou pra menos.
+
+22
+00:02:02.525 --> 00:02:12.550
+Cada LED consome vinte e quatro bits, oito pra cada cor, numa ordem que pega muita gente desprevenida: verde, vermelho e azul, nessa ordem.
+
+23
+00:02:12.550 --> 00:02:17.700
+O primeiro LED da fita guarda os seus vinte e quatro bits e repassa o resto adiante.
+
+24
+00:02:17.700 --> 00:02:30.775
+Quando a linha fica em nível baixo por tempo suficiente, algumas dezenas de microssegundos nas versões antigas e bem mais nas novas, todos os LEDs entendem que o quadro acabou e aplicam as cores ao mesmo tempo.
+
+25
+00:02:30.775 --> 00:02:37.012
+No Arduino clássico, com o A T mega, a biblioteca da Adafruit resolvia isso no braço.
+
+26
+00:02:37.012 --> 00:02:43.562
+Ela usava um trecho de assembly com cada ciclo contado e desligava as interrupções durante a transmissão.
+
+27
+00:02:43.562 --> 00:02:50.600
+Funcionava porque aquele processador é previsível: sem cache, sem pipeline profundo, sem rádio.
+
+28
+00:02:50.600 --> 00:02:56.362
+O efeito colateral era o relógio de milissegundos atrasar um pouco a cada atualização da fita.
+
+29
+00:02:56.362 --> 00:03:01.312
+No E S P trinta e dois, a mesma estratégia esbarra em três problemas.
+
+30
+00:03:01.312 --> 00:03:08.662
+O primeiro é a pilha de Wi-Fi e Bluetooth, que roda com interrupções de alta prioridade e não gosta de ser ignorada.
+
+31
+00:03:08.662 --> 00:03:18.812
+O segundo é que o código normalmente executa a partir da memória flash externa, através de um cache, e uma falta de cache pode custar uma pausa de tempo imprevisível.
+
+32
+00:03:18.812 --> 00:03:25.300
+O terceiro é que existem dois núcleos e um sistema operacional de tempo real decidindo quem roda quando.
+
+33
+00:03:25.300 --> 00:03:29.887
+Em resumo, contar ciclos de cabeça deixa de ser confiável.
+
+34
+00:03:29.887 --> 00:03:36.350
+Então fica a primeira ideia que vale guardar: o problema não é velocidade, é previsibilidade.
+
+35
+00:03:36.350 --> 00:03:39.487
+O processador tem velocidade de sobra.
+
+36
+00:03:39.487 --> 00:03:44.500
+O que falta é a garantia de que nada vai interromper a sequência de pulsos no meio.
+
+37
+00:03:44.500 --> 00:03:47.287
+E é aí que entra o R M T.
+
+38
+00:03:47.452 --> 00:03:53.852
+Antes dos LEDs, vamos à origem do periférico, o controle remoto infravermelho.
+
+39
+00:03:53.802 --> 00:03:58.489
+Um protocolo muito comum, o da N E C, funciona assim.
+
+40
+00:03:58.489 --> 00:04:02.927
+O LED infravermelho não fica simplesmente aceso ou apagado.
+
+41
+00:04:02.927 --> 00:04:12.102
+Quando está ativo, ele pisca numa portadora de trinta e oito quilo-hertz, pra que o receptor consiga distinguir o sinal da luz ambiente e da luz do sol.
+
+42
+00:04:12.102 --> 00:04:16.989
+Sobre essa portadora, a mensagem é feita de rajadas e silêncios.
+
+43
+00:04:16.989 --> 00:04:24.227
+Primeiro vem uma rajada longa de nove milissegundos e um silêncio de quatro e meio, que funcionam como um cabeçalho.
+
+44
+00:04:24.227 --> 00:04:33.877
+Depois, cada bit é uma rajada curta de pouco mais de meio milissegundo, seguida de um silêncio curto pra zero ou de um silêncio três vezes maior pra um.
+
+45
+00:04:33.877 --> 00:04:35.902
+Repare no formato.
+
+46
+00:04:35.902 --> 00:04:45.064
+Uma mensagem de controle remoto é, no fundo, uma lista de pares: um nível, ligado ou desligado, e quanto tempo ele dura.
+
+47
+00:04:45.064 --> 00:04:49.264
+A Espressif construiu um hardware que faz exatamente isso.
+
+48
+00:04:49.264 --> 00:04:58.464
+Ele lê de uma pequena memória uma lista de pares de nível e duração e reproduz essa lista num pino, com precisão de clock, sem pedir licença à CPU.
+
+49
+00:04:58.464 --> 00:05:03.852
+Agora vamos aos detalhes, porque eles explicam quase tudo o que vem depois.
+
+50
+00:05:03.852 --> 00:05:09.552
+No E S P trinta e dois original, cada elemento dessa lista ocupa dezesseis bits.
+
+51
+00:05:09.552 --> 00:05:15.327
+Um bit diz o nível do pino e os outros quinze dizem a duração, contada em ticks.
+
+52
+00:05:15.327 --> 00:05:23.664
+Os elementos andam em pares, então uma palavra de trinta e dois bits guarda um trecho em nível alto e um trecho em nível baixo, por exemplo.
+
+53
+00:05:23.664 --> 00:05:29.152
+Um detalhe esperto: uma duração igual a zero funciona como marcador de fim.
+
+54
+00:05:29.152 --> 00:05:34.089
+Quando o hardware encontra um zero, ele para de transmitir e avisa a CPU.
+
+55
+00:05:34.089 --> 00:05:40.539
+O tick vem do clock do barramento, de oitenta mega-hertz, passando por um divisor de oito bits.
+
+56
+00:05:40.539 --> 00:05:45.427
+Com o divisor em um, cada tick vale doze vírgula cinco nanossegundos.
+
+57
+00:05:45.427 --> 00:05:52.827
+Com quinze bits de duração, o maior intervalo possível num único elemento é de pouco mais de trinta e dois mil ticks.
+
+58
+00:05:52.827 --> 00:05:58.864
+Se você precisa de pausas mais longas, aumenta o divisor ou encadeia vários elementos.
+
+59
+00:05:58.864 --> 00:06:05.039
+O chip original tem oito canais, e cada um pode ser configurado pra transmitir ou pra receber.
+
+60
+00:06:05.039 --> 00:06:13.927
+A memória do periférico tem quinhentas e doze palavras de trinta e dois bits, divididas em blocos de sessenta e quatro palavras, um por canal.
+
+61
+00:06:13.927 --> 00:06:21.064
+Um canal pode pegar emprestados os blocos dos canais seguintes, ganhando mais memória à custa de perder canais.
+
+62
+00:06:21.064 --> 00:06:26.902
+E tem a peça que denuncia a origem do periférico: um gerador de portadora embutido.
+
+63
+00:06:26.902 --> 00:06:35.139
+Você configura quanto tempo a portadora fica alta e quanto fica baixa, e o hardware modula automaticamente os trechos em nível alto.
+
+64
+00:06:35.139 --> 00:06:41.814
+Os trinta e oito quilo-hertz do infravermelho saem de graça, sem nenhuma conta na sua lista de pulsos.
+
+65
+00:06:41.814 --> 00:06:45.802
+Recapitulando, pra quem estava ocupado com o trânsito.
+
+66
+00:06:45.802 --> 00:06:49.277
+O R M T é um tocador de formas de onda.
+
+67
+00:06:49.277 --> 00:06:57.714
+Ele lê pares de nível e duração de uma memória própria e os reproduz num pino com precisão de dezenas de nanossegundos, sem depender da CPU.
+
+68
+00:06:57.714 --> 00:07:04.027
+Foi feito pra controle remoto infravermelho, mas nada nessa ideia é específico de infravermelho.
+
+69
+00:07:04.027 --> 00:07:10.052
+E agora dá pra ver por que os LEDs W S vinte e oito doze caíram como uma luva.
+
+70
+00:07:10.052 --> 00:07:18.702
+Cada bit do LED é exatamente um trecho alto seguido de um trecho baixo, ou seja, uma palavra de trinta e dois bits do R M T.
+
+71
+00:07:18.702 --> 00:07:28.702
+Com um tick de cinquenta nanossegundos, por exemplo, um bit zero vira oito ticks altos e dezessete baixos, e um bit um vira dezesseis altos e nove baixos.
+
+72
+00:07:28.702 --> 00:07:34.002
+Você desliga a portadora, monta a lista, e o hardware cuida do resto.
+
+73
+00:07:34.002 --> 00:07:36.727
+Mas aparece um problema de memória.
+
+74
+00:07:36.727 --> 00:07:41.739
+Cada LED precisa de vinte e quatro bits, então de vinte e quatro palavras.
+
+75
+00:07:41.739 --> 00:07:46.489
+Um bloco de sessenta e quatro palavras dá pra dois LEDs e meio.
+
+76
+00:07:46.489 --> 00:07:52.227
+Mesmo juntando os oito blocos do chip, você chega a pouco mais de vinte LEDs.
+
+77
+00:07:52.227 --> 00:08:04.389
+Pré-codificar a fita inteira na RAM principal também é caro: cada byte de cor vira trinta e dois bytes de pulsos, então uma fita de mil LEDs consumiria quase cem quilobytes só de forma de onda.
+
+78
+00:08:04.540 --> 00:08:10.227
+A solução é tratar a memória do canal como um buffer circular, um esquema de vai e vem.
+
+79
+00:08:10.177 --> 00:08:16.740
+O hardware transmite a primeira metade do bloco e dispara uma interrupção configurável quando chega num limite.
+
+80
+00:08:16.740 --> 00:08:25.340
+Enquanto ele transmite a segunda metade, a rotina de interrupção converte os próximos bytes de cor em pulsos e reescreve a primeira metade.
+
+81
+00:08:25.340 --> 00:08:28.640
+E assim por diante, até o fim da fita.
+
+82
+00:08:28.640 --> 00:08:38.215
+No framework oficial, o E S P I D F, essa conversão ganhou o nome de tradutor nas versões antigas e de encoder nas versões a partir da cinco.
+
+83
+00:08:38.215 --> 00:08:48.827
+O próprio framework traz um encoder de bytes que faz justamente isso: recebe os bytes de cor e uma definição de como são o bit zero e o bit um, e gera os pulsos na hora.
+
+84
+00:08:48.827 --> 00:08:52.015
+E agora a cena do começo faz sentido.
+
+85
+00:08:52.015 --> 00:09:00.640
+Com um bloco de sessenta e quatro palavras partido ao meio, você tem trinta e duas palavras de folga, ou seja, trinta e dois bits de LED.
+
+86
+00:09:00.640 --> 00:09:06.002
+Trinta e dois vezes um vírgula vinte e cinco microssegundos dá uns quarenta microssegundos.
+
+87
+00:09:06.002 --> 00:09:17.590
+Se a interrupção de reabastecimento atrasar mais que isso, por causa do Wi-Fi, de outra interrupção de prioridade maior ou de uma espera no cache da flash, o hardware chega ao fim do buffer.
+
+88
+00:09:17.590 --> 00:09:22.490
+Ele então lê dados velhos, ou trava a linha em nível baixo tempo demais.
+
+89
+00:09:22.490 --> 00:09:28.615
+Nesse caso, os LEDs entendem que o quadro acabou e o resto da fita recebe lixo.
+
+90
+00:09:28.615 --> 00:09:31.315
+É o tal LED que pisca rosa.
+
+91
+00:09:31.315 --> 00:09:36.627
+Os remédios clássicos atacam exatamente essa janela de quarenta microssegundos.
+
+92
+00:09:36.627 --> 00:09:41.277
+Dá pra emprestar mais blocos de memória ao canal, ampliando a folga.
+
+93
+00:09:41.277 --> 00:09:47.040
+Dá pra colocar a rotina de interrupção na RAM interna, pra ela não depender do cache.
+
+94
+00:09:47.040 --> 00:09:51.540
+Dá pra fixar a transmissão no núcleo que não está cuidando do rádio.
+
+95
+00:09:51.540 --> 00:09:56.840
+E, nos chips mais novos, dá pra usar D M A, que já vamos ver.
+
+96
+00:09:56.840 --> 00:10:10.965
+Vale dizer que bibliotecas populares, como a FastLED, também exploram outros caminhos pra muitas fitas em paralelo, como o periférico de áudio I dois S. O R M T não é a única saída, mas é a mais natural.
+
+97
+00:10:10.965 --> 00:10:13.815
+Pausa pra situar quem chegou agora.
+
+98
+00:10:13.815 --> 00:10:17.565
+O R M T reproduz pares de nível e duração.
+
+99
+00:10:17.565 --> 00:10:23.040
+Cada bit de LED ocupa uma palavra inteira da memória do periférico, que é pequena.
+
+100
+00:10:23.040 --> 00:10:31.240
+Por isso a fita é codificada aos pedaços, durante a transmissão, e o tempo de reação da CPU vira o ponto fraco do sistema.
+
+101
+00:10:31.240 --> 00:10:35.877
+Agora vamos virar a moeda, porque o R M T também escuta.
+
+102
+00:10:35.877 --> 00:10:43.765
+No modo de recepção, ele faz o caminho inverso: observa um pino e grava na memória cada trecho de nível com a sua duração.
+
+103
+00:10:43.765 --> 00:10:47.027
+Duas configurações tornam isso prático.
+
+104
+00:10:47.027 --> 00:10:56.427
+Uma é um filtro de glitches: pulsos mais curtos que um certo número de ticks são ignorados, o que limpa ruído de receptores infravermelhos baratos.
+
+105
+00:10:56.427 --> 00:11:06.390
+A outra é um limite de ociosidade: se a linha ficar parada além de um certo tempo, o hardware considera que a mensagem acabou e avisa a CPU com o quadro completo.
+
+106
+00:11:06.390 --> 00:11:15.065
+Com isso, decodificar um controle remoto vira um exercício de olhar para uma lista de durações e perguntar se cada silêncio foi curto ou longo.
+
+107
+00:11:15.065 --> 00:11:18.677
+Você nem precisa conhecer o protocolo de antemão.
+
+108
+00:11:18.677 --> 00:11:27.090
+Dá pra capturar o sinal de um controle qualquer e retransmitir a mesma lista, que é basicamente como funciona um controle universal que aprende.
+
+109
+00:11:27.090 --> 00:11:33.565
+A partir daqui, a comunidade começou a perguntar o que mais cabe nesse formato de nível e duração.
+
+110
+00:11:33.565 --> 00:11:38.702
+A resposta foi: quase todo protocolo de um fio só que dependa de tempo.
+
+111
+00:11:38.702 --> 00:11:43.615
+Os sensores de temperatura e umidade da família D H T são um exemplo.
+
+112
+00:11:43.615 --> 00:11:50.327
+O microcontrolador puxa a linha pra baixo por um milissegundo, e o sensor responde com quarenta bits.
+
+113
+00:11:50.327 --> 00:11:56.752
+Cada um deles é um pulso alto de vinte e poucos microssegundos pra zero, ou de uns setenta pra um.
+
+114
+00:11:56.752 --> 00:12:00.702
+Medir isso por software com o Wi-Fi ligado é sofrido.
+
+115
+00:12:00.702 --> 00:12:05.465
+Com o R M T em recepção, a lista de durações chega pronta.
+
+116
+00:12:05.620 --> 00:12:13.620
+O barramento One Wire, usado no famoso sensor de temperatura D S dezoito B vinte, é ainda mais interessante.
+
+117
+00:12:13.570 --> 00:12:19.070
+Ali, o mesmo fio serve pra falar e pra ouvir, com saída em dreno aberto.
+
+118
+00:12:19.070 --> 00:12:26.345
+O E S P I D F tem um componente que usa um canal de transmissão e um de recepção apontados pro mesmo pino.
+
+119
+00:12:26.345 --> 00:12:33.032
+O de transmissão gera os pulsos de reset e de escrita, e o de recepção mede como o sensor segura a linha.
+
+120
+00:12:33.032 --> 00:12:39.395
+No mundo dos drones, os controladores de motor entendem um protocolo digital chamado D Shot.
+
+121
+00:12:39.395 --> 00:12:49.332
+Na variante mais comum, são seiscentos quilobits por segundo, em quadros de dezesseis bits com aceleração, um pedido de telemetria e um pequeno checksum.
+
+122
+00:12:49.332 --> 00:12:53.507
+Cada bit, de novo, é um pulso alto curto ou longo.
+
+123
+00:12:53.507 --> 00:12:58.757
+O próprio framework da Espressif traz um exemplo de D Shot com R M T.
+
+124
+00:12:58.757 --> 00:13:08.232
+Os pulsos de servomotores e de receptores de rádio controle, entre um e dois milissegundos, entram na mesma lógica, tanto pra gerar quanto pra medir.
+
+125
+00:13:08.232 --> 00:13:11.607
+E tem usos que fogem da ideia de protocolo.
+
+126
+00:13:11.607 --> 00:13:17.857
+Um motor de passo precisa de uma sequência de pulsos cujo intervalo vai encolhendo durante a aceleração.
+
+127
+00:13:17.857 --> 00:13:26.020
+Isso também é uma lista de durações, e existe exemplo oficial pra isso, com curvas de aceleração calculadas por um encoder.
+
+128
+00:13:26.020 --> 00:13:32.107
+Um buzzer tocando uma melodia é outra lista: cada nota é uma frequência repetida por um certo tempo.
+
+129
+00:13:32.107 --> 00:13:39.757
+Os chips mais novos têm contagem de repetições em hardware, então uma nota longa ocupa só alguns elementos repetidos.
+
+130
+00:13:39.757 --> 00:13:42.957
+Isso nos leva à evolução do periférico.
+
+131
+00:13:42.957 --> 00:13:54.595
+No E S P trinta e dois S três, por exemplo, os oito canais deixaram de ser intercambiáveis: são quatro de transmissão e quatro de recepção, com blocos de quarenta e oito palavras.
+
+132
+00:13:54.595 --> 00:14:01.007
+Em compensação, um canal de transmissão e um de recepção podem ser alimentados por D M A.
+
+133
+00:14:01.007 --> 00:14:06.582
+Isso tira a CPU do caminho crítico e praticamente aposenta o problema do LED piscando.
+
+134
+00:14:06.582 --> 00:14:14.357
+Chips menores, como o C três, têm só quatro canais, e nem todos os modelos têm D M A no R M T.
+
+135
+00:14:14.357 --> 00:14:22.520
+Também apareceram recursos como a transmissão sincronizada de vários canais, que permite disparar várias fitas no mesmo instante.
+
+136
+00:14:22.520 --> 00:14:30.707
+Os detalhes mudam de chip pra chip, então o manual de referência de cada um é leitura obrigatória antes de dimensionar um projeto.
+
+137
+00:14:30.707 --> 00:14:33.070
+Hora de juntar as peças.
+
+138
+00:14:33.070 --> 00:14:43.257
+O problema de fundo era previsibilidade: num chip com rádio, cache e dois núcleos, a CPU não consegue garantir pulsos com precisão de dezenas de nanossegundos.
+
+139
+00:14:43.257 --> 00:14:55.195
+O R M T resolve isso com uma ideia mínima, uma memória de pares de nível e duração tocada por hardware, mais uma portadora opcional e um modo de escuta com filtro e detector de fim de mensagem.
+
+140
+00:14:55.195 --> 00:15:03.307
+Os LEDs W S vinte e oito doze se encaixam perfeitamente nesse formato, mas cada bit custa uma palavra de memória.
+
+141
+00:15:03.307 --> 00:15:10.945
+Daí a codificação em pedaços, a janela de dezenas de microssegundos e o famoso LED rosa quando a interrupção atrasa.
+
+142
+00:15:10.945 --> 00:15:19.520
+A partir daí, sensores, One Wire, motores de drone, motores de passo e até melodias passaram pelo mesmo funil.
+
+143
+00:15:19.520 --> 00:15:22.145
+E fica uma reflexão pra levar.
+
+144
+00:15:22.145 --> 00:15:29.520
+A Espressif poderia ter feito um bloco que só entendesse controle remoto, com o protocolo N E C gravado no silício.
+
+145
+00:15:29.520 --> 00:15:35.045
+Em vez disso, fez um bloco que entende só duas coisas: nível e tempo.
+
+146
+00:15:35.045 --> 00:15:39.382
+Justamente por saber tão pouco, ele serve pra quase tudo.
+
+147
+00:15:39.382 --> 00:15:45.332
+Às vezes, o periférico mais versátil de um chip é o que foi projetado com a menor ambição.
+

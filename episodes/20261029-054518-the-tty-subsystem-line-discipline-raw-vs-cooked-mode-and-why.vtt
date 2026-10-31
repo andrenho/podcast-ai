@@ -1,0 +1,726 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:03.950
+Você aperta Control C, e o programa morre.
+
+2
+00:00:03.900 --> 00:00:07.537
+Você fez isso milhares de vezes, sem pensar.
+
+3
+00:00:07.537 --> 00:00:12.687
+Mas repare numa coisa estranha: o teclado não sabe o que é matar um processo.
+
+4
+00:00:12.687 --> 00:00:15.150
+O terminal também não sabe.
+
+5
+00:00:15.150 --> 00:00:20.700
+O que sai do teclado quando você aperta Control C é só um byte, o número três.
+
+6
+00:00:20.700 --> 00:00:27.050
+Em algum ponto entre esse byte e a morte do processo, alguém decidiu que três significa "pare tudo".
+
+7
+00:00:27.050 --> 00:00:31.387
+Esse alguém é uma camada do kernel que quase ninguém olha de perto.
+
+8
+00:00:31.387 --> 00:00:35.262
+Agora pense numa cena que talvez você já tenha vivido.
+
+9
+00:00:35.262 --> 00:00:46.475
+Você está mandando dados binários de um microcontrolador para o computador pela serial, através de um adaptador U S B. Quase tudo chega certo, mas de vez em quando um byte some.
+
+10
+00:00:46.475 --> 00:00:49.650
+Às vezes um byte treze vira dez.
+
+11
+00:00:49.650 --> 00:00:53.287
+Às vezes a transferência simplesmente congela.
+
+12
+00:00:53.287 --> 00:00:56.462
+O firmware está correto e o cabo está bom.
+
+13
+00:00:56.462 --> 00:01:01.362
+O culpado é a mesma camada do kernel que transforma Control C em sinal.
+
+14
+00:01:01.362 --> 00:01:06.487
+Neste episódio vamos abrir essa camada, o subsistema de TTY.
+
+15
+00:01:06.487 --> 00:01:16.575
+Vamos ver de onde ele vem, o que é a tal disciplina de linha, a diferença entre o modo cru e o modo cozido, e o caminho completo de um Control C até o seu processo.
+
+16
+00:01:16.575 --> 00:01:20.712
+No fim, voltamos ao byte perdido do microcontrolador.
+
+17
+00:01:20.712 --> 00:01:22.950
+Primeiro, a história.
+
+18
+00:01:22.950 --> 00:01:27.300
+TTY é abreviação de teletypewriter, o teletipo.
+
+19
+00:01:27.300 --> 00:01:32.825
+Quando o Unix nasceu, no fim dos anos sessenta, você não olhava para uma tela.
+
+20
+00:01:32.825 --> 00:01:39.262
+Você sentava diante de uma máquina eletromecânica, quase sempre um Teletype Modelo trinta e três.
+
+21
+00:01:39.262 --> 00:01:47.675
+Era um teclado acoplado a uma impressora, que imprimia em rolo de papel, só em letras maiúsculas, a uns dez caracteres por segundo.
+
+22
+00:01:47.675 --> 00:01:51.175
+Uma linha inteira levava vários segundos para sair.
+
+23
+00:01:51.175 --> 00:01:55.350
+Essa máquina deixou marcas que estão no seu terminal até hoje.
+
+24
+00:01:55.350 --> 00:02:02.900
+Retorno de carro e avanço de linha, os famosos C R e L F, eram duas ações físicas diferentes.
+
+25
+00:02:02.900 --> 00:02:06.500
+Uma levava a cabeça de impressão de volta à esquerda.
+
+26
+00:02:06.500 --> 00:02:10.150
+A outra girava o rolo de papel uma linha para cima.
+
+27
+00:02:10.150 --> 00:02:15.275
+Eram movimentos mecânicos separados, por isso eram comandos separados.
+
+28
+00:02:15.275 --> 00:02:23.112
+E o retorno de carro era lento, então o costume era mandar os dois juntos e dar tempo para a cabeça voltar enquanto o papel subia.
+
+29
+00:02:23.112 --> 00:02:27.225
+Outro detalhe: o teletipo era um dispositivo burro.
+
+30
+00:02:27.225 --> 00:02:30.987
+Ele não tinha memória para editar uma linha antes de mandar.
+
+31
+00:02:30.987 --> 00:02:35.800
+Cada tecla virava um caractere que seguia direto pelo fio até o computador.
+
+32
+00:02:35.800 --> 00:02:40.987
+Se você errou uma letra, o computador precisava saber o que fazer com isso.
+
+33
+00:02:40.987 --> 00:02:48.912
+Alguém tinha que interpretar o apagar, ecoar o que foi digitado, juntar os caracteres numa linha e só então entregar ao programa.
+
+34
+00:02:48.912 --> 00:02:51.850
+Esse alguém virou uma camada do kernel.
+
+35
+00:02:51.850 --> 00:02:54.325
+Vamos então à arquitetura.
+
+36
+00:02:54.325 --> 00:03:00.800
+No Linux, e de forma parecida nos outros Unix, um terminal tem três peças empilhadas.
+
+37
+00:03:00.800 --> 00:03:03.062
+Embaixo fica o driver.
+
+38
+00:03:03.062 --> 00:03:14.137
+Pode ser o driver de uma UART de verdade, o do adaptador U S B serial, o do console de texto da máquina ou, o caso mais comum hoje, um pseudoterminal.
+
+39
+00:03:14.137 --> 00:03:20.650
+Em cima fica a interface que o programa enxerga: um arquivo de dispositivo onde ele lê e escreve.
+
+40
+00:03:20.650 --> 00:03:24.600
+No meio, entre os dois, fica a disciplina de linha.
+
+41
+00:03:24.600 --> 00:03:31.687
+É um módulo que recebe os bytes crus vindos do driver, faz alguma coisa com eles e entrega o resultado ao programa.
+
+42
+00:03:31.687 --> 00:03:36.987
+No caminho inverso, também trata o que o programa escreve antes de mandar ao driver.
+
+43
+00:03:36.987 --> 00:03:41.350
+Vale explicar o pseudoterminal, porque é nele que você vive.
+
+44
+00:03:41.350 --> 00:03:47.612
+Seu emulador de terminal, aquela janela gráfica, não é um terminal no sentido do kernel.
+
+45
+00:03:47.612 --> 00:03:50.037
+Ele abre um par de pontas.
+
+46
+00:03:50.037 --> 00:03:52.887
+A ponta mestre fica com o emulador.
+
+47
+00:03:52.887 --> 00:03:58.437
+A ponta escrava fica com o shell, e para o shell ela parece um teletipo legítimo.
+
+48
+00:03:58.437 --> 00:04:03.525
+Quando você aperta uma tecla, o emulador escreve o byte na ponta mestre.
+
+49
+00:04:03.525 --> 00:04:08.537
+O byte passa pela disciplina de linha e aparece para o shell na ponta escrava.
+
+50
+00:04:08.537 --> 00:04:15.500
+É uma simulação completa de um fio serial ligado a uma máquina de escrever, rodando dentro do próprio kernel.
+
+51
+00:04:15.500 --> 00:04:25.400
+Então, para fixar: o teclado manda bytes, o driver os entrega, e a disciplina de linha, no meio do caminho, decide o que eles significam.
+
+52
+00:04:25.400 --> 00:04:27.387
+Guarde essa imagem.
+
+53
+00:04:27.387 --> 00:04:31.400
+Todo o resto do episódio acontece nessa camada do meio.
+
+54
+00:04:31.564 --> 00:04:34.689
+O que a disciplina de linha padrão faz?
+
+55
+00:04:34.639 --> 00:04:39.701
+Isso depende do modo em que ela está, e aqui entram os nomes cozido e cru.
+
+56
+00:04:39.701 --> 00:04:43.851
+O padrão POSIX chama esses modos de canônico e não canônico.
+
+57
+00:04:43.851 --> 00:04:50.789
+Cozido" é o apelido informal do canônico, criado por oposição ao "cru", que vem dos primeiros Unix.
+
+58
+00:04:50.789 --> 00:04:55.664
+No modo canônico, o cozido, a disciplina de linha trabalha bastante.
+
+59
+00:04:55.664 --> 00:05:02.589
+Primeiro, ela ecoa: cada caractere que chega é devolvido para a saída, e por isso você vê o que digita.
+
+60
+00:05:02.589 --> 00:05:07.301
+Quem desenha as letras na tela não é o programa nem o emulador sozinho.
+
+61
+00:05:07.301 --> 00:05:10.864
+É o kernel, mandando o caractere de volta.
+
+62
+00:05:10.864 --> 00:05:15.314
+Segundo, ela guarda tudo num buffer até chegar o fim da linha.
+
+63
+00:05:15.314 --> 00:05:21.439
+O programa que chamou leitura fica bloqueado, e só recebe alguma coisa quando você aperta Enter.
+
+64
+00:05:21.439 --> 00:05:25.551
+Enquanto isso, a edição acontece no próprio kernel.
+
+65
+00:05:25.551 --> 00:05:28.714
+O backspace apaga um caractere do buffer.
+
+66
+00:05:28.714 --> 00:05:33.789
+Existe uma tecla para apagar a última palavra e outra para apagar a linha inteira.
+
+67
+00:05:33.789 --> 00:05:37.976
+O programa nunca fica sabendo dos seus erros de digitação.
+
+68
+00:05:37.976 --> 00:05:40.264
+Recebe a linha já limpa.
+
+69
+00:05:40.264 --> 00:05:42.801
+Terceiro, ela traduz.
+
+70
+00:05:42.801 --> 00:05:49.226
+A tecla Enter, na maioria dos terminais, manda um retorno de carro, o byte treze.
+
+71
+00:05:49.226 --> 00:05:57.689
+A disciplina de linha converte isso em avanço de linha, o byte dez, porque é isso que os programas Unix esperam como fim de linha.
+
+72
+00:05:57.689 --> 00:06:00.364
+Na saída acontece o contrário.
+
+73
+00:06:00.364 --> 00:06:07.639
+Quando o programa escreve um avanço de linha, a disciplina acrescenta o retorno de carro, para que o cursor volte ao começo.
+
+74
+00:06:07.639 --> 00:06:13.389
+É exatamente o teletipo de sessenta anos atrás pedindo os dois movimentos mecânicos.
+
+75
+00:06:13.389 --> 00:06:17.226
+E tem o Control D, que costuma ser explicado errado.
+
+76
+00:06:17.226 --> 00:06:21.664
+Control D não é um caractere de fim de arquivo que entra no fluxo.
+
+77
+00:06:21.664 --> 00:06:28.064
+Ele é uma instrução para a disciplina de linha: entregue agora o que estiver no buffer, mesmo sem Enter.
+
+78
+00:06:28.064 --> 00:06:35.514
+Se o buffer estiver vazio, a leitura volta com zero bytes, e para o programa zero bytes significa fim de arquivo.
+
+79
+00:06:35.514 --> 00:06:41.914
+É por isso que, no meio de uma linha, você às vezes precisa apertar Control D duas vezes.
+
+80
+00:06:41.914 --> 00:06:45.201
+A primeira vez entrega o que havia digitado.
+
+81
+00:06:45.201 --> 00:06:47.551
+A segunda entrega o vazio.
+
+82
+00:06:47.551 --> 00:06:50.289
+Agora sim, o Control C.
+
+83
+00:06:50.289 --> 00:06:53.901
+Primeiro, por que Control C é o byte três.
+
+84
+00:06:53.901 --> 00:06:58.364
+Na tabela ASCII, a letra C maiúscula é o sessenta e sete.
+
+85
+00:06:58.364 --> 00:07:06.001
+A tecla Control, nos terminais antigos, simplesmente zerava os dois bits mais altos do código de sete bits.
+
+86
+00:07:06.001 --> 00:07:09.501
+Na prática, isso subtrai sessenta e quatro.
+
+87
+00:07:09.501 --> 00:07:13.064
+Sessenta e sete menos sessenta e quatro dá três.
+
+88
+00:07:13.064 --> 00:07:18.064
+Control A dá um, Control D dá quatro, Control Z dá vinte e seis.
+
+89
+00:07:18.064 --> 00:07:22.226
+Toda essa família de caracteres de controle nasce dessa conta.
+
+90
+00:07:22.226 --> 00:07:26.764
+O byte três tinha até um nome no ASCII original: fim de texto.
+
+91
+00:07:26.764 --> 00:07:30.026
+Esse byte três chega à disciplina de linha.
+
+92
+00:07:30.026 --> 00:07:38.476
+Ela tem uma pequena tabela de caracteres especiais, configurável, e nela o três está registrado como caractere de interrupção.
+
+93
+00:07:38.476 --> 00:07:43.401
+Se a geração de sinais estiver ligada, ela não entrega o byte ao programa.
+
+94
+00:07:43.401 --> 00:07:53.564
+Ela descarta o byte, normalmente esvazia os buffers de entrada e saída pendentes, e envia o sinal de interrupção, o que os programadores chamam de sig int.
+
+95
+00:07:53.564 --> 00:07:57.001
+O detalhe importante está no destino desse sinal.
+
+96
+00:07:57.001 --> 00:08:00.251
+Ele não vai para "o programa", no singular.
+
+97
+00:08:00.251 --> 00:08:04.426
+Vai para o grupo de processos em primeiro plano daquele terminal.
+
+98
+00:08:04.426 --> 00:08:09.189
+Aqui entra uma estrutura que o Unix ganhou junto com o controle de jobs.
+
+99
+00:08:09.189 --> 00:08:14.451
+Cada terminal tem uma sessão associada, normalmente liderada pelo seu shell.
+
+100
+00:08:14.451 --> 00:08:18.876
+Dentro da sessão, os processos são organizados em grupos.
+
+101
+00:08:18.876 --> 00:08:30.926
+Quando você roda um pipeline, digamos três comandos ligados por barras verticais, o shell coloca os três num grupo novo e avisa o kernel: este grupo agora está em primeiro plano neste terminal.
+
+102
+00:08:30.926 --> 00:08:34.814
+Por isso um único Control C derruba o pipeline inteiro.
+
+103
+00:08:34.814 --> 00:08:37.601
+E por isso ele não derruba o shell.
+
+104
+00:08:37.601 --> 00:08:45.851
+O shell está em outro grupo, fora do primeiro plano naquele momento, e além disso um shell interativo ignora esse sinal de propósito.
+
+105
+00:08:46.012 --> 00:08:49.112
+O resto é comportamento padrão de sinal.
+
+106
+00:08:49.062 --> 00:08:53.299
+A ação padrão do sinal de interrupção é terminar o processo.
+
+107
+00:08:53.299 --> 00:08:56.687
+Mas o processo pode capturá-lo ou ignorá-lo.
+
+108
+00:08:56.687 --> 00:08:59.949
+O Python transforma esse sinal numa exceção.
+
+109
+00:08:59.949 --> 00:09:04.662
+Um editor de texto o captura para cancelar uma operação sem fechar.
+
+110
+00:09:04.662 --> 00:09:14.324
+Então o caminho completo é este: tecla, byte três, disciplina de linha, sinal para o grupo em primeiro plano, e a ação padrão, que mata.
+
+111
+00:09:14.324 --> 00:09:17.649
+Os parentes do Control C funcionam igual.
+
+112
+00:09:17.649 --> 00:09:22.799
+Control barra invertida envia o sinal de quit, que termina e gera um core dump.
+
+113
+00:09:22.799 --> 00:09:29.074
+Control Z envia o sinal de parada de terminal, que suspende o grupo e devolve o controle ao shell.
+
+114
+00:09:29.074 --> 00:09:39.437
+E há um primo histórico: quando a linha telefônica do modem caía, o driver avisava a disciplina de linha, e a sessão inteira recebia o sinal de hangup, de desligar.
+
+115
+00:09:39.437 --> 00:09:44.549
+É de onde vem o nome do comando no hup, que protege um processo desse sinal.
+
+116
+00:09:44.549 --> 00:09:51.974
+Hoje, fechar a janela do emulador produz o mesmo efeito, porque a ponta mestre do pseudoterminal se fecha.
+
+117
+00:09:51.974 --> 00:09:55.037
+Vamos parar um instante para recapitular.
+
+118
+00:09:55.037 --> 00:09:58.637
+Control C não é mágica do teclado nem do shell.
+
+119
+00:09:58.637 --> 00:10:06.662
+É a disciplina de linha, no modo cozido, reconhecendo o byte três e transformando esse byte num sinal para o grupo em primeiro plano.
+
+120
+00:10:06.662 --> 00:10:13.787
+Tire a disciplina de linha do caminho, ou desligue a geração de sinais, e Control C vira só mais um byte.
+
+121
+00:10:13.787 --> 00:10:17.074
+E é exatamente isso que o modo cru faz.
+
+122
+00:10:17.074 --> 00:10:21.874
+No modo cru, a disciplina de linha sai quase totalmente da frente.
+
+123
+00:10:21.874 --> 00:10:33.124
+Não há eco, não há buffer de linha, não há edição, não há tradução de retorno de carro, não há geração de sinais e, na configuração mais completa, nem tratamento de saída.
+
+124
+00:10:33.124 --> 00:10:37.874
+Cada byte chega ao programa assim que é digitado, do jeito que veio.
+
+125
+00:10:37.874 --> 00:10:39.912
+Quem precisa disso?
+
+126
+00:10:39.912 --> 00:10:43.712
+Qualquer programa que reage a teclas individuais.
+
+127
+00:10:43.712 --> 00:10:49.662
+Um editor como o vim precisa saber que você apertou a letra j agora, não depois de um Enter.
+
+128
+00:10:49.662 --> 00:11:01.999
+Paginadores, monitores de processos, jogos de terminal, todos colocam o terminal em modo cru, ou num modo intermediário, e desenham a tela por conta própria com sequências de escape.
+
+129
+00:11:01.999 --> 00:11:09.537
+O antigo Unix tinha até um meio-termo com nome próprio, o modo cbreak: sem buffer de linha, mas ainda com sinais.
+
+130
+00:11:09.537 --> 00:11:18.274
+No modo não canônico, dois parâmetros controlam quando a leitura retorna: um número mínimo de bytes e um tempo limite em décimos de segundo.
+
+131
+00:11:18.274 --> 00:11:23.287
+Com mínimo um e tempo zero, a leitura espera até haver pelo menos um byte.
+
+132
+00:11:23.287 --> 00:11:28.949
+Com os dois em zero, ela vira uma consulta que retorna na hora, com ou sem dados.
+
+133
+00:11:28.949 --> 00:11:35.749
+Para quem escreve firmware, isso lembra muito a escolha entre esperar uma interrupção de recepção e fazer polling.
+
+134
+00:11:35.749 --> 00:11:39.074
+O modo cru tem um efeito colateral famoso.
+
+135
+00:11:39.074 --> 00:11:45.987
+Se um programa liga o modo cru e morre sem restaurar a configuração, o terminal fica do jeito que ele deixou.
+
+136
+00:11:45.987 --> 00:11:50.249
+Você digita e nada aparece, porque o eco está desligado.
+
+137
+00:11:50.249 --> 00:11:55.749
+O Enter não funciona direito, porque a tradução de retorno de carro está desligada.
+
+138
+00:11:55.749 --> 00:12:04.962
+O remédio clássico é digitar, às cegas, a palavra reset e apertar Control J, que é o avanço de linha de verdade, o byte dez.
+
+139
+00:12:04.962 --> 00:12:07.437
+O terminal não está quebrado.
+
+140
+00:12:07.437 --> 00:12:09.212
+Só ficou cru.
+
+141
+00:12:09.212 --> 00:12:14.699
+Agora uma surpresa: o seu shell provavelmente também usa modo não canônico.
+
+142
+00:12:14.699 --> 00:12:24.974
+O bash, com a biblioteca de edição de linha que ele usa, quer oferecer histórico com setas, completar com tab e atalhos de edição muito mais ricos que os do kernel.
+
+143
+00:12:24.974 --> 00:12:31.337
+Por isso, enquanto espera seu comando, ele desliga o modo canônico e faz toda a edição sozinho.
+
+144
+00:12:31.337 --> 00:12:36.749
+Quando você aperta Enter, ele restaura o modo cozido e só então executa o programa.
+
+145
+00:12:36.749 --> 00:12:44.649
+O programa encontra o terminal arrumado, com eco e com Control C funcionando, como se o shell nunca tivesse mexido em nada.
+
+146
+00:12:44.812 --> 00:12:47.812
+Outra surpresa está no S S H.
+
+147
+00:12:47.762 --> 00:12:53.937
+Quando você conecta numa máquina remota, o cliente coloca o seu terminal local em modo cru.
+
+148
+00:12:53.937 --> 00:13:00.087
+Assim, quando você aperta Control C, a disciplina de linha local não gera sinal nenhum.
+
+149
+00:13:00.087 --> 00:13:10.087
+O byte três atravessa a rede intacto, cai num pseudoterminal do lado remoto, e lá a disciplina de linha remota, em modo cozido, o transforma em sinal.
+
+150
+00:13:10.087 --> 00:13:14.749
+O Control C mata o processo na outra máquina e não o próprio cliente.
+
+151
+00:13:14.749 --> 00:13:21.487
+Isso só funciona porque existem duas disciplinas de linha, uma em cada ponta, e a local foi desligada.
+
+152
+00:13:21.487 --> 00:13:25.987
+Com isso, voltamos ao microcontrolador e ao byte perdido.
+
+153
+00:13:25.987 --> 00:13:38.062
+Quando você pluga um adaptador U S B serial, o kernel cria um dispositivo de terminal para ele, com uma disciplina de linha por cima, e, na maioria dos casos, em modo cozido por padrão.
+
+154
+00:13:38.062 --> 00:13:43.174
+O kernel não sabe que do outro lado há uma placa e não uma pessoa num teletipo.
+
+155
+00:13:43.174 --> 00:13:54.312
+Então, se o seu firmware manda dados binários e o seu programa no computador abre a porta sem configurar nada, a disciplina de linha faz com esses dados o que faria com uma pessoa digitando.
+
+156
+00:13:54.312 --> 00:13:59.837
+O byte três vira sinal de interrupção e some, e talvez mate o seu programa.
+
+157
+00:13:59.837 --> 00:14:02.362
+O byte treze vira dez.
+
+158
+00:14:02.362 --> 00:14:06.849
+O byte quatro, em modo canônico, vira fim de arquivo.
+
+159
+00:14:06.849 --> 00:14:14.949
+Com o eco ligado, o computador devolve ao microcontrolador tudo o que recebe, e o firmware recebe um lixo que ninguém mandou.
+
+160
+00:14:14.949 --> 00:14:20.249
+E existe o controle de fluxo por software, outra herança dos teletipos.
+
+161
+00:14:20.249 --> 00:14:24.674
+Control S, o byte dezenove, manda parar a saída.
+
+162
+00:14:24.674 --> 00:14:28.774
+Control Q, o byte dezessete, manda continuar.
+
+163
+00:14:28.774 --> 00:14:36.537
+Se esse controle estiver ativo e o seu fluxo binário contiver um dezenove, a comunicação congela até aparecer um dezessete.
+
+164
+00:14:36.537 --> 00:14:39.162
+A correção é sempre a mesma.
+
+165
+00:14:39.162 --> 00:14:46.162
+Ao abrir a porta serial, coloque o terminal em modo cru completo e desligue o controle de fluxo por software.
+
+166
+00:14:46.162 --> 00:14:51.849
+As bibliotecas de porta serial fazem isso por você, e é por isso que funcionam.
+
+167
+00:14:51.849 --> 00:14:57.812
+O problema aparece quando alguém abre o dispositivo como um arquivo comum e espera bytes limpos.
+
+168
+00:14:57.812 --> 00:15:02.837
+Um último detalhe para fechar esse assunto: a disciplina de linha é trocável.
+
+169
+00:15:02.837 --> 00:15:12.524
+O modo cozido e o modo cru são configurações da disciplina padrão, mas o kernel tem outras disciplinas inteiras que podem ser instaladas sobre uma porta serial.
+
+170
+00:15:12.524 --> 00:15:22.662
+Durante anos, a internet discada funcionou assim: o protocolo P P P era uma disciplina de linha que pegava os bytes do modem e os entregava à pilha de rede.
+
+171
+00:15:22.662 --> 00:15:29.624
+Até hoje, muitos chips Bluetooth ligados por UART são atendidos por uma disciplina de linha própria.
+
+172
+00:15:29.624 --> 00:15:32.774
+O nome "disciplina de linha" é modesto.
+
+173
+00:15:32.774 --> 00:15:39.024
+Na verdade, é um ponto de extensão onde qualquer protocolo pode se acoplar a um fluxo serial.
+
+174
+00:15:39.024 --> 00:15:41.737
+Vamos recapitular o caminho todo.
+
+175
+00:15:41.737 --> 00:15:52.074
+O TTY é uma simulação, dentro do kernel, de um teletipo dos anos sessenta, com driver embaixo, interface em cima e disciplina de linha no meio.
+
+176
+00:15:52.074 --> 00:16:01.149
+No modo cozido, essa disciplina ecoa, junta a linha, permite editar, traduz retorno de carro e transforma alguns bytes em sinais.
+
+177
+00:16:01.149 --> 00:16:08.749
+Control C é o byte três, que a disciplina de linha converte em sinal de interrupção para o grupo de processos em primeiro plano.
+
+178
+00:16:08.749 --> 00:16:18.237
+No modo cru, tudo isso é desligado, e é assim que funcionam editores, o S S H e qualquer comunicação serial binária digna de confiança.
+
+179
+00:16:18.237 --> 00:16:20.737
+E fica um pensamento final.
+
+180
+00:16:20.737 --> 00:16:30.037
+Toda vez que você aperta Control C, quem obedece é uma regra criada para uma máquina de escrever barulhenta que imprimia dez letras por segundo em papel.
+
+181
+00:16:30.037 --> 00:16:38.374
+O teletipo saiu de cena há décadas, mas a camada que o kernel criou para atendê-lo continua no caminho de cada byte que você digita.
+

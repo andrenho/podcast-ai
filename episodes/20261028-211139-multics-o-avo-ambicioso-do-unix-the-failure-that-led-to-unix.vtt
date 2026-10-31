@@ -1,0 +1,594 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:02.425
+Trinta de outubro do ano 2000.
+
+2
+00:00:02.425 --> 00:00:09.787
+Numa base militar canadense em Halifax, na costa atlântica, um grupo de técnicos desliga um computador pela última vez.
+
+3
+00:00:09.787 --> 00:00:21.825
+A máquina rodava um sistema operacional nascido em meados dos anos sessenta, num mundo de cartões perfurados e terminais que imprimiam em papel. Naquele dia, o último Multics em produção no planeta parou de responder.
+
+4
+00:00:21.825 --> 00:00:23.400
+Quase ninguém notou.
+
+5
+00:00:23.400 --> 00:00:31.575
+E isso é curioso, porque esse sistema, que muita gente lembra só como um fracasso caro, plantou boa parte das ideias que você usa todo dia.
+
+6
+00:00:31.575 --> 00:00:40.525
+A árvore de diretórios, a biblioteca compartilhada carregada em tempo de execução, os anéis de proteção do processador, a própria palavra shell.
+
+7
+00:00:40.525 --> 00:00:44.875
+Mais do que isso: foi da frustração com o Multics que nasceu o Unix.
+
+8
+00:00:44.875 --> 00:00:49.437
+Este episódio é uma espécie de prelúdio para a nossa conversa sobre o Plan 9.
+
+9
+00:00:49.437 --> 00:00:55.012
+Antes de falar do sistema que tentou reinventar o Unix, vale entender de onde o Unix veio.
+
+10
+00:00:55.012 --> 00:01:07.900
+Vamos ver o sonho que deu origem ao Multics, as ideias brilhantes que ele trouxe, por que o projeto atrasou tanto e o que aconteceu quando três programadores da Bell Labs ficaram sem ele e resolveram fazer algo menor, quase de birra.
+
+11
+00:01:07.900 --> 00:01:12.525
+Para começar, precisamos voltar ao M I T no começo dos anos sessenta.
+
+12
+00:01:12.525 --> 00:01:22.537
+Naquela época, usar um computador significava entregar uma pilha de cartões num balcão e voltar horas depois, às vezes no dia seguinte, para buscar a listagem impressa.
+
+13
+00:01:22.537 --> 00:01:27.100
+Se havia um erro de sintaxe na linha três, você descobria no dia seguinte.
+
+14
+00:01:27.100 --> 00:01:33.512
+Fernando Corbató, que todo mundo chamava de Corby, achava isso um desperdício absurdo de tempo humano.
+
+15
+00:01:33.512 --> 00:01:42.275
+Em 1961, ele e sua equipe demonstraram o C T S S, o Compatible Time-Sharing System, rodando num mainframe da I B M.
+
+16
+00:01:42.275 --> 00:01:52.175
+A ideia era o tempo compartilhado: vários usuários em terminais, cada um com a ilusão de ter a máquina só para si, enquanto o sistema alternava rapidamente entre eles.
+
+17
+00:01:52.175 --> 00:01:56.575
+O C T S S funcionou e mudou a cultura do M I T.
+
+18
+00:01:56.575 --> 00:02:00.562
+Pela primeira vez, programadores conversavam com o computador.
+
+19
+00:02:00.562 --> 00:02:12.425
+Com isso surgiram coisas que hoje parecem óbvias, como arquivos guardados no próprio sistema e, segundo muitos historiadores, uma das primeiras formas de correio eletrônico entre usuários da mesma máquina.
+
+20
+00:02:12.425 --> 00:02:17.700
+Mas o C T S S era um remendo genial sobre hardware que não tinha sido pensado para aquilo.
+
+21
+00:02:17.700 --> 00:02:23.025
+A proteção de memória era limitada e o sistema crescia de forma desorganizada.
+
+22
+00:02:23.025 --> 00:02:28.837
+E a turma do M I T, com dinheiro da Arpa através do Projeto MAC, começou a sonhar mais alto.
+
+23
+00:02:28.837 --> 00:02:34.025
+O sonho tinha nome: computer utility, a computação como serviço público.
+
+24
+00:02:34.025 --> 00:02:37.725
+A analogia que eles mesmos usavam era a da eletricidade.
+
+25
+00:02:37.725 --> 00:02:42.700
+Você não tem uma usina em casa: liga o aparelho na tomada e paga pelo que consome.
+
+26
+00:02:42.700 --> 00:02:45.225
+Por que com computação seria diferente?
+
+27
+00:02:45.225 --> 00:02:52.312
+Uma grande instalação central atenderia centenas de pessoas ao mesmo tempo, dia e noite, sem nunca desligar.
+
+28
+00:02:52.312 --> 00:02:56.212
+Se você está pensando em computação em nuvem, está pensando certo.
+
+29
+00:02:56.212 --> 00:03:00.662
+É basicamente o mesmo sonho, com sessenta anos de antecedência.
+
+30
+00:03:00.662 --> 00:03:05.837
+Para construir isso, em 1964 formou-se uma parceria de três.
+
+31
+00:03:05.837 --> 00:03:10.137
+O M I T entrava com as ideias e a liderança técnica de Corbató.
+
+32
+00:03:10.137 --> 00:03:15.900
+A General Electric, que queria entrar no mercado de computadores grandes, entrava com o hardware.
+
+33
+00:03:15.900 --> 00:03:26.662
+E a Bell Labs, o laboratório de pesquisa da gigante de telefonia americana, entrava com programadores e dinheiro, porque precisava de um bom sistema de tempo compartilhado para uso interno.
+
+34
+00:03:26.662 --> 00:03:34.825
+Em 1965, o projeto foi apresentado numa grande conferência de computação, com uma série de seis artigos de uma vez.
+
+35
+00:03:34.825 --> 00:03:39.625
+O nome era Multics, de Multiplexed Information and Computing Service.
+
+36
+00:03:39.625 --> 00:03:43.237
+E agora vamos às ideias, porque é aqui que o Multics brilha.
+
+37
+00:03:43.346 --> 00:03:49.096
+A primeira, e talvez a mais radical, era o que se chamava de armazenamento de nível único.
+
+38
+00:03:49.096 --> 00:03:54.821
+No Multics não existia a separação que conhecemos entre ler um arquivo e acessar a memória.
+
+39
+00:03:54.821 --> 00:03:56.346
+Tudo era segmento.
+
+40
+00:03:56.346 --> 00:04:05.783
+Um arquivo no disco era um segmento com nome, e quando seu programa queria usá-lo, o sistema mapeava aquele segmento diretamente no espaço de endereçamento do processo.
+
+41
+00:04:05.783 --> 00:04:13.971
+A partir daí você acessava o arquivo como se fosse um vetor na memória, e o sistema de paginação cuidava de trazer do disco o que fosse preciso.
+
+42
+00:04:13.971 --> 00:04:19.921
+Se você já usou o mapeamento de arquivos em memória no Linux, já usou um descendente direto dessa ideia.
+
+43
+00:04:19.921 --> 00:04:24.821
+A diferença é que no Multics esse não era um recurso opcional: era o modelo inteiro.
+
+44
+00:04:24.821 --> 00:04:28.196
+Para isso funcionar, o hardware precisava ajudar.
+
+45
+00:04:28.196 --> 00:04:39.596
+A General Electric modificou um mainframe seu e criou o G E seiscentos e quarenta e cinco, com segmentação e paginação, palavras de trinta e seis bits e suporte a vários processadores.
+
+46
+00:04:39.596 --> 00:04:43.533
+A segunda ideia vinha logo em seguida: a ligação dinâmica.
+
+47
+00:04:43.533 --> 00:04:49.133
+Se tudo é segmento com nome, por que juntar todas as bibliotecas no executável na hora de compilar?
+
+48
+00:04:49.133 --> 00:05:01.508
+No Multics, quando seu código chamava uma função que ainda não estava ligada, o hardware gerava uma falha, o sistema procurava o segmento certo, fazia a ligação e seguia em frente, como se nada tivesse acontecido.
+
+49
+00:05:01.508 --> 00:05:06.221
+Uma única cópia de uma rotina na memória podia servir a todos os usuários.
+
+50
+00:05:06.221 --> 00:05:13.883
+As bibliotecas compartilhadas que hoje carregamos em tempo de execução, em qualquer sistema moderno, são netas desse mecanismo.
+
+51
+00:05:13.883 --> 00:05:18.971
+A terceira ideia é a que você usa a cada minuto: o sistema de arquivos hierárquico.
+
+52
+00:05:18.971 --> 00:05:24.971
+Diretórios dentro de diretórios, formando uma árvore, com um caminho que vai da raiz até o arquivo.
+
+53
+00:05:24.971 --> 00:05:28.996
+No Multics, o separador do caminho era o sinal de maior.
+
+54
+00:05:28.996 --> 00:05:33.021
+O Unix depois trocaria pela barra, mas a estrutura é a mesma.
+
+55
+00:05:33.021 --> 00:05:40.433
+Junto vinham as listas de controle de acesso, dizendo exatamente quem podia ler, escrever ou executar cada segmento.
+
+56
+00:05:40.433 --> 00:05:43.258
+A quarta ideia eram os anéis de proteção.
+
+57
+00:05:43.258 --> 00:05:50.308
+Em vez de só dois níveis, usuário e sistema, o Multics organizava o código em anéis concêntricos de privilégio.
+
+58
+00:05:50.308 --> 00:05:56.458
+O núcleo ficava no centro, os serviços do sistema um pouco para fora e os programas comuns nas bordas.
+
+59
+00:05:56.458 --> 00:06:01.896
+Cada chamada que cruzava de um anel externo para um interno passava por portões controlados.
+
+60
+00:06:01.896 --> 00:06:06.983
+No G E seiscentos e quarenta e cinco, boa parte disso era simulada em software.
+
+61
+00:06:06.983 --> 00:06:12.546
+Só na geração seguinte de hardware os oito anéis passaram a existir de verdade no processador.
+
+62
+00:06:12.546 --> 00:06:22.033
+E essa ideia viajou longe: os níveis de privilégio da arquitetura Intel, que você conhece de ouvir falar do kernel no anel zero, têm o Multics como inspiração assumida.
+
+63
+00:06:22.033 --> 00:06:23.008
+Tem mais.
+
+64
+00:06:23.008 --> 00:06:29.471
+O sistema seria escrito quase inteiramente numa linguagem de alto nível, o P L um, e não em assembly.
+
+65
+00:06:29.471 --> 00:06:32.146
+Para a época, isso era uma aposta ousada.
+
+66
+00:06:32.146 --> 00:06:42.758
+E havia a palavra shell: foi o francês Louis Pouzin, que tinha trabalhado no C T S S, quem propôs o termo para o interpretador de comandos do Multics, a casca em volta do sistema.
+
+67
+00:06:42.758 --> 00:06:47.833
+Vamos parar um instante para recapitular, caso o trânsito tenha roubado sua atenção.
+
+68
+00:06:47.833 --> 00:06:58.983
+O Multics nasceu em meados dos anos sessenta como uma parceria entre M I T, General Electric e Bell Labs, com o sonho de transformar a computação num serviço público, como a eletricidade.
+
+69
+00:06:58.983 --> 00:07:10.183
+As ideias centrais eram arquivos mapeados direto na memória como segmentos, ligação dinâmica, árvore de diretórios, anéis de proteção e um sistema escrito em linguagem de alto nível.
+
+70
+00:07:10.183 --> 00:07:14.183
+Guarde isto: quase tudo isso deu certo, só que muito depois.
+
+71
+00:07:14.183 --> 00:07:16.333
+Agora vem a parte difícil.
+
+72
+00:07:16.333 --> 00:07:19.933
+Por que algo tão bem pensado virou sinônimo de fracasso?
+
+73
+00:07:20.042 --> 00:07:22.342
+O primeiro problema foi a linguagem.
+
+74
+00:07:22.342 --> 00:07:29.192
+O P L um era enorme, uma tentativa da I B M de juntar Fortran, Cobol e Algol numa linguagem só.
+
+75
+00:07:29.192 --> 00:07:33.467
+O compilador encomendado a uma empresa externa simplesmente não chegou.
+
+76
+00:07:33.467 --> 00:07:45.242
+Para não parar o projeto, dois pesquisadores da Bell Labs, Doug McIlroy e Bob Morris, escreveram às pressas um compilador para um subconjunto da linguagem, chamado E P L, de Early P L um.
+
+77
+00:07:45.242 --> 00:07:48.179
+Funcionava, mas gerava código lento.
+
+78
+00:07:48.179 --> 00:07:53.654
+E um sistema operacional inteiro escrito com um compilador lento é um sistema operacional lento.
+
+79
+00:07:53.654 --> 00:07:56.304
+O segundo problema foi a ambição em si.
+
+80
+00:07:56.304 --> 00:08:07.504
+O Multics tentava resolver todos os problemas ao mesmo tempo: segurança, memória virtual, multiprocessamento, reconfiguração de hardware com a máquina ligada, ligação dinâmica.
+
+81
+00:08:07.504 --> 00:08:13.267
+Cada peça dependia das outras, e nenhuma podia ser testada de verdade isoladamente.
+
+82
+00:08:13.267 --> 00:08:22.954
+Fred Brooks, alguns anos depois, cunharia a expressão "efeito do segundo sistema" para descrever a tendência de colocar tudo no projeto que vem depois de um primeiro sucesso.
+
+83
+00:08:22.954 --> 00:08:31.117
+Brooks estava falando de um sistema da I B M, não do Multics, mas muita gente aplica a ideia ao Multics, e não é difícil entender por quê.
+
+84
+00:08:31.117 --> 00:08:37.117
+O sucessor do C T S S carregava todos os desejos acumulados nos anos anteriores.
+
+85
+00:08:37.117 --> 00:08:40.542
+O terceiro problema eram as três organizações.
+
+86
+00:08:40.542 --> 00:08:47.829
+Uma universidade, um fabricante de hardware e um laboratório industrial têm prioridades, ritmos e culturas diferentes.
+
+87
+00:08:47.829 --> 00:08:53.692
+Os documentos de projeto eram extensos e detalhados, e decisões passavam por muitas mãos.
+
+88
+00:08:53.692 --> 00:08:55.729
+O resultado foi o atraso.
+
+89
+00:08:55.729 --> 00:09:05.167
+O plano era ter algo usável em poucos anos, mas no fim da década o sistema ainda era lento e atendia poucos usuários simultâneos, longe das centenas prometidas.
+
+90
+00:09:05.167 --> 00:09:12.329
+Para a Bell Labs, que pagava a conta e tinha alguns de seus melhores programadores presos no projeto, a paciência acabou.
+
+91
+00:09:12.329 --> 00:09:17.154
+Em abril de 1969, a Bell Labs saiu do Multics.
+
+92
+00:09:17.154 --> 00:09:29.679
+Recapitulando de novo: o Multics atrasou por causa de uma linguagem grande demais com um compilador fraco, de uma arquitetura em que tudo dependia de tudo e de uma parceria entre três instituições com prioridades diferentes.
+
+93
+00:09:29.679 --> 00:09:33.492
+Em 1969, a Bell Labs desistiu.
+
+94
+00:09:33.492 --> 00:09:36.179
+E é exatamente aqui que a história vira.
+
+95
+00:09:36.179 --> 00:09:44.329
+Entre as pessoas que a Bell Labs tirou do projeto estavam Ken Thompson, Dennis Ritchie, Doug McIlroy, o mesmo do compilador, e Joe Ossanna.
+
+96
+00:09:44.329 --> 00:09:52.192
+Eles tinham passado anos trabalhando num sistema interativo e, mesmo com todos os defeitos, tinham se acostumado a uma forma de trabalhar.
+
+97
+00:09:52.192 --> 00:09:56.217
+De repente, voltaram para o mundo dos lotes e das esperas.
+
+98
+00:09:56.217 --> 00:09:59.954
+Ritchie escreveu mais tarde uma frase que resume o sentimento.
+
+99
+00:09:59.954 --> 00:10:11.654
+Ele disse, em essência, que o que queriam preservar não era só um bom ambiente para programar, mas um sistema em torno do qual pudesse se formar uma comunidade, uma irmandade de pessoas trabalhando juntas.
+
+100
+00:10:11.654 --> 00:10:17.479
+A gerência da Bell Labs, escaldada, não queria nem ouvir falar em sistema operacional novo.
+
+101
+00:10:17.479 --> 00:10:19.642
+Então a coisa começou de lado.
+
+102
+00:10:19.642 --> 00:10:26.079
+Thompson tinha escrito um jogo chamado Space Travel, uma simulação do sistema solar em que você pilotava uma nave.
+
+103
+00:10:26.079 --> 00:10:32.492
+No mainframe da General Electric, cada partida custava cerca de setenta e cinco dólares em tempo de máquina.
+
+104
+00:10:32.492 --> 00:10:39.367
+Ele achou um P D P sete encostado, um minicomputador da Digital já meio ultrapassado, e portou o jogo para lá.
+
+105
+00:10:39.367 --> 00:10:43.079
+Para isso, precisou escrever suas próprias ferramentas.
+
+106
+00:10:43.079 --> 00:10:51.992
+No verão de 1969, a esposa de Thompson viajou com o filho pequeno para visitar a família na Califórnia, por cerca de três semanas.
+
+107
+00:10:51.992 --> 00:10:59.217
+Segundo o próprio Thompson, ele dedicou uma semana a cada peça: o núcleo do sistema, o shell, o editor e o montador.
+
+108
+00:10:59.217 --> 00:11:03.254
+Quando a família voltou, havia um sistema operacional rodando.
+
+109
+00:11:03.254 --> 00:11:13.754
+É uma história contada por ele mesmo, então vale um grão de sal sobre a precisão das semanas, mas o essencial é verdade: foi rápido, foi pequeno e foi feito por pouquíssimas pessoas.
+
+110
+00:11:13.754 --> 00:11:15.579
+O nome veio como piada.
+
+111
+00:11:15.579 --> 00:11:22.429
+Brian Kernighan sugeriu Unics, um trocadilho com Multics: em vez de multiplexado, uniplexado.
+
+112
+00:11:22.429 --> 00:11:24.204
+Um em vez de muitos.
+
+113
+00:11:24.204 --> 00:11:27.067
+Com o tempo, a grafia virou Unix.
+
+114
+00:11:27.170 --> 00:11:30.020
+E aqui está o ponto central deste episódio.
+
+115
+00:11:30.020 --> 00:11:32.582
+O Unix não rejeitou o Multics.
+
+116
+00:11:32.582 --> 00:11:34.570
+Ele foi uma destilação.
+
+117
+00:11:34.570 --> 00:11:49.470
+Thompson e Ritchie levaram o que tinham adorado: a árvore de diretórios, o shell como programa comum do usuário, a ideia de processos e de fluxos de entrada e saída, a ambição de escrever o sistema em linguagem de alto nível, que logo se realizaria com a linguagem C.
+
+118
+00:11:49.470 --> 00:12:00.507
+E deixaram para trás o que pesava: o armazenamento de nível único, os oito anéis, a ligação dinâmica, a reconfiguração a quente, a dependência de um hardware feito sob medida.
+
+119
+00:12:00.507 --> 00:12:05.407
+Os anéis, no Unix, viraram dois modos: usuário e núcleo.
+
+120
+00:12:05.407 --> 00:12:08.957
+Os segmentos viraram uma sequência simples de bytes.
+
+121
+00:12:08.957 --> 00:12:11.932
+O que era elegante e caro virou simples e barato.
+
+122
+00:12:11.932 --> 00:12:17.932
+O Multics, porém, não morreu em 1969, e isso costuma ser esquecido.
+
+123
+00:12:17.932 --> 00:12:22.120
+O M I T continuou usando o sistema, que finalmente ficou bom.
+
+124
+00:12:22.120 --> 00:12:33.270
+A Honeywell comprou a divisão de computadores da General Electric em 1970 e passou a vender o Multics comercialmente, com uma nova geração de máquinas que trazia os anéis no hardware.
+
+125
+00:12:33.270 --> 00:12:41.145
+Ao longo dos anos, algo em torno de oitenta instalações rodaram o sistema, em universidades, empresas e órgãos de governo.
+
+126
+00:12:41.145 --> 00:12:44.232
+Teve até uma reviravolta no campo da segurança.
+
+127
+00:12:44.232 --> 00:12:57.907
+Nos anos setenta, a Força Aérea americana avaliou o Multics, encontrou falhas e, no relatório, levantou a possibilidade de um compilador adulterado inserir uma porta dos fundos no próprio sistema, sem deixar rastro no código-fonte.
+
+128
+00:12:57.907 --> 00:13:06.220
+Anos depois, Ken Thompson usou essa ideia na palestra que deu ao receber o Prêmio Turing, sobre confiar na confiança, e deu crédito ao relatório.
+
+129
+00:13:06.220 --> 00:13:14.407
+Corrigido e reforçado, o Multics acabou sendo um dos primeiros sistemas a receber uma certificação alta de segurança do governo americano.
+
+130
+00:13:14.407 --> 00:13:18.282
+Foi essa longa vida que terminou em Halifax, em 2000.
+
+131
+00:13:18.282 --> 00:13:23.657
+Anos depois, o código-fonte foi liberado e hoje dá para rodar o Multics num simulador.
+
+132
+00:13:23.657 --> 00:13:26.957
+Então, para fechar, vamos juntar as peças.
+
+133
+00:13:26.957 --> 00:13:33.320
+O Multics nasceu do sonho da computação como serviço público, herdeiro do C T S S de Corbató.
+
+134
+00:13:33.320 --> 00:13:44.382
+Trouxe ideias muito à frente do tempo: arquivos como segmentos de memória, ligação dinâmica, árvore de diretórios, anéis de proteção e um sistema escrito em linguagem de alto nível.
+
+135
+00:13:44.382 --> 00:13:52.845
+Atrasou por excesso de ambição, por uma linguagem pesada e por uma parceria complicada, e a Bell Labs pulou fora em 1969.
+
+136
+00:13:52.845 --> 00:13:59.732
+Dessa saída nasceu o Unix, pequeno de propósito, que ficou com as melhores ideias do Multics e jogou fora o peso.
+
+137
+00:13:59.732 --> 00:14:03.257
+E o próprio Multics seguiu vivo por mais três décadas.
+
+138
+00:14:03.257 --> 00:14:08.182
+O curioso é que, com o tempo, o Unix foi recuperando o que tinha descartado.
+
+139
+00:14:08.182 --> 00:14:11.307
+As bibliotecas compartilhadas voltaram.
+
+140
+00:14:11.307 --> 00:14:14.095
+O mapeamento de arquivos em memória voltou.
+
+141
+00:14:14.095 --> 00:14:17.007
+As listas de controle de acesso voltaram.
+
+142
+00:14:17.007 --> 00:14:23.832
+E o sonho da computação como serviço, que parecia ingênuo em 1965, hoje se chama nuvem.
+
+143
+00:14:23.832 --> 00:14:26.170
+E é aí que entra o próximo capítulo.
+
+144
+00:14:26.170 --> 00:14:38.307
+Nos anos oitenta, algumas das mesmas pessoas da Bell Labs, incluindo Thompson, olharam para o Unix inchado e espalhado por redes e computadores pessoais, e se perguntaram: e se começássemos de novo?
+
+145
+00:14:38.307 --> 00:14:40.707
+Esse recomeço se chama Plan 9.
+
+146
+00:14:40.707 --> 00:14:47.357
+Fica então a ideia para levar: às vezes, um fracasso não é o fim de uma ideia, só a versão cara dela.
+
+147
+00:14:47.357 --> 00:14:50.995
+O Multics tentou construir o futuro todo de uma vez.
+
+148
+00:14:50.995 --> 00:14:56.295
+O Unix provou que bastava construir o pedaço certo e deixar o resto chegar com o tempo.
+

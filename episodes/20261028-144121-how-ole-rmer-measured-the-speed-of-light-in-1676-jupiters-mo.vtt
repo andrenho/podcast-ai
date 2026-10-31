@@ -1,0 +1,786 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:03.925
+Imagine que você tem um relógio perfeito pendurado no céu.
+
+2
+00:00:03.925 --> 00:00:10.400
+Um relógio que nunca atrasa, que não precisa de corda e que qualquer pessoa com um bom telescópio pode consultar.
+
+3
+00:00:10.400 --> 00:00:16.200
+Agora imagine que, em certas épocas do ano, esse relógio parece atrasar alguns minutos.
+
+4
+00:00:16.200 --> 00:00:19.800
+Depois, meses mais tarde, ele parece adiantar.
+
+5
+00:00:19.800 --> 00:00:21.537
+O relógio não quebrou.
+
+6
+00:00:21.537 --> 00:00:23.300
+Quem está mudando é você.
+
+7
+00:00:23.300 --> 00:00:30.350
+Foi mais ou menos isso que um jovem astrônomo dinamarquês percebeu em Paris, no ano de mil seiscentos e setenta e seis.
+
+8
+00:00:30.350 --> 00:00:32.337
+O nome dele era Ole Rømer.
+
+9
+00:00:32.337 --> 00:00:41.775
+Olhando para uma lua de Júpiter chamada Io, ele chegou a uma conclusão que hoje parece óbvia, mas que na época era ousada: a luz não chega instantaneamente.
+
+10
+00:00:41.775 --> 00:00:43.962
+Ela leva tempo para viajar.
+
+11
+00:00:43.962 --> 00:00:47.237
+Neste episódio, a gente vai fazer esse caminho junto.
+
+12
+00:00:47.237 --> 00:00:51.100
+Primeiro, vamos ver o que se pensava sobre a luz antes de Rømer.
+
+13
+00:00:51.100 --> 00:01:01.525
+Depois, vamos entender por que astrônomos do século dezessete passavam noites cronometrando as luas de Júpiter, e o motivo tinha muito mais a ver com navios do que com curiosidade.
+
+14
+00:01:01.525 --> 00:01:09.887
+Em seguida, vamos acompanhar o raciocínio de Rømer, a previsão corajosa que ele fez e a reação, nem sempre calorosa, dos colegas.
+
+15
+00:01:09.887 --> 00:01:15.575
+E, no final, vamos ver quanto a estimativa dele chegou perto do valor que conhecemos hoje.
+
+16
+00:01:15.575 --> 00:01:18.050
+Vamos começar pela pergunta de fundo.
+
+17
+00:01:18.050 --> 00:01:19.812
+A luz tem velocidade?
+
+18
+00:01:19.812 --> 00:01:21.812
+Parece uma pergunta estranha.
+
+19
+00:01:21.812 --> 00:01:25.900
+Quando você acende uma lâmpada, o quarto se ilumina na mesma hora.
+
+20
+00:01:25.900 --> 00:01:31.800
+Quando vê um relâmpago, ele aparece no céu sem demora nenhuma, e só o trovão chega depois.
+
+21
+00:01:31.800 --> 00:01:35.425
+Para a experiência do dia a dia, a luz é instantânea.
+
+22
+00:01:35.425 --> 00:01:39.887
+Por muitos séculos, grandes pensadores concordaram com essa impressão.
+
+23
+00:01:39.887 --> 00:01:46.300
+Aristóteles tratava a luz como algo que não se propaga passo a passo, mas que simplesmente está presente.
+
+24
+00:01:46.300 --> 00:01:54.925
+Já no século dezessete, René Descartes, um dos filósofos mais influentes da época, defendia que a luz se transmitia de forma instantânea.
+
+25
+00:01:54.925 --> 00:02:03.775
+Ele chegou a dizer que, se a luz levasse tempo, isso apareceria nos eclipses da Lua, e que, como não aparecia, a luz devia ser instantânea.
+
+26
+00:02:03.775 --> 00:02:05.437
+Houve quem duvidasse.
+
+27
+00:02:05.437 --> 00:02:08.800
+Galileu Galilei propôs um experimento simples.
+
+28
+00:02:08.800 --> 00:02:14.012
+Duas pessoas, cada uma com uma lanterna, ficariam em colinas distantes.
+
+29
+00:02:14.012 --> 00:02:16.512
+A primeira descobre sua lanterna.
+
+30
+00:02:16.512 --> 00:02:19.400
+Quando a segunda vê a luz, descobre a dela.
+
+31
+00:02:19.400 --> 00:02:21.825
+A primeira mede quanto tempo passou.
+
+32
+00:02:21.825 --> 00:02:25.187
+Se a luz tivesse velocidade, haveria um atraso.
+
+33
+00:02:25.187 --> 00:02:28.087
+O problema é que a luz é rápida demais para isso.
+
+34
+00:02:28.087 --> 00:02:36.237
+Na distância entre duas colinas, o atraso real seria de milionésimos de segundo, muito menor do que o tempo de reação de qualquer ser humano.
+
+35
+00:02:36.237 --> 00:02:39.075
+O experimento não mostrou nada conclusivo.
+
+36
+00:02:39.075 --> 00:02:45.550
+Galileu admitiu que, se a luz não era instantânea, era pelo menos extraordinariamente rápida.
+
+37
+00:02:45.550 --> 00:02:52.100
+Então fica a primeira ideia que eu quero que você guarde: para medir algo tão rápido, era preciso uma distância enorme.
+
+38
+00:02:52.100 --> 00:02:54.512
+Distâncias da Terra não serviam.
+
+39
+00:02:54.512 --> 00:02:56.675
+Era preciso olhar para o espaço.
+
+40
+00:02:56.675 --> 00:03:01.087
+E aqui entra o segundo personagem da nossa história, que não é uma pessoa.
+
+41
+00:03:01.087 --> 00:03:03.887
+É um problema prático: a longitude.
+
+42
+00:03:03.887 --> 00:03:14.350
+No século dezessete, um navegador em alto-mar conseguia descobrir a latitude, ou seja, quão ao norte ou ao sul estava, observando a altura do Sol ou de certas estrelas.
+
+43
+00:03:14.350 --> 00:03:19.725
+Mas descobrir a longitude, quão a leste ou a oeste estava, era muito mais difícil.
+
+44
+00:03:19.725 --> 00:03:24.975
+E errar a longitude podia significar bater num recife ou passar semanas perdido.
+
+45
+00:03:24.975 --> 00:03:27.637
+Navios naufragavam por causa disso.
+
+46
+00:03:27.637 --> 00:03:29.912
+A chave para a longitude é o tempo.
+
+47
+00:03:29.912 --> 00:03:33.912
+A Terra gira trezentos e sessenta graus em vinte e quatro horas.
+
+48
+00:03:33.912 --> 00:03:36.200
+Isso dá quinze graus por hora.
+
+49
+00:03:36.200 --> 00:03:48.212
+Então, se você souber que horas são no seu navio e, ao mesmo tempo, que horas são num lugar de referência, por exemplo, Paris, a diferença entre os dois horários diz quantos graus a leste ou a oeste você está.
+
+50
+00:03:48.212 --> 00:03:50.837
+A hora local você descobre pelo Sol.
+
+51
+00:03:50.837 --> 00:03:54.225
+O difícil era saber a hora de Paris no meio do oceano.
+
+52
+00:03:54.225 --> 00:03:59.975
+Os relógios mecânicos da época não eram confiáveis o bastante, ainda mais balançando num navio.
+
+53
+00:04:00.074 --> 00:04:02.536
+Foi aí que Galileu teve outra ideia.
+
+54
+00:04:02.536 --> 00:04:07.799
+Em mil seiscentos e dez, ele tinha descoberto quatro luas girando em torno de Júpiter.
+
+55
+00:04:07.799 --> 00:04:13.186
+Essas luas entram e saem da sombra do planeta com uma regularidade impressionante.
+
+56
+00:04:13.186 --> 00:04:22.149
+Cada vez que uma lua some na sombra de Júpiter, é um evento que pode ser visto, ao mesmo tempo, de qualquer lugar da Terra onde Júpiter esteja visível.
+
+57
+00:04:22.149 --> 00:04:33.199
+Se alguém publicasse tabelas dizendo exatamente a que horas, no horário de Paris, cada eclipse aconteceria, qualquer observador poderia comparar com sua hora local e calcular a longitude.
+
+58
+00:04:33.199 --> 00:04:36.686
+As luas de Júpiter seriam o relógio universal do céu.
+
+59
+00:04:36.686 --> 00:04:44.524
+Na prática, isso era quase impossível num navio balançando, porque segurar um telescópio apontado para uma luazinha era muito difícil.
+
+60
+00:04:44.524 --> 00:04:50.249
+Mas em terra firme funcionava muito bem, e foi usado para fazer mapas muito mais precisos.
+
+61
+00:04:50.249 --> 00:04:55.711
+Ou seja: havia um enorme interesse em prever esses eclipses com exatidão de minutos.
+
+62
+00:04:55.711 --> 00:05:00.874
+E a lua mais útil para isso era Io, a mais próxima de Júpiter entre as grandes.
+
+63
+00:05:00.874 --> 00:05:06.136
+Ela dá uma volta completa em torno do planeta em cerca de um dia e dezoito horas.
+
+64
+00:05:06.136 --> 00:05:11.249
+Isso significa eclipses frequentes, muitas oportunidades de observação.
+
+65
+00:05:11.249 --> 00:05:15.036
+Vamos fazer uma pequena pausa para organizar o que temos até aqui.
+
+66
+00:05:15.036 --> 00:05:20.311
+A luz parecia instantânea, e nenhum experimento na Terra conseguia dizer o contrário.
+
+67
+00:05:20.311 --> 00:05:29.374
+Ao mesmo tempo, os astrônomos queriam prever com precisão os eclipses das luas de Júpiter, especialmente de Io, para resolver o problema da longitude.
+
+68
+00:05:29.374 --> 00:05:32.236
+Esses dois fios estão prestes a se cruzar.
+
+69
+00:05:32.236 --> 00:05:34.861
+Agora, vamos conhecer Ole Rømer.
+
+70
+00:05:34.861 --> 00:05:38.974
+Rømer nasceu na Dinamarca, em mil seiscentos e quarenta e quatro.
+
+71
+00:05:38.974 --> 00:05:44.799
+Estudou em Copenhague e trabalhou organizando observações antigas do grande astrônomo Tycho Brahe.
+
+72
+00:05:44.799 --> 00:05:51.124
+Em mil seiscentos e setenta e um, um astrônomo francês chamado Jean Picard viajou até a Dinamarca.
+
+73
+00:05:51.124 --> 00:05:59.961
+A missão dele era justamente medir, com precisão, a diferença de longitude entre Paris e o antigo observatório de Tycho Brahe, numa pequena ilha.
+
+74
+00:05:59.961 --> 00:06:01.511
+E como ele fez isso?
+
+75
+00:06:01.511 --> 00:06:06.761
+Observando, entre outras coisas, os eclipses de Io dos dois lugares.
+
+76
+00:06:06.761 --> 00:06:11.849
+Rømer ajudou nessas observações e impressionou Picard, que o levou para Paris.
+
+77
+00:06:11.849 --> 00:06:20.274
+Em Paris, Rømer passou a trabalhar no recém-criado Observatório de Paris, uma instituição ambiciosa sustentada pelo rei Luís quatorze.
+
+78
+00:06:20.274 --> 00:06:28.224
+O diretor de fato era um astrônomo de origem italiana chamado Giovanni Domenico Cassini, conhecido na França como Jean-Dominique Cassini.
+
+79
+00:06:28.224 --> 00:06:33.599
+Cassini era famoso justamente pelas suas tabelas dos movimentos das luas de Júpiter.
+
+80
+00:06:33.599 --> 00:06:39.836
+Então Rømer estava exatamente no lugar certo, cercado de gente obcecada por cronometrar Io.
+
+81
+00:06:39.836 --> 00:06:44.236
+E foi cronometrando Io, ano após ano, que surgiu um incômodo.
+
+82
+00:06:44.236 --> 00:06:48.024
+Os eclipses não batiam perfeitamente com as previsões.
+
+83
+00:06:48.024 --> 00:06:52.211
+Às vezes aconteciam um pouco antes, às vezes um pouco depois.
+
+84
+00:06:52.211 --> 00:06:54.286
+E o padrão não era aleatório.
+
+85
+00:06:54.286 --> 00:06:57.961
+Ele dependia da posição da Terra em relação a Júpiter.
+
+86
+00:06:57.961 --> 00:07:00.549
+Aqui é importante visualizar o cenário.
+
+87
+00:07:00.549 --> 00:07:03.324
+A Terra gira em torno do Sol em um ano.
+
+88
+00:07:03.324 --> 00:07:09.449
+Júpiter também gira em torno do Sol, mas bem mais devagar, levando quase doze anos por volta.
+
+89
+00:07:09.449 --> 00:07:15.236
+Então, ao longo de um ano, a Terra ora se aproxima de Júpiter, ora se afasta dele.
+
+90
+00:07:15.236 --> 00:07:20.511
+Há um momento em que a Terra fica entre o Sol e Júpiter, e aí estamos bem perto do planeta.
+
+91
+00:07:20.511 --> 00:07:27.061
+Cerca de seis meses depois, a Terra está do outro lado do Sol, e Júpiter fica bem mais longe de nós.
+
+92
+00:07:27.061 --> 00:07:33.286
+A diferença entre essas duas situações é, aproximadamente, a largura inteira da órbita da Terra.
+
+93
+00:07:33.286 --> 00:07:35.411
+O que se notava era o seguinte.
+
+94
+00:07:35.411 --> 00:07:42.986
+Nos meses em que a Terra estava se afastando de Júpiter, o intervalo entre um eclipse de Io e o seguinte parecia um pouquinho mais longo.
+
+95
+00:07:42.986 --> 00:07:48.249
+Nos meses em que a Terra estava se aproximando, o intervalo parecia um pouquinho mais curto.
+
+96
+00:07:48.249 --> 00:07:54.024
+A diferença entre um eclipse e o próximo era pequena, difícil de perceber isoladamente.
+
+97
+00:07:54.024 --> 00:07:59.999
+Mas, somando dezenas de órbitas de Io, os atrasos se acumulavam e viravam minutos.
+
+98
+00:08:00.098 --> 00:08:02.073
+Por que isso estaria acontecendo?
+
+99
+00:08:02.073 --> 00:08:04.910
+Havia algumas explicações possíveis.
+
+100
+00:08:04.910 --> 00:08:07.523
+Talvez a órbita de Io fosse irregular.
+
+101
+00:08:07.523 --> 00:08:11.435
+Talvez Júpiter perturbasse a lua de algum jeito complicado.
+
+102
+00:08:11.435 --> 00:08:17.585
+Mas o detalhe decisivo era este: o padrão acompanhava o movimento da Terra, não o de Júpiter ou de Io.
+
+103
+00:08:17.585 --> 00:08:21.123
+Por que uma lua lá longe se importaria com onde a Terra está?
+
+104
+00:08:21.123 --> 00:08:23.523
+A resposta de Rømer foi elegante.
+
+105
+00:08:23.523 --> 00:08:25.373
+Io não estava atrasando.
+
+106
+00:08:25.373 --> 00:08:29.123
+O que atrasava era a notícia do eclipse chegando até nós.
+
+107
+00:08:29.123 --> 00:08:31.485
+Deixa eu dar um exemplo do cotidiano.
+
+108
+00:08:31.485 --> 00:08:38.435
+Imagine que um amigo seu, numa cidade distante, coloca uma carta no correio toda segunda-feira, sem falta.
+
+109
+00:08:38.435 --> 00:08:43.610
+Se você mora sempre no mesmo lugar, as cartas chegam com intervalos de uma semana.
+
+110
+00:08:43.610 --> 00:08:50.373
+Agora imagine que, durante alguns meses, você vai se mudando aos poucos para cada vez mais longe do seu amigo.
+
+111
+00:08:50.373 --> 00:08:53.885
+Cada carta precisa viajar um pouquinho mais do que a anterior.
+
+112
+00:08:53.885 --> 00:08:59.098
+Resultado: o intervalo entre as cartas que chegam fica um pouco maior do que uma semana.
+
+113
+00:08:59.098 --> 00:09:01.385
+Seu amigo continua pontual.
+
+114
+00:09:01.385 --> 00:09:03.398
+Você é que está se afastando.
+
+115
+00:09:03.398 --> 00:09:08.398
+E se você começar a voltar, as cartas chegam com intervalos um pouco menores.
+
+116
+00:09:08.398 --> 00:09:10.810
+A luz de Io faz o papel da carta.
+
+117
+00:09:10.810 --> 00:09:19.885
+Quando Io entra na sombra de Júpiter, essa informação, ou seja, o sumiço da luz refletida pela lua, precisa atravessar o espaço até a Terra.
+
+118
+00:09:19.885 --> 00:09:25.398
+Se a Terra está se afastando, cada notícia de eclipse chega um pouco mais tarde do que a anterior.
+
+119
+00:09:25.398 --> 00:09:28.860
+Se a luz fosse instantânea, isso não aconteceria.
+
+120
+00:09:28.860 --> 00:09:31.810
+Como acontecia, a luz devia levar tempo.
+
+121
+00:09:31.810 --> 00:09:35.710
+É bom dizer que historiadores discutem quem pensou nisso primeiro.
+
+122
+00:09:35.710 --> 00:09:48.448
+Há indícios de que o próprio Cassini, em agosto de mil seiscentos e setenta e seis, chegou a mencionar a possibilidade de a luz ter velocidade finita como explicação para as irregularidades de Io, e depois recuou da ideia.
+
+123
+00:09:48.448 --> 00:09:55.410
+Mas foi Rømer quem abraçou a hipótese, desenvolveu o argumento e, principalmente, fez algo muito corajoso com ela.
+
+124
+00:09:55.410 --> 00:09:57.160
+Ele fez uma previsão.
+
+125
+00:09:57.160 --> 00:10:08.073
+Em setembro de mil seiscentos e setenta e seis, Rømer anunciou que o eclipse de Io previsto para o dia nove de novembro aconteceria cerca de dez minutos mais tarde do que diziam as tabelas.
+
+126
+00:10:08.073 --> 00:10:16.948
+Isso é ciência no seu melhor: não apenas explicar o que já aconteceu, mas arriscar o que vai acontecer, sabendo que pode dar errado na frente de todo mundo.
+
+127
+00:10:16.948 --> 00:10:18.423
+Chegou novembro.
+
+128
+00:10:18.423 --> 00:10:21.023
+Os astrônomos de Paris observaram.
+
+129
+00:10:21.023 --> 00:10:30.585
+E, segundo o relato publicado pouco depois, a saída de Io da sombra de Júpiter foi registrada cerca de dez minutos depois do horário calculado pelas tabelas.
+
+130
+00:10:30.585 --> 00:10:34.073
+Exatamente o tipo de atraso que Rømer tinha anunciado.
+
+131
+00:10:34.073 --> 00:10:48.835
+Pouco depois, Rømer apresentou seu argumento à Academia de Ciências de Paris, e um resumo foi publicado em dezembro daquele ano numa revista científica francesa, com um título que, traduzido, seria algo como "Demonstração sobre o movimento da luz".
+
+132
+00:10:48.835 --> 00:10:56.923
+Nele, Rømer afirmava que a luz leva cerca de vinte e dois minutos para atravessar uma distância igual ao diâmetro da órbita da Terra.
+
+133
+00:10:56.923 --> 00:11:01.860
+Ou seja, uns onze minutos para percorrer a distância entre o Sol e a Terra.
+
+134
+00:11:01.860 --> 00:11:10.323
+Vamos parar mais uma vez para recapitular, caso a sua atenção tenha escapado por um momento, o que é normal, principalmente se você está dirigindo.
+
+135
+00:11:10.323 --> 00:11:17.360
+Rømer percebeu que os eclipses de Io pareciam atrasar quando a Terra se afastava de Júpiter e adiantar quando se aproximava.
+
+136
+00:11:17.360 --> 00:11:22.848
+Ele concluiu que o atraso não estava em Io, mas no tempo que a luz levava para chegar até nós.
+
+137
+00:11:22.848 --> 00:11:30.535
+Previu um atraso de uns dez minutos para um eclipse em novembro de mil seiscentos e setenta e seis, e a observação confirmou.
+
+138
+00:11:30.535 --> 00:11:35.535
+Sua estimativa: uns vinte e dois minutos para a luz cruzar a órbita da Terra.
+
+139
+00:11:35.642 --> 00:11:38.779
+Agora, um detalhe que muita gente não sabe.
+
+140
+00:11:38.779 --> 00:11:44.304
+Rømer não publicou, ele mesmo, um número como "tantos quilômetros por segundo".
+
+141
+00:11:44.304 --> 00:11:47.142
+Ele falou em tempo, não em velocidade.
+
+142
+00:11:47.142 --> 00:11:54.279
+Para transformar isso em velocidade, era preciso saber o tamanho da órbita da Terra, e esse valor era muito incerto na época.
+
+143
+00:11:54.279 --> 00:12:07.667
+Poucos anos antes, Cassini e outro astrônomo, Jean Richer, tinham feito uma das primeiras medições razoáveis da distância entre a Terra e o Sol, observando Marte de dois lugares diferentes, Paris e a Guiana Francesa.
+
+144
+00:12:07.667 --> 00:12:11.529
+Quem fez a conta foi o cientista holandês Christiaan Huygens.
+
+145
+00:12:11.529 --> 00:12:25.242
+No seu livro sobre a luz, publicado em mil seiscentos e noventa, ele combinou o tempo de Rømer com o tamanho estimado da órbita da Terra e chegou a uma velocidade que, nas nossas unidades, fica em torno de duzentos e vinte mil quilômetros por segundo.
+
+146
+00:12:25.242 --> 00:12:29.529
+O valor moderno é de quase trezentos mil quilômetros por segundo.
+
+147
+00:12:29.529 --> 00:12:33.054
+Então a estimativa estava abaixo, por cerca de um quarto.
+
+148
+00:12:33.054 --> 00:12:39.704
+E a luz, na verdade, leva uns oito minutos e vinte segundos para vir do Sol até a Terra, e não onze.
+
+149
+00:12:39.704 --> 00:12:46.404
+Os vinte e dois minutos de Rømer para cruzar a órbita inteira seriam, na realidade, mais perto de dezessete.
+
+150
+00:12:46.404 --> 00:12:48.354
+Isso quer dizer que Rømer errou?
+
+151
+00:12:48.354 --> 00:12:49.917
+Não exatamente.
+
+152
+00:12:49.917 --> 00:12:52.679
+O mais importante não era o número exato.
+
+153
+00:12:52.679 --> 00:12:55.242
+Era a descoberta de que existe um número.
+
+154
+00:12:55.242 --> 00:13:01.642
+Antes dele, a pergunta "quanto tempo a luz leva?" tinha como resposta mais aceita "nenhum tempo".
+
+155
+00:13:01.642 --> 00:13:07.092
+Depois dele, a resposta passou a ser "alguns minutos para atravessar o sistema solar".
+
+156
+00:13:07.092 --> 00:13:10.079
+É a diferença entre o infinito e o finito.
+
+157
+00:13:10.079 --> 00:13:19.229
+E, para uma primeira medida, feita com telescópios do século dezessete e relógios de pêndulo, chegar à ordem de grandeza certa já é extraordinário.
+
+158
+00:13:19.229 --> 00:13:30.854
+As fontes de erro eram várias: a dificuldade de cronometrar exatamente o instante em que uma luazinha some, as irregularidades reais do movimento de Io, e a incerteza no tamanho da órbita terrestre.
+
+159
+00:13:30.854 --> 00:13:36.554
+Agora, você pode estar pensando que, depois de uma previsão confirmada, todo mundo aplaudiu.
+
+160
+00:13:36.554 --> 00:13:38.042
+Não foi bem assim.
+
+161
+00:13:38.042 --> 00:13:42.417
+Cassini, o chefe do observatório, não aceitou a explicação.
+
+162
+00:13:42.417 --> 00:13:54.154
+Ele argumentava, entre outras coisas, que, se a luz tivesse velocidade, o mesmo efeito deveria aparecer claramente nas outras luas de Júpiter, e os dados dessas luas não eram tão limpos.
+
+163
+00:13:54.154 --> 00:14:02.067
+Naquela época, as órbitas das outras luas eram mais difíceis de prever, e as irregularidades delas confundiam a análise.
+
+164
+00:14:02.067 --> 00:14:05.729
+Então a resistência de Cassini não era pura teimosia.
+
+165
+00:14:05.729 --> 00:14:08.079
+Havia dúvidas razoáveis.
+
+166
+00:14:08.079 --> 00:14:11.742
+Por outro lado, Rømer ganhou apoiadores importantes.
+
+167
+00:14:11.742 --> 00:14:14.854
+Huygens, como vimos, aceitou a ideia.
+
+168
+00:14:14.854 --> 00:14:27.079
+Na Inglaterra, Isaac Newton também aceitou, e mencionou na sua grande obra, os Principia, que a luz leva de sete a oito minutos para vir do Sol, um valor, aliás, mais próximo do correto.
+
+169
+00:14:27.079 --> 00:14:30.467
+Edmond Halley, o do cometa, também apoiou.
+
+170
+00:14:30.467 --> 00:14:37.542
+A confirmação definitiva, por um caminho completamente independente, veio só cerca de cinquenta anos depois.
+
+171
+00:14:37.542 --> 00:14:44.192
+O astrônomo inglês James Bradley estava tentando medir a distância das estrelas e encontrou um efeito inesperado.
+
+172
+00:14:44.192 --> 00:14:53.717
+As estrelas pareciam se deslocar levemente ao longo do ano, num padrão que não tinha a ver com distância, mas com o movimento da Terra combinado com a velocidade da luz.
+
+173
+00:14:53.717 --> 00:15:03.204
+É parecido com o que acontece quando você anda na chuva: mesmo que a chuva caia na vertical, você precisa inclinar o guarda-chuva para frente por causa do seu próprio movimento.
+
+174
+00:15:03.204 --> 00:15:09.067
+Esse efeito, chamado de aberração da luz, só faz sentido se a luz tiver velocidade finita.
+
+175
+00:15:09.067 --> 00:15:15.454
+E a velocidade que Bradley calculou era compatível com a ideia de Rømer, e mais próxima do valor moderno.
+
+176
+00:15:15.454 --> 00:15:19.329
+A partir daí, a discussão estava praticamente encerrada.
+
+177
+00:15:19.418 --> 00:15:21.118
+E o que aconteceu com Rømer?
+
+178
+00:15:21.118 --> 00:15:27.030
+Ele voltou para a Dinamarca alguns anos depois, onde teve uma carreira surpreendentemente variada.
+
+179
+00:15:27.030 --> 00:15:38.343
+Foi astrônomo real, professor, criou instrumentos astronômicos, ajudou a padronizar pesos e medidas e chegou até a cuidar da organização da polícia e da iluminação pública de Copenhague.
+
+180
+00:15:38.343 --> 00:15:42.955
+Ele também criou uma escala de temperatura que influenciou Daniel Fahrenheit.
+
+181
+00:15:42.955 --> 00:15:50.755
+Infelizmente, boa parte dos seus registros de observação se perdeu num grande incêndio em Copenhague, em mil setecentos e vinte e oito.
+
+182
+00:15:50.755 --> 00:15:57.193
+Por isso, alguns detalhes do seu raciocínio conhecemos só de forma indireta, por publicações e cartas.
+
+183
+00:15:57.193 --> 00:15:59.018
+Então vamos juntar tudo.
+
+184
+00:15:59.018 --> 00:16:04.318
+A luz parecia instantânea, e experimentos na Terra não tinham como provar o contrário.
+
+185
+00:16:04.318 --> 00:16:12.630
+As luas de Júpiter, especialmente Io, eram observadas com cuidado porque serviam como um relógio celeste para medir a longitude.
+
+186
+00:16:12.630 --> 00:16:19.230
+Ole Rømer notou que esse relógio parecia atrasar quando a Terra se afastava de Júpiter e adiantar quando se aproximava.
+
+187
+00:16:19.230 --> 00:16:24.393
+Ele concluiu que o atraso era o tempo que a luz levava para percorrer a distância extra.
+
+188
+00:16:24.393 --> 00:16:27.568
+Fez uma previsão arriscada, que se confirmou.
+
+189
+00:16:27.568 --> 00:16:33.668
+Sua estimativa não era exata, mas mostrou, pela primeira vez, que a luz tem velocidade.
+
+190
+00:16:33.668 --> 00:16:39.893
+E décadas depois, outra observação, completamente diferente, confirmou que ele estava certo.
+
+191
+00:16:39.893 --> 00:16:41.993
+E fica um último pensamento.
+
+192
+00:16:41.993 --> 00:16:45.893
+Toda vez que você olha para o céu, está olhando para o passado.
+
+193
+00:16:45.893 --> 00:16:49.280
+O Sol que você vê é o Sol de oito minutos atrás.
+
+194
+00:16:49.280 --> 00:16:54.030
+Júpiter, numa noite qualquer, aparece como estava há mais de meia hora.
+
+195
+00:16:54.030 --> 00:16:58.380
+As estrelas, como eram anos, séculos ou milênios atrás.
+
+196
+00:16:58.380 --> 00:17:09.780
+Essa ideia, de que o céu é uma coleção de mensagens antigas ainda viajando até nós, começou com um astrônomo atento, uma pequena lua e alguns minutos de atraso que quase ninguém levou a sério.
+

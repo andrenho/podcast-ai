@@ -1,0 +1,630 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:04.937
+Imagine uma sala de estar no Brasil, em meados dos anos oitenta.
+
+2
+00:00:04.887 --> 00:00:11.762
+Um M S X ligado na televisão, talvez um Hotbit da Sharp, talvez um Expert da Gradiente.
+
+3
+00:00:11.762 --> 00:00:14.575
+Na tela, um jogo de nave.
+
+4
+00:00:14.575 --> 00:00:20.650
+Os inimigos chegam em formação, todos na mesma altura, e de repente começam a piscar.
+
+5
+00:00:20.650 --> 00:00:24.512
+Não é defeito da fita cassete, nem da televisão.
+
+6
+00:00:24.512 --> 00:00:33.512
+O pisca-pisca nasce de um limite de hardware muito preciso: o chip de vídeo só consegue desenhar quatro figuras móveis em cada linha da tela.
+
+7
+00:00:33.512 --> 00:00:37.375
+Quando aparece uma quinta, ela simplesmente some.
+
+8
+00:00:37.375 --> 00:00:43.550
+E o chip avisa o programa, com alguns bits num registrador de status, que isso aconteceu.
+
+9
+00:00:43.550 --> 00:00:48.575
+Esse chip é o T M S noventa e nove dezoito, da Texas Instruments.
+
+10
+00:00:48.575 --> 00:00:55.712
+É bem provável que você nunca tenha escrito uma linha de código para ele, mas é quase certo que já viu o trabalho dele.
+
+11
+00:00:55.712 --> 00:01:03.825
+Ele está no T I noventa e nove quatro A, no ColecoVision, na primeira geração do M S X e no primeiro console da Sega.
+
+12
+00:01:03.825 --> 00:01:09.050
+E, por linhagem direta, está também no Master System e no Mega Drive.
+
+13
+00:01:09.050 --> 00:01:17.200
+Segundo a história mais contada, foi dentro da equipe que projetou esse chip que a palavra sprite ganhou o sentido que a gente usa até hoje.
+
+14
+00:01:17.200 --> 00:01:24.137
+Neste episódio, vamos ver de onde ele veio e por que ele tem a sua própria memória, isolada do processador.
+
+15
+00:01:24.137 --> 00:01:37.937
+Depois, como ele monta a imagem a partir de tabelas, como funcionam os famosos sprites e o limite de quatro por linha, e por fim como esse projeto do fim dos anos setenta acabou atravessando duas gerações de consoles.
+
+16
+00:01:37.937 --> 00:01:40.462
+Vamos começar pela origem.
+
+17
+00:01:40.462 --> 00:01:47.087
+No fim dos anos setenta, a Texas Instruments queria entrar no mercado de computadores domésticos.
+
+18
+00:01:47.087 --> 00:01:55.862
+O produto seria o T I noventa e nove quatro, lançado em mil novecentos e setenta e nove, com um processador de dezesseis bits da própria empresa.
+
+19
+00:01:55.862 --> 00:01:57.787
+Faltava o vídeo.
+
+20
+00:01:57.787 --> 00:02:08.712
+Na época, a maioria das máquinas gerava a imagem com uma pilha de chips lógicos discretos, ou com soluções que dividiam a memória principal entre o processador e o circuito de vídeo.
+
+21
+00:02:08.712 --> 00:02:14.925
+A Texas decidiu fazer um único chip, um processador de exibição de vídeo, o V D P.
+
+22
+00:02:14.925 --> 00:02:25.812
+Karl Guttag, um dos dois engenheiros principais do projeto, mais tarde ficaria conhecido por outro processador gráfico da empresa e por décadas de trabalho em tecnologia de displays.
+
+23
+00:02:25.812 --> 00:02:28.950
+Os objetivos eram bem pragmáticos.
+
+24
+00:02:28.950 --> 00:02:31.375
+O chip tinha que ser barato.
+
+25
+00:02:31.375 --> 00:02:41.925
+Tinha que gerar sozinho o sinal de vídeo composto no padrão americano N T S C, pronto para ligar numa televisão comum, sem um monte de componentes analógicos em volta.
+
+26
+00:02:41.925 --> 00:02:45.075
+E tinha que cuidar sozinho da sua memória.
+
+27
+00:02:45.075 --> 00:02:51.687
+Esse último ponto é a decisão de projeto mais importante do chip, e vale a pena ficar nela um pouco.
+
+28
+00:02:51.687 --> 00:02:59.237
+O T M S noventa e nove dezoito controla diretamente dezesseis quilobytes de memória dinâmica, a sua memória de vídeo.
+
+29
+00:02:59.237 --> 00:03:05.737
+Na versão original eram oito chips de dezesseis quilobits cada, um bit de largura por chip.
+
+30
+00:03:05.737 --> 00:03:13.475
+O próprio V D P gera os endereços, faz o refresh da memória dinâmica e busca os dados de que precisa para desenhar cada linha.
+
+31
+00:03:13.475 --> 00:03:17.025
+O processador principal não enxerga essa memória.
+
+32
+00:03:17.025 --> 00:03:20.862
+Ela não aparece no mapa de endereços da C P U.
+
+33
+00:03:20.862 --> 00:03:24.475
+E como o processador escreve na tela, então?
+
+34
+00:03:24.475 --> 00:03:31.012
+Por uma porta de oito bits, com só dois endereços: uma porta de dados e uma porta de controle.
+
+35
+00:03:31.012 --> 00:03:37.787
+Para escrever na memória de vídeo, o programa manda dois bytes para a porta de controle com o endereço de destino.
+
+36
+00:03:37.787 --> 00:03:41.350
+Depois despeja os dados pela porta de dados.
+
+37
+00:03:41.350 --> 00:03:45.237
+A cada byte, o chip incrementa o endereço sozinho.
+
+38
+00:03:45.237 --> 00:03:48.162
+A leitura funciona do mesmo jeito.
+
+39
+00:03:48.162 --> 00:03:53.037
+É quase como falar com um periférico serial, só que de oito bits.
+
+40
+00:03:53.037 --> 00:03:54.987
+Por que fazer assim?
+
+41
+00:03:54.987 --> 00:04:00.825
+Porque compartilhar memória entre vídeo e processador custa caro em desempenho ou em complexidade.
+
+42
+00:04:00.825 --> 00:04:06.512
+No Apple dois, o acesso era intercalado com cuidado ao longo do ciclo de clock.
+
+43
+00:04:06.512 --> 00:04:12.662
+No ZX Spectrum, o processador sofria atrasos sempre que disputava a memória com o vídeo.
+
+44
+00:04:12.662 --> 00:04:22.312
+Com a memória separada, o V D P busca dados no ritmo que quiser, sem travar a C P U, e o processador roda livre na sua própria memória.
+
+45
+00:04:22.468 --> 00:04:25.393
+O preço é a lentidão do acesso.
+
+46
+00:04:25.343 --> 00:04:34.918
+Durante a parte visível da imagem, o chip está ocupado lendo memória para desenhar, e o processador precisa esperar alguns microssegundos entre um acesso e outro.
+
+47
+00:04:34.918 --> 00:04:38.680
+Se escrever rápido demais, o byte se perde.
+
+48
+00:04:38.680 --> 00:04:50.105
+Programadores de ColecoVision e de M S X aprenderam a contar ciclos ou a concentrar as escritas no intervalo vertical, quando o feixe da televisão volta para o topo e a memória fica livre.
+
+49
+00:04:50.105 --> 00:04:53.555
+E aqui vem uma das partes mais curiosas.
+
+50
+00:04:53.555 --> 00:05:00.355
+O T I noventa e nove quatro A tinha apenas duzentos e cinquenta e seis bytes de RAM diretamente ligados ao processador.
+
+51
+00:05:00.355 --> 00:05:04.293
+Duzentos e cinquenta e seis bytes, não quilobytes.
+
+52
+00:05:04.293 --> 00:05:08.693
+O resto da memória utilizável era justamente a memória de vídeo.
+
+53
+00:05:08.693 --> 00:05:14.880
+O interpretador BASIC guardava o programa do usuário ali, atrás dessa porta de oito bits.
+
+54
+00:05:14.880 --> 00:05:20.118
+Cada leitura de uma linha do programa passava pelo V D P, byte a byte.
+
+55
+00:05:20.118 --> 00:05:25.230
+Esse é um dos motivos pelos quais o BASIC daquela máquina tem fama de ser lento.
+
+56
+00:05:25.230 --> 00:05:34.443
+O ColecoVision foi um pouco mais generoso: um quilobyte de RAM para o processador, e de novo os dezesseis quilobytes de vídeo do outro lado do chip.
+
+57
+00:05:34.443 --> 00:05:38.968
+Então, se você chegou agora, a ideia para guardar é esta.
+
+58
+00:05:38.968 --> 00:05:44.668
+O T M S noventa e nove dezoito é dono da sua própria memória de dezesseis quilobytes.
+
+59
+00:05:44.668 --> 00:05:50.705
+O processador só conversa com ela através de duas portas e de um endereço que se incrementa sozinho.
+
+60
+00:05:50.705 --> 00:05:57.205
+Isso simplifica o hardware e libera a C P U, mas torna cada acesso à tela uma operação cara.
+
+61
+00:05:57.205 --> 00:06:00.568
+Agora, como essa memória vira imagem.
+
+62
+00:06:00.568 --> 00:06:04.080
+O chip não tem um framebuffer no sentido moderno.
+
+63
+00:06:04.080 --> 00:06:13.568
+Ele monta a tela a partir de tabelas que ficam na memória de vídeo, e o programa escolhe onde cada tabela começa por meio de oito registradores de configuração.
+
+64
+00:06:13.568 --> 00:06:19.218
+Detalhe importante: esses registradores só podem ser escritos, nunca lidos.
+
+65
+00:06:19.218 --> 00:06:26.805
+Por isso os programas costumavam manter uma cópia própria dos valores na RAM principal, para saber o que tinham configurado.
+
+66
+00:06:26.805 --> 00:06:32.180
+A resolução básica é de duzentos e cinquenta e seis por cento e noventa e dois pixels.
+
+67
+00:06:32.180 --> 00:06:41.355
+No modo mais comum, o chamado modo gráfico um, a tela é uma grade de trinta e duas colunas por vinte e quatro linhas de células de oito por oito pixels.
+
+68
+00:06:41.355 --> 00:06:48.068
+A tabela de nomes diz, para cada uma dessas setecentas e sessenta e oito posições, qual padrão desenhar.
+
+69
+00:06:48.068 --> 00:06:54.605
+A tabela de padrões guarda até duzentos e cinquenta e seis desenhos de oito por oito, um bit por pixel.
+
+70
+00:06:54.605 --> 00:07:00.893
+E a tabela de cores define duas cores, frente e fundo, para cada grupo de oito padrões.
+
+71
+00:07:00.893 --> 00:07:04.793
+Isso economiza muita memória e é rápido de atualizar.
+
+72
+00:07:04.793 --> 00:07:08.068
+Mudar um caractere na tela custa um byte.
+
+73
+00:07:08.068 --> 00:07:18.768
+A versão revisada do chip, o noventa e nove dezoito A, que estreou no T I noventa e nove quatro A em mil novecentos e oitenta e um, trouxe um modo novo, o modo gráfico dois.
+
+74
+00:07:18.768 --> 00:07:20.955
+O truque é engenhoso.
+
+75
+00:07:20.955 --> 00:07:28.555
+A tela é dividida em três faixas horizontais, e cada faixa tem o seu próprio conjunto de duzentos e cinquenta e seis padrões.
+
+76
+00:07:28.555 --> 00:07:37.043
+Com isso, cada uma das setecentas e sessenta e oito células pode ter um desenho exclusivo, e a tela inteira se comporta como um bitmap.
+
+77
+00:07:37.043 --> 00:07:45.930
+A cor também fica mais fina: em vez de duas cores por grupo de padrões, são duas cores para cada linha de oito pixels de cada célula.
+
+78
+00:07:45.930 --> 00:07:54.793
+Essa é a origem daquele visual típico dos jogos de M S X, cheio de cor, mas com bordas que às vezes mudam de cor de forma brusca.
+
+79
+00:07:54.793 --> 00:08:02.893
+É o mesmo problema de conflito de cores do ZX Spectrum, só que numa granularidade de oito por um, em vez de oito por oito.
+
+80
+00:08:02.893 --> 00:08:08.018
+Esse modo consome cerca de doze dos dezesseis quilobytes da memória de vídeo.
+
+81
+00:08:08.018 --> 00:08:11.043
+Há ainda dois modos menos usados.
+
+82
+00:08:11.043 --> 00:08:18.693
+O modo texto mostra quarenta colunas de caracteres com seis pixels de largura, com só duas cores para a tela toda.
+
+83
+00:08:18.693 --> 00:08:25.618
+E o modo multicolorido divide a tela em blocos grossos de quatro por quatro pixels, cada um com qualquer cor.
+
+84
+00:08:25.618 --> 00:08:28.168
+Pouca gente usou esse último.
+
+85
+00:08:28.324 --> 00:08:33.936
+E tem uma ausência que marcou uma geração inteira: o chip não tem rolagem por hardware.
+
+86
+00:08:33.886 --> 00:08:35.374
+Nenhuma.
+
+87
+00:08:35.374 --> 00:08:44.599
+Para fazer a tela andar, o programa reescreve a tabela de nomes, deslocando tudo uma célula inteira, ou seja, oito pixels de uma vez.
+
+88
+00:08:44.599 --> 00:08:49.936
+Daí a rolagem aos trancos de tantos jogos de M S X da primeira geração.
+
+89
+00:08:49.936 --> 00:09:00.724
+Os programadores mais caprichosos criavam conjuntos de padrões já deslocados de dois em dois pixels, para simular uma rolagem mais suave, gastando memória e engenhosidade.
+
+90
+00:09:00.724 --> 00:09:07.199
+A cor, por sua vez, vem de uma paleta fixa de quinze cores, mais um valor transparente.
+
+91
+00:09:07.199 --> 00:09:09.536
+Ninguém escolhe tons.
+
+92
+00:09:09.536 --> 00:09:15.599
+As cores saem da forma como o chip combina luminância e crominância para gerar o sinal analógico.
+
+93
+00:09:15.599 --> 00:09:24.774
+Isso explica por que a paleta tem tantos verdes e vermelhos em variações claras e escuras, e só três tons neutros: preto, cinza e branco.
+
+94
+00:09:24.774 --> 00:09:27.911
+Pausa para situar quem estava no trânsito.
+
+95
+00:09:27.911 --> 00:09:35.611
+A tela do T M S noventa e nove dezoito é feita de células de oito por oito, descritas por tabelas na memória de vídeo.
+
+96
+00:09:35.611 --> 00:09:41.374
+O modo mais rico permite um desenho único por célula e duas cores a cada oito pixels.
+
+97
+00:09:41.374 --> 00:09:44.136
+Não existe rolagem por hardware.
+
+98
+00:09:44.136 --> 00:09:48.424
+Agora vem a parte mais famosa do chip, os sprites.
+
+99
+00:09:48.424 --> 00:09:57.011
+Além do fundo, o chip desenha até trinta e dois objetos independentes, posicionados em qualquer pixel, por cima do cenário.
+
+100
+00:09:57.011 --> 00:10:03.336
+Cada um pode ter oito por oito ou dezesseis por dezesseis pixels, opcionalmente ampliado ao dobro.
+
+101
+00:10:03.336 --> 00:10:06.074
+Cada sprite tem uma única cor.
+
+102
+00:10:06.074 --> 00:10:13.649
+Por isso os personagens mais elaborados eram feitos empilhando dois ou três sprites no mesmo lugar, cada um com uma cor.
+
+103
+00:10:13.649 --> 00:10:21.786
+A palavra sprite, aliás, segundo o relato de Karl Guttag, foi sugerida dentro da equipe da Texas durante esse projeto.
+
+104
+00:10:21.786 --> 00:10:28.911
+A ideia era de figuras que flutuam sobre a cena, independentes do fundo, como pequenos seres mágicos.
+
+105
+00:10:28.911 --> 00:10:38.361
+Vale uma ressalva: objetos móveis desenhados por hardware já existiam antes, por exemplo nos consoles da Atari, só que com outros nomes.
+
+106
+00:10:38.361 --> 00:10:42.974
+O que a Texas parece ter batizado foi o termo, não o conceito.
+
+107
+00:10:42.974 --> 00:10:51.861
+Cada sprite é descrito por quatro bytes numa tabela de atributos: posição vertical, posição horizontal, número do padrão e cor.
+
+108
+00:10:51.861 --> 00:10:54.461
+Há detalhes deliciosos aí.
+
+109
+00:10:54.461 --> 00:11:05.136
+Um valor especial na coordenada vertical, duzentos e oito, funciona como marcador de fim de lista: ao encontrá-lo, o chip ignora todos os sprites seguintes.
+
+110
+00:11:05.136 --> 00:11:11.999
+E um bit no byte de cor, chamado de early clock, desloca o sprite trinta e dois pixels para a esquerda.
+
+111
+00:11:11.999 --> 00:11:17.149
+Ele existe porque a coordenada horizontal só vai de zero a duzentos e cinquenta e cinco.
+
+112
+00:11:17.149 --> 00:11:23.386
+Sem esse bit, não haveria como fazer um objeto entrar suavemente pela borda esquerda da tela.
+
+113
+00:11:23.386 --> 00:11:26.374
+E agora voltamos à cena do começo.
+
+114
+00:11:26.374 --> 00:11:32.286
+A cada linha da imagem, o chip percorre a tabela e separa os sprites que cruzam aquela linha.
+
+115
+00:11:32.286 --> 00:11:35.186
+Só há espaço interno para quatro.
+
+116
+00:11:35.186 --> 00:11:38.899
+Se houver um quinto, ele não é desenhado naquela linha.
+
+117
+00:11:38.899 --> 00:11:45.611
+O chip liga um bit no registrador de status, o sinal de quinto sprite, e grava ali o número dele.
+
+118
+00:11:45.611 --> 00:11:51.599
+Os sprites com número menor têm prioridade, então quem some é sempre o de número mais alto.
+
+119
+00:11:51.599 --> 00:11:58.086
+A solução que os programadores encontraram foi trocar a ordem dos sprites a cada quadro, numa rotação.
+
+120
+00:11:58.086 --> 00:12:02.761
+Assim, quem fica de fora muda a cada sexagésimo de segundo.
+
+121
+00:12:02.761 --> 00:12:07.524
+Em vez de um inimigo invisível, você tem vários inimigos piscando.
+
+122
+00:12:07.524 --> 00:12:10.124
+É feio, mas é jogável.
+
+123
+00:12:10.124 --> 00:12:16.811
+E esse pisca-pisca virou uma assinatura estética do ColecoVision, do M S X e do Master System.
+
+124
+00:12:16.811 --> 00:12:21.174
+O mesmo registrador de status traz mais duas informações.
+
+125
+00:12:21.174 --> 00:12:28.299
+Um bit de colisão acende quando dois sprites se sobrepõem em algum pixel visível, mas não diz quais foram.
+
+126
+00:12:28.299 --> 00:12:34.036
+Na prática, muitos jogos ignoravam esse bit e calculavam as colisões em software.
+
+127
+00:12:34.036 --> 00:12:43.311
+E um bit sinaliza o fim da parte visível da imagem, gerando uma interrupção sessenta vezes por segundo no padrão americano, ou cinquenta no europeu.
+
+128
+00:12:43.311 --> 00:12:47.786
+Esse pulso é o relógio de quase todo jogo feito para esse chip.
+
+129
+00:12:47.956 --> 00:12:52.256
+Falando em padrões de televisão, a família teve variantes.
+
+130
+00:12:52.206 --> 00:12:56.068
+O noventa e nove dezoito gera vídeo composto americano.
+
+131
+00:12:56.068 --> 00:13:04.518
+O noventa e nove vinte e oito entrega os componentes de cor separados, e o noventa e nove vinte e nove faz o mesmo em cinquenta hertz, para a Europa.
+
+132
+00:13:04.518 --> 00:13:10.818
+Depois vieram as versões da série noventa e um, que aceitam memórias de quatro bits de largura.
+
+133
+00:13:10.818 --> 00:13:16.031
+Com elas, os oito chips de memória viram dois, o que barateia a placa.
+
+134
+00:13:16.031 --> 00:13:25.968
+Os M S X brasileiros, até onde se sabe, usavam uma dessas variantes com saída em componentes, mais um codificador externo para o nosso padrão PAL M.
+
+135
+00:13:25.968 --> 00:13:28.193
+Hora de mais um resumo.
+
+136
+00:13:28.193 --> 00:13:33.531
+Trinta e dois sprites, cada um de uma cor só, e no máximo quatro por linha.
+
+137
+00:13:33.531 --> 00:13:40.306
+O quinto some, o chip avisa, e os jogos fazem rodízio para transformar o sumiço em pisca-pisca.
+
+138
+00:13:40.306 --> 00:13:42.456
+Agora, a herança.
+
+139
+00:13:42.456 --> 00:13:50.018
+O T M S noventa e nove dezoito virou a base do padrão M S X, lançado em mil novecentos e oitenta e três.
+
+140
+00:13:50.018 --> 00:13:55.868
+Isso levou o chip a máquinas de dezenas de fabricantes, do Japão à Europa e ao Brasil.
+
+141
+00:13:55.868 --> 00:14:06.156
+Para a segunda geração do M S X, a Yamaha fez um sucessor compatível, com mais memória, mais cores e, finalmente, mais recursos de rolagem.
+
+142
+00:14:06.156 --> 00:14:14.931
+A Sega usou o chip no S G mil, lançado no Japão no mesmo dia que o Famicom da Nintendo, em julho de mil novecentos e oitenta e três.
+
+143
+00:14:14.931 --> 00:14:20.793
+Para o Master System, a Sega criou um V D P próprio, derivado do da Texas.
+
+144
+00:14:20.793 --> 00:14:30.193
+Ele mantém os modos antigos e acrescenta um novo, com paleta escolhida entre sessenta e quatro cores, rolagem por hardware e até oito sprites por linha.
+
+145
+00:14:30.193 --> 00:14:38.931
+E o V D P do Mega Drive, por sua vez, descende do Master System, a ponto de ainda conter o modo de compatibilidade com ele.
+
+146
+00:14:38.931 --> 00:14:47.406
+Ou seja: quem cresceu jogando Master System e Mega Drive da Tectoy estava olhando, sem saber, para netos do chip da Texas.
+
+147
+00:14:47.406 --> 00:14:49.618
+E a história não acabou.
+
+148
+00:14:49.618 --> 00:14:56.318
+Hoje existe uma réplica em F P G A, o F dezoito A, que encaixa no soquete original.
+
+149
+00:14:56.318 --> 00:15:08.968
+E entusiastas que montam computadores caseiros com Z oitenta ainda colocam o chip original nos seus projetos, porque ele continua sendo uma das formas mais simples de tirar imagem colorida de um processador de oito bits.
+
+150
+00:15:08.968 --> 00:15:11.856
+Para fechar, vamos recapitular.
+
+151
+00:15:11.856 --> 00:15:19.118
+O T M S noventa e nove dezoito nasceu no fim dos anos setenta para o computador doméstico da Texas Instruments.
+
+152
+00:15:19.118 --> 00:15:33.018
+A decisão central foi dar ao chip a sua própria memória, acessada pelo processador através de duas portas, e isso moldou tudo, do BASIC lento do T I noventa e nove quatro A às regras de temporização dos jogos de M S X.
+
+153
+00:15:33.018 --> 00:15:39.943
+A imagem é montada a partir de tabelas de células e cores, numa paleta fixa e sem rolagem por hardware.
+
+154
+00:15:39.943 --> 00:15:46.331
+E os sprites, provavelmente batizados ali, têm um limite de quatro por linha que virou estética.
+
+155
+00:15:46.331 --> 00:15:53.256
+Então, da próxima vez que você vir um inimigo piscando num jogo antigo, lembre que aquilo não é um defeito.
+
+156
+00:15:53.256 --> 00:15:56.268
+É um contador interno chegando a quatro.
+
+157
+00:15:56.268 --> 00:16:06.243
+É um bit acendendo num registrador, e um programador, quarenta anos atrás, decidindo que era melhor todo mundo piscar um pouco do que alguém desaparecer de vez.
+

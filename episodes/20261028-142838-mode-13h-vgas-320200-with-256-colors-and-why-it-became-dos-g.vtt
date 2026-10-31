@@ -1,0 +1,614 @@
+WEBVTT
+
+1
+00:00:00.100 --> 00:00:04.075
+Imagine que você liga um computador no começo dos anos noventa.
+
+2
+00:00:04.025 --> 00:00:10.525
+A tela acende em preto, aparecem algumas linhas de texto, um comando é digitado e, de repente, tudo muda.
+
+3
+00:00:10.525 --> 00:00:18.475
+Surge um pôr do sol com dezenas de tons de laranja, uma floresta com sombras suaves, um personagem pequeno e cheio de detalhes.
+
+4
+00:00:18.475 --> 00:00:27.412
+Por trás dessa mágica, na grande maioria das vezes, estava um único número mágico que os programadores digitavam quase de olhos fechados: treze agá.
+
+5
+00:00:27.412 --> 00:00:30.225
+O famoso Modo Treze Agá da placa VGA.
+
+6
+00:00:30.225 --> 00:00:36.687
+Trezentos e vinte pixels de largura, duzentos de altura e duzentas e cinquenta e seis cores ao mesmo tempo.
+
+7
+00:00:36.687 --> 00:00:38.275
+Olá, seja bem-vindo.
+
+8
+00:00:38.275 --> 00:00:48.887
+Hoje a gente vai fazer uma viagem até a época do DOS para entender por que um modo de vídeo de resolução tão baixa virou o queridinho de toda uma geração de desenvolvedores de jogos.
+
+9
+00:00:48.887 --> 00:00:52.762
+Primeiro, vamos ver como era o mundo gráfico do PC antes dele.
+
+10
+00:00:52.762 --> 00:00:57.287
+Depois, o que exatamente é o Modo Treze Agá e de onde vem esse nome estranho.
+
+11
+00:00:57.287 --> 00:01:07.362
+Em seguida, vamos olhar para o truque de memória que tornava esse modo tão simples, para a paleta de cores e para algumas esquisitices que todo programador da época conhecia.
+
+12
+00:01:07.362 --> 00:01:13.200
+E, no final, vamos falar dos jogos, da cena demo e de como tudo isso acabou sendo substituído.
+
+13
+00:01:13.200 --> 00:01:17.950
+Vamos começar pelo contexto, porque sem ele não dá para entender o tamanho do salto.
+
+14
+00:01:17.950 --> 00:01:24.425
+No começo dos anos oitenta, os PCs da IBM e os compatíveis tinham opções gráficas bem modestas.
+
+15
+00:01:24.425 --> 00:01:32.237
+A placa CGA, por exemplo, mostrava gráficos coloridos em trezentos e vinte por duzentos, mas com apenas quatro cores na tela.
+
+16
+00:01:32.237 --> 00:01:39.725
+E não eram quaisquer quatro cores: eram combinações fixas, e uma das mais famosas tinha ciano, magenta, branco e preto.
+
+17
+00:01:39.725 --> 00:01:43.650
+Quem jogou nessa época lembra bem daquele visual meio psicodélico.
+
+18
+00:01:43.650 --> 00:01:49.562
+Depois veio a EGA, em meados dos anos oitenta, que já permitia dezesseis cores ao mesmo tempo.
+
+19
+00:01:49.562 --> 00:01:51.087
+Foi uma melhora enorme.
+
+20
+00:01:51.087 --> 00:01:53.725
+Só que programar para a EGA era complicado.
+
+21
+00:01:53.725 --> 00:01:56.587
+A memória de vídeo era organizada em planos.
+
+22
+00:01:56.587 --> 00:02:05.387
+Pense assim: em vez de cada pixel morar num lugar só, a informação de cor de cada pixel ficava espalhada em quatro camadas diferentes de memória.
+
+23
+00:02:05.387 --> 00:02:13.037
+Para desenhar um único ponto, o programador precisava configurar registradores da placa, escolher planos, aplicar máscaras.
+
+24
+00:02:13.037 --> 00:02:18.500
+Funcionava, e muita gente ficou craque nisso, mas era trabalhoso e cheio de armadilhas.
+
+25
+00:02:18.500 --> 00:02:24.375
+Enquanto isso, outras máquinas, como o Amiga, já impressionavam com gráficos e sons muito mais ricos.
+
+26
+00:02:24.375 --> 00:02:30.725
+O PC era visto como uma máquina de escritório, poderosa para planilhas, mas meio sem graça para jogos.
+
+27
+00:02:30.725 --> 00:02:44.262
+Foi nesse cenário que, em mil novecentos e oitenta e sete, a IBM lançou a linha de computadores PS barra dois e, junto com ela, um novo padrão gráfico: o VGA, sigla em inglês para algo como "matriz de gráficos de vídeo"
+
+28
+00:02:44.262 --> 00:02:53.887
+O VGA trazia vários modos novos, incluindo um de seiscentos e quarenta por quatrocentos e oitenta com dezesseis cores, ótimo para aplicações de escritório.
+
+29
+00:02:53.887 --> 00:02:58.775
+Mas, escondido na lista, havia um modo que ia mudar a história dos jogos no PC.
+
+30
+00:02:58.775 --> 00:03:02.062
+Agora vamos ao nome, porque ele confunde muita gente.
+
+31
+00:03:02.062 --> 00:03:11.037
+Nos PCs daquela época, você trocava o modo de vídeo pedindo ajuda à BIOS, que é aquele software básico gravado na placa-mãe e na placa de vídeo.
+
+32
+00:03:11.037 --> 00:03:16.175
+Você chamava uma função específica de vídeo e passava um número indicando qual modo queria.
+
+33
+00:03:16.175 --> 00:03:21.625
+O modo de texto padrão, aquele das letras brancas sobre fundo preto, era o modo três.
+
+34
+00:03:21.625 --> 00:03:29.325
+E o modo de trezentos e vinte por duzentos com duzentas e cinquenta e seis cores era o modo treze, só que escrito em hexadecimal.
+
+35
+00:03:29.325 --> 00:03:35.262
+É daí que vem o "agá" no final: é a forma tradicional de indicar que o número está em base dezesseis.
+
+36
+00:03:35.262 --> 00:03:39.600
+Treze em hexadecimal corresponde a dezenove no nosso sistema decimal.
+
+37
+00:03:39.600 --> 00:03:45.600
+Ou seja, Modo Treze Agá é simplesmente o modo de vídeo número dezenove da BIOS.
+
+38
+00:03:45.748 --> 00:03:52.473
+E a parte bonita é que entrar nesse modo exigia, literalmente, duas ou três instruções em linguagem de máquina.
+
+39
+00:03:52.423 --> 00:04:00.060
+Você colocava o número no registrador certo, chamava a interrupção de vídeo, e pronto: a tela estava pronta para receber cores.
+
+40
+00:04:00.060 --> 00:04:05.010
+Para voltar ao DOS no final do jogo, era a mesma coisa, só que pedindo o modo três.
+
+41
+00:04:05.010 --> 00:04:13.535
+Então, recapitulando rapidinho: antes havia a CGA, com quatro cores, e a EGA, com dezesseis cores e uma memória chatíssima de programar.
+
+42
+00:04:13.535 --> 00:04:25.510
+Aí veio o VGA, em mil novecentos e oitenta e sete, trazendo o Modo Treze Agá, que é o modo número dezenove da BIOS, com trezentos e vinte por duzentos pixels e duzentas e cinquenta e seis cores.
+
+43
+00:04:25.510 --> 00:04:29.573
+Agora vem a parte que realmente explica o sucesso dele: a memória.
+
+44
+00:04:29.573 --> 00:04:31.073
+Faça a conta comigo.
+
+45
+00:04:31.073 --> 00:04:36.735
+Trezentos e vinte pixels por linha, vezes duzentas linhas, dá sessenta e quatro mil pixels.
+
+46
+00:04:36.735 --> 00:04:40.773
+No Modo Treze Agá, cada pixel ocupa exatamente um byte.
+
+47
+00:04:40.773 --> 00:04:48.348
+Um byte pode guardar um número de zero a duzentos e cinquenta e cinco, ou seja, duzentos e cinquenta e seis valores possíveis.
+
+48
+00:04:48.348 --> 00:04:49.810
+Cada valor é uma cor.
+
+49
+00:04:49.810 --> 00:04:53.260
+Então a tela inteira cabe em sessenta e quatro mil bytes.
+
+50
+00:04:53.260 --> 00:04:55.335
+E por que isso é tão importante?
+
+51
+00:04:55.335 --> 00:05:03.623
+Porque os processadores da Intel daquela época, rodando no chamado modo real do DOS, enxergavam a memória em pedaços chamados segmentos.
+
+52
+00:05:03.623 --> 00:05:10.348
+Cada segmento tinha sessenta e quatro kilobytes, o que dá sessenta e cinco mil, quinhentos e trinta e seis bytes.
+
+53
+00:05:10.348 --> 00:05:17.060
+Repare: sessenta e quatro mil bytes da tela cabem inteirinhos dentro de um único segmento, com uma pequena sobra.
+
+54
+00:05:17.060 --> 00:05:24.423
+Não precisa trocar de segmento no meio do desenho, não precisa trocar de banco de memória, não precisa de nenhuma acrobacia.
+
+55
+00:05:24.423 --> 00:05:35.473
+A memória de vídeo desse modo começava num endereço fixo, conhecido de cor por qualquer programador da época, o segmento que em hexadecimal se escreve A, zero, zero, zero.
+
+56
+00:05:35.473 --> 00:05:39.823
+A partir dali, o primeiro byte era o pixel do canto superior esquerdo.
+
+57
+00:05:39.823 --> 00:05:42.535
+O segundo byte, o pixel logo à direita.
+
+58
+00:05:42.535 --> 00:05:46.785
+E assim por diante, linha por linha, como se você estivesse lendo um livro.
+
+59
+00:05:46.785 --> 00:05:51.498
+Quando uma linha terminava, depois de trezentos e vinte bytes, começava a próxima.
+
+60
+00:05:51.498 --> 00:06:02.710
+Isso significa que, para pintar um ponto na tela, bastava fazer uma conta simples: pegar a linha, multiplicar por trezentos e vinte, somar a coluna, e escrever o número da cor naquela posição.
+
+61
+00:06:02.710 --> 00:06:04.648
+Uma única escrita na memória.
+
+62
+00:06:04.648 --> 00:06:09.298
+Compare isso com a EGA, onde o mesmo ponto exigia mexer em planos e máscaras.
+
+63
+00:06:09.298 --> 00:06:15.460
+E os programadores, sempre obcecados por velocidade, ainda tinham um truque clássico para essa conta.
+
+64
+00:06:15.460 --> 00:06:20.335
+Multiplicação era uma operação relativamente lenta nos processadores da época.
+
+65
+00:06:20.335 --> 00:06:26.085
+Então eles perceberam que trezentos e vinte é igual a duzentos e cinquenta e seis mais sessenta e quatro.
+
+66
+00:06:26.085 --> 00:06:36.073
+E multiplicar por duzentos e cinquenta e seis ou por sessenta e quatro, que são potências de dois, pode ser feito com deslocamentos de bits, que são operações baratíssimas.
+
+67
+00:06:36.073 --> 00:06:43.423
+Então, em vez de multiplicar a linha por trezentos e vinte, eles deslocavam o número duas vezes e somavam os resultados.
+
+68
+00:06:43.423 --> 00:06:51.048
+Parece um detalhe pequeno, mas, quando você desenha milhares de pixels por quadro, esse tipo de economia fazia diferença real.
+
+69
+00:06:51.048 --> 00:06:57.435
+Muitos jogos também guardavam uma tabela pronta com o endereço inicial de cada linha, evitando a conta de vez.
+
+70
+00:06:57.435 --> 00:07:01.760
+Agora, vamos falar das cores, porque aqui tem outra sacada importante.
+
+71
+00:07:01.760 --> 00:07:08.335
+Quando eu digo que cada pixel guarda um número de zero a duzentos e cinquenta e cinco, esse número não é a cor em si.
+
+72
+00:07:08.335 --> 00:07:09.998
+Ele é um índice numa paleta.
+
+73
+00:07:09.998 --> 00:07:13.848
+Pense numa caixa de lápis com duzentos e cinquenta e seis lápis.
+
+74
+00:07:13.848 --> 00:07:17.385
+O pixel diz apenas "use o lápis número quarenta e dois"
+
+75
+00:07:17.385 --> 00:07:22.623
+E quem decide qual é a cor do lápis número quarenta e dois é você, o programador.
+
+76
+00:07:22.780 --> 00:07:30.230
+Cada uma dessas duzentas e cinquenta e seis entradas da paleta podia ser configurada com uma mistura de vermelho, verde e azul.
+
+77
+00:07:30.180 --> 00:07:33.767
+Cada componente tinha sessenta e quatro níveis de intensidade.
+
+78
+00:07:33.767 --> 00:07:38.467
+Multiplicando tudo, dá mais de duzentas e sessenta e duas mil cores possíveis.
+
+79
+00:07:38.467 --> 00:07:44.930
+Você não podia usar todas ao mesmo tempo, só duzentas e cinquenta e seis, mas podia escolher quais seriam.
+
+80
+00:07:44.930 --> 00:07:49.805
+Para um jogo ambientado numa floresta, você enchia a paleta de verdes e marrons.
+
+81
+00:07:49.805 --> 00:07:52.755
+Para uma cena no deserto, laranjas e amarelos.
+
+82
+00:07:52.755 --> 00:07:55.317
+Para um rosto, dezenas de tons de pele.
+
+83
+00:07:55.317 --> 00:08:10.230
+E aqui vem a mágica que os artistas e programadores adoravam: como a imagem guarda apenas índices, se você mudar a cor de uma entrada da paleta, todos os pixels que usam aquele índice mudam instantaneamente, sem você reescrever nada na memória da tela.
+
+84
+00:08:10.230 --> 00:08:14.167
+Isso abria espaço para efeitos incríveis praticamente de graça.
+
+85
+00:08:14.167 --> 00:08:21.042
+Escurecer a tela inteira de forma suave, o famoso fade, era só ir diminuindo os valores da paleta aos poucos.
+
+86
+00:08:21.042 --> 00:08:28.392
+Uma cachoeira podia parecer animada apenas girando algumas cores em sequência, a técnica conhecida como ciclagem de paleta.
+
+87
+00:08:28.392 --> 00:08:34.717
+Brilho de fogo, água cintilando, luzes piscando, tudo isso podia ser feito mexendo em poucos bytes.
+
+88
+00:08:34.717 --> 00:08:40.880
+Para mudar a paleta, o programa conversava diretamente com a placa por meio de portas de entrada e saída.
+
+89
+00:08:40.880 --> 00:08:46.892
+Você dizia qual entrada queria alterar e depois enviava os três valores, vermelho, verde e azul.
+
+90
+00:08:46.892 --> 00:08:49.405
+Simples, rápido e muito poderoso.
+
+91
+00:08:49.405 --> 00:09:00.617
+Se você se distraiu nos últimos minutos, aqui vai o resumo: a tela do Modo Treze Agá cabe inteira num único segmento de memória, com um byte por pixel, organizada em linhas, como um texto.
+
+92
+00:09:00.617 --> 00:09:03.630
+Desenhar é só escrever um número no lugar certo.
+
+93
+00:09:03.630 --> 00:09:12.480
+E esse número aponta para uma paleta de duzentas e cinquenta e seis cores escolhidas pelo programador, o que permitia efeitos lindos de forma baratíssima.
+
+94
+00:09:12.480 --> 00:09:14.230
+Mas nem tudo era perfeito.
+
+95
+00:09:14.230 --> 00:09:16.017
+Vamos às esquisitices.
+
+96
+00:09:16.017 --> 00:09:18.305
+A primeira é o formato dos pixels.
+
+97
+00:09:18.305 --> 00:09:21.905
+Os monitores da época tinham proporção de quatro por três.
+
+98
+00:09:21.905 --> 00:09:25.517
+Só que trezentos e vinte por duzentos não é quatro por três.
+
+99
+00:09:25.517 --> 00:09:32.367
+O resultado é que os pixels apareciam ligeiramente mais altos do que largos, cerca de vinte por cento mais altos.
+
+100
+00:09:32.367 --> 00:09:39.830
+Um círculo desenhado de forma matematicamente perfeita na memória aparecia achatado na horizontal, parecendo um ovo em pé.
+
+101
+00:09:39.830 --> 00:09:44.117
+Os bons artistas da época sabiam disso e desenhavam já compensando.
+
+102
+00:09:44.117 --> 00:09:55.592
+E aqui vale uma curiosidade: quando esses jogos rodam hoje em emuladores ou monitores modernos sem a correção, eles aparecem um pouco esmagados, diferentes de como os artistas imaginaram.
+
+103
+00:09:55.592 --> 00:09:57.967
+A segunda esquisitice é escondida.
+
+104
+00:09:57.967 --> 00:10:08.855
+Por dentro, a placa VGA na verdade gerava quatrocentas linhas, desenhando cada linha do Modo Treze Agá duas vezes, e atualizava a tela a cerca de setenta vezes por segundo.
+
+105
+00:10:08.855 --> 00:10:16.280
+Isso deixava a imagem estável e com aquele aspecto de pixels grandes e bem definidos que hoje associamos ao visual da época.
+
+106
+00:10:16.280 --> 00:10:19.530
+A terceira questão era mais séria para quem fazia jogos.
+
+107
+00:10:19.530 --> 00:10:32.930
+A placa VGA padrão tinha duzentos e cinquenta e seis kilobytes de memória, mas o Modo Treze Agá, por causa da forma como organizava o acesso para parecer simples e linear, só deixava o programador enxergar um quarto disso.
+
+108
+00:10:32.930 --> 00:10:35.905
+Na prática, havia espaço para uma única tela.
+
+109
+00:10:35.905 --> 00:10:37.705
+Isso complicava a animação.
+
+110
+00:10:37.705 --> 00:10:48.242
+Se você apaga e redesenha os personagens diretamente na tela visível, o jogador pode ver o desenho pela metade, gerando cintilação e aquele efeito de imagem rasgada.
+
+111
+00:10:48.242 --> 00:10:58.517
+A solução mais comum foi montar a imagem inteira numa área da memória principal do computador, longe dos olhos do jogador, e depois copiar tudo de uma vez para a memória de vídeo.
+
+112
+00:10:58.517 --> 00:11:01.030
+Sessenta e quatro mil bytes por quadro.
+
+113
+00:11:01.030 --> 00:11:11.367
+Para sincronizar, os programas esperavam o momento em que o feixe do monitor voltava do fim da tela para o começo, o chamado retraço vertical, e faziam a cópia nessa janela.
+
+114
+00:11:11.367 --> 00:11:21.442
+Em máquinas mais lentas, essa cópia pesava, mas em processadores como o trezentos e oitenta e seis e o quatrocentos e oitenta e seis ela era perfeitamente viável.
+
+115
+00:11:21.604 --> 00:11:29.116
+E é aqui que entra um personagem importante: Michael Abrash, programador e escritor famoso por seus textos sobre otimização.
+
+116
+00:11:29.066 --> 00:11:36.016
+No começo dos anos noventa, ele popularizou numa revista técnica uma variação que ficou conhecida como Modo X.
+
+117
+00:11:36.016 --> 00:11:42.679
+A ideia era desligar aquela organização simplificada do Modo Treze Agá e voltar a usar a memória em planos.
+
+118
+00:11:42.679 --> 00:11:58.216
+Com isso, o programador ganhava acesso aos duzentos e cinquenta e seis kilobytes inteiros, podia ter várias telas na memória e alternar entre elas instantaneamente, e ainda conseguia uma resolução de trezentos e vinte por duzentos e quarenta, com pixels quadradinhos.
+
+119
+00:11:58.216 --> 00:12:00.641
+O preço era a volta da complexidade.
+
+120
+00:12:00.641 --> 00:12:10.016
+Muitos motores de jogo famosos usaram variações desse tipo de modo, chamado de modo desencadeado, incluindo, segundo se costuma documentar, o de Doom.
+
+121
+00:12:10.016 --> 00:12:19.491
+Mas vale notar: todas essas variações partiam do Modo Treze Agá como base, e muitos jogos simplesmente ficaram com ele, porque a simplicidade compensava.
+
+122
+00:12:19.491 --> 00:12:23.366
+Agora, vamos aos jogos e à cultura que nasceu em volta desse modo.
+
+123
+00:12:23.366 --> 00:12:31.341
+Na virada dos anos oitenta para os noventa, as grandes produtoras de aventuras gráficas abraçaram as duzentas e cinquenta e seis cores.
+
+124
+00:12:31.341 --> 00:12:48.066
+A Sierra, com títulos como King's Quest Cinco, e a LucasArts, com versões em VGA de jogos como The Secret of Monkey Island e depois Indiana Jones and the Fate of Atlantis, mostraram cenários pintados com um nível de detalhe que parecia impossível alguns anos antes.
+
+125
+00:12:48.066 --> 00:12:52.091
+Jogos de ação, de estratégia e de corrida seguiram o mesmo caminho.
+
+126
+00:12:52.091 --> 00:12:59.604
+Durante anos, rodar em VGA com duzentas e cinquenta e seis cores virou praticamente um selo de qualidade nas caixas dos jogos.
+
+127
+00:12:59.604 --> 00:13:01.341
+E não foram só os jogos.
+
+128
+00:13:01.341 --> 00:13:10.904
+A cena demo, aquela comunidade de programadores que criava animações audiovisuais para mostrar habilidade técnica, transformou o Modo Treze Agá num playground.
+
+129
+00:13:10.904 --> 00:13:21.716
+Efeitos clássicos como o plasma colorido ondulando na tela, o fogo gerado por algoritmo, túneis girando, tudo isso explorava a simplicidade da memória linear e o poder da paleta.
+
+130
+00:13:21.716 --> 00:13:29.741
+Para muita gente que aprendeu a programar nos anos noventa, escrever o primeiro pixel no endereço A zero zero zero foi um rito de passagem.
+
+131
+00:13:29.741 --> 00:13:31.904
+Era o "olá, mundo" dos gráficos.
+
+132
+00:13:31.904 --> 00:13:35.191
+Então, juntando as peças, por que ele virou o favorito?
+
+133
+00:13:35.191 --> 00:13:40.741
+Primeiro, porque era simples: um byte por pixel, memória linear, tudo num segmento só.
+
+134
+00:13:40.741 --> 00:13:47.166
+Segundo, porque era bonito: duzentas e cinquenta e seis cores escolhidas a dedo eram um salto gigantesco.
+
+135
+00:13:47.166 --> 00:13:55.116
+Terceiro, porque era universal: qualquer placa compatível com VGA suportava esse modo da mesma forma, sem depender de fabricante.
+
+136
+00:13:55.116 --> 00:14:04.504
+E quarto, porque era leve: sessenta e quatro mil bytes por tela era uma quantidade que os processadores da época conseguiam empurrar dezenas de vezes por segundo.
+
+137
+00:14:04.504 --> 00:14:07.166
+Como toda tecnologia, ele teve seu fim.
+
+138
+00:14:07.166 --> 00:14:17.891
+As placas Super VGA trouxeram resoluções maiores, como seiscentos e quarenta por quatrocentos e oitenta com duzentas e cinquenta e seis cores, e depois milhares e milhões de cores.
+
+139
+00:14:17.891 --> 00:14:22.191
+Surgiu um padrão chamado VESA para organizar esse caos de fabricantes.
+
+140
+00:14:22.191 --> 00:14:31.866
+Em seguida, o Windows noventa e cinco, as bibliotecas gráficas como o DirectX e as aceleradoras tridimensionais mudaram completamente a forma de fazer jogos.
+
+141
+00:14:31.866 --> 00:14:37.016
+Na segunda metade dos anos noventa, o Modo Treze Agá já tinha virado nostalgia.
+
+142
+00:14:37.016 --> 00:14:39.141
+Para fechar, vamos recapitular.
+
+143
+00:14:39.141 --> 00:14:46.441
+O Modo Treze Agá é o modo de vídeo número dezenove da BIOS, lançado com o VGA em mil novecentos e oitenta e sete.
+
+144
+00:14:46.441 --> 00:14:55.079
+Ele oferecia trezentos e vinte por duzentos pixels com duzentas e cinquenta e seis cores, escolhidas numa paleta de mais de duzentas e sessenta mil.
+
+145
+00:14:55.079 --> 00:15:03.679
+Sua grande virtude era caber inteiro num único segmento de memória, com cada pixel ocupando um byte, o que tornava a programação quase trivial.
+
+146
+00:15:03.679 --> 00:15:10.479
+Tinha limitações, como pixels não quadrados e espaço para uma só tela, que inspiraram variações como o Modo X.
+
+147
+00:15:10.479 --> 00:15:15.966
+E, durante alguns anos, foi a base visual de uma era inteira de jogos e demos no PC.
+
+148
+00:15:16.132 --> 00:15:17.894
+E fica a reflexão final.
+
+149
+00:15:17.844 --> 00:15:21.119
+O Modo Treze Agá não venceu por ser o mais avançado.
+
+150
+00:15:21.119 --> 00:15:25.932
+Havia resoluções maiores, havia formas mais sofisticadas de usar a placa.
+
+151
+00:15:25.932 --> 00:15:33.694
+Ele venceu porque tirava a complexidade do caminho e deixava o criador se concentrar no que importava: a arte, o jogo, a ideia.
+
+152
+00:15:33.694 --> 00:15:38.019
+Às vezes, a tecnologia que muda uma geração não é a mais poderosa.
+
+153
+00:15:38.019 --> 00:15:42.219
+É aquela que cabe, com folga, na cabeça de quem está criando.
+

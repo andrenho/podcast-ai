@@ -1,0 +1,662 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:05.612
+Você já parou para pensar no que acontece quando você chama um simples printf num ESP32?
+
+2
+00:00:05.612 --> 00:00:12.825
+Você escreve "olá, mundo", compila, grava na placa, e o texto aparece no monitor serial do seu computador.
+
+3
+00:00:12.825 --> 00:00:16.425
+Parece mágica, mas tem um caminho bem concreto ali.
+
+4
+00:00:16.425 --> 00:00:24.500
+E o mais curioso é que, se você trocar o printf por um fprintf apontando para um arquivo na memória flash, quase tudo nesse caminho continua igual.
+
+5
+00:00:24.500 --> 00:00:29.412
+A mesma família de funções, a mesma lógica, só que o destino final muda.
+
+6
+00:00:29.412 --> 00:00:39.425
+Quem decide esse destino é uma camada discreta, que pouca gente olha com calma: o sistema de arquivos virtual do E S P I D F, conhecido pela sigla V F S.
+
+7
+00:00:39.425 --> 00:00:43.050
+Neste episódio a gente vai seguir esse caminho de ponta a ponta.
+
+8
+00:00:43.050 --> 00:00:47.950
+Primeiro, vamos entender as camadas que existem entre o seu código e o hardware.
+
+9
+00:00:47.950 --> 00:00:56.237
+Depois, vamos ver como o V F S decide para onde mandar cada chamada, olhando para o caminho do arquivo e para os descritores de arquivo.
+
+10
+00:00:56.237 --> 00:01:04.887
+Em seguida, vamos acompanhar dois exemplos reais: a porta serial, a famosa UART, e o sistema de arquivos SPIFFS na flash.
+
+11
+00:01:04.887 --> 00:01:16.225
+E, para fechar, vamos ver como você pode registrar o seu próprio driver e fazer com que um sensor, um display ou qualquer periférico seu responda a open, read e write como se fosse um arquivo comum.
+
+12
+00:01:16.225 --> 00:01:21.350
+No caminho, vou apontar algumas armadilhas que costumam pegar quem está começando.
+
+13
+00:01:21.350 --> 00:01:23.562
+Vamos começar pelas camadas.
+
+14
+00:01:23.562 --> 00:01:31.562
+Quando você programa em C para um computador comum, funções como open, read, write e close fazem parte de um padrão chamado pósix.
+
+15
+00:01:31.562 --> 00:01:37.100
+No Linux, essas funções acabam virando chamadas de sistema, e o kernel cuida do resto.
+
+16
+00:01:37.100 --> 00:01:40.962
+Só que num microcontrolador não existe um kernel desse tipo.
+
+17
+00:01:40.962 --> 00:01:49.825
+O ESP32 roda o FreeRTOS, que é um sistema operacional de tempo real bem enxuto, focado em tarefas, filas e semáforos.
+
+18
+00:01:49.825 --> 00:01:52.062
+Ele não sabe nada sobre arquivos.
+
+19
+00:01:52.062 --> 00:01:54.525
+Então quem fornece essas funções?
+
+20
+00:01:54.525 --> 00:01:59.162
+A biblioteca C que vem com o E S P I D F, chamada newlib.
+
+21
+00:01:59.162 --> 00:02:16.612
+A newlib é uma biblioteca pensada para sistemas embarcados, e ela tem uma característica importante: ela implementa toda a parte de alto nível, como formatação de texto do printf, buffers do fopen e assim por diante, mas deixa as operações de mais baixo nível como ganchos que a plataforma precisa preencher.
+
+22
+00:02:16.612 --> 00:02:24.500
+Esses ganchos são funções com nomes como "read underline r" e "write underline r", ou seja, versões reentrantes de read e write.
+
+23
+00:02:24.500 --> 00:02:27.575
+E é exatamente aí que entra o V F S.
+
+24
+00:02:27.575 --> 00:02:33.887
+No E S P I D F, esses ganchos da newlib são ligados ao componente V F S.
+
+25
+00:02:33.887 --> 00:02:56.362
+Então, a pilha fica assim, de cima para baixo: o seu código chama printf ou fwrite; a newlib processa, guarda num buffer se for o caso, e em algum momento chama o write de baixo nível; esse write cai no V F S; e o V F S repassa a chamada para o driver certo, que pode ser a UART, o SPIFFS, o sistema de arquivos FAT, um socket de rede ou um driver que você mesmo escreveu.
+
+26
+00:02:56.362 --> 00:03:02.387
+Guarde essa imagem de quatro andares: seu código, newlib, V F S e driver.
+
+27
+00:03:02.387 --> 00:03:05.100
+O resto do episódio é sobre o terceiro andar.
+
+28
+00:03:05.100 --> 00:03:10.850
+Agora, a pergunta central: como o V F S sabe para qual driver mandar cada chamada?
+
+29
+00:03:10.850 --> 00:03:13.237
+A resposta tem duas partes.
+
+30
+00:03:13.237 --> 00:03:16.287
+Uma vale para quando você abre um arquivo pelo nome.
+
+31
+00:03:16.287 --> 00:03:20.212
+A outra vale para quando você já tem um descritor de arquivo aberto.
+
+32
+00:03:20.212 --> 00:03:23.225
+Vamos à primeira parte: o nome do arquivo.
+
+33
+00:03:23.225 --> 00:03:28.212
+Cada driver que quer participar do V F S se registra com um prefixo de caminho.
+
+34
+00:03:28.212 --> 00:03:33.112
+Por exemplo, o SPIFFS costuma ser registrado com o prefixo "barra spiffs".
+
+35
+00:03:33.112 --> 00:03:37.775
+A UART se registra com o prefixo "barra dev barra uart".
+
+36
+00:03:37.775 --> 00:03:41.625
+Um cartão SD com FAT pode usar "barra sdcard".
+
+37
+00:03:41.625 --> 00:03:48.612
+Esse registro é feito por uma função chamada esp vfs register, com sublinhados entre as palavras.
+
+38
+00:03:48.612 --> 00:03:58.300
+Ela recebe três coisas: o prefixo, uma estrutura com ponteiros para as funções do driver, e um ponteiro opcional de contexto, que a gente vai entender mais adiante.
+
+39
+00:03:58.418 --> 00:04:09.855
+Quando você chama open passando, digamos, "barra spiffs barra config ponto txt", o V F S percorre a lista de prefixos registrados e procura qual deles combina com o começo desse caminho.
+
+40
+00:04:09.855 --> 00:04:14.330
+Se mais de um combinar, ele escolhe o mais longo, o mais específico.
+
+41
+00:04:14.330 --> 00:04:20.855
+Depois disso vem um detalhe que é fundamental: o V F S remove o prefixo antes de chamar o driver.
+
+42
+00:04:20.855 --> 00:04:26.293
+Então o driver do SPIFFS não recebe "barra spiffs barra config ponto txt".
+
+43
+00:04:26.293 --> 00:04:29.855
+Ele recebe apenas "barra config ponto txt".
+
+44
+00:04:29.855 --> 00:04:35.693
+Isso é ótimo, porque o driver não precisa saber em que ponto da árvore de diretórios ele foi montado.
+
+45
+00:04:35.693 --> 00:04:41.068
+Você poderia montar o mesmo sistema de arquivos em "barra dados" e o driver nem perceberia.
+
+46
+00:04:41.068 --> 00:04:43.930
+Existem algumas regras para esse prefixo.
+
+47
+00:04:43.930 --> 00:04:47.430
+Ele precisa começar com barra e não pode terminar com barra.
+
+48
+00:04:47.430 --> 00:04:51.518
+E ele tem um tamanho máximo bem curto, de quinze caracteres.
+
+49
+00:04:51.518 --> 00:04:54.943
+Então nada de prefixos longos e descritivos.
+
+50
+00:04:54.943 --> 00:05:03.368
+Vale também saber que, se nenhum prefixo combinar com o caminho, o open simplesmente falha, e a variável érrno indica que o arquivo não existe.
+
+51
+00:05:03.368 --> 00:05:09.768
+Não existe uma raiz mágica que pega tudo, a não ser que alguém tenha registrado um driver justamente para isso.
+
+52
+00:05:09.768 --> 00:05:13.318
+Agora a segunda parte: os descritores de arquivo.
+
+53
+00:05:13.318 --> 00:05:18.205
+Quando o open dá certo, ele devolve um número inteiro, o descritor de arquivo.
+
+54
+00:05:18.205 --> 00:05:24.668
+Daí para frente, read, write, close e companhia não recebem mais nome nenhum, só esse número.
+
+55
+00:05:24.668 --> 00:05:29.743
+Então o V F S precisa lembrar, para cada número, qual driver é o dono.
+
+56
+00:05:29.743 --> 00:05:32.118
+E aqui tem uma sutileza bonita.
+
+57
+00:05:32.118 --> 00:05:35.243
+Cada driver tem a sua própria numeração interna.
+
+58
+00:05:35.243 --> 00:05:39.368
+O SPIFFS pode achar que o arquivo que ele acabou de abrir é o número zero dele.
+
+59
+00:05:39.368 --> 00:05:42.718
+A UART também tem os seus próprios números.
+
+60
+00:05:42.718 --> 00:05:48.080
+Se o V F S devolvesse esses números diretamente para você, haveria conflito.
+
+61
+00:05:48.080 --> 00:05:50.855
+Então ele mantém uma tabela de tradução.
+
+62
+00:05:50.855 --> 00:05:54.493
+De um lado está o descritor global, que é o que você recebe.
+
+63
+00:05:54.493 --> 00:06:00.943
+Do outro lado estão duas informações: qual driver é o dono, e qual é o descritor local daquele driver.
+
+64
+00:06:00.943 --> 00:06:06.018
+Na prática funciona assim: o driver abre o arquivo e devolve o seu número local.
+
+65
+00:06:06.018 --> 00:06:14.680
+O V F S procura uma posição livre na tabela global, anota ali o driver e o número local, e devolve para você o índice dessa posição.
+
+66
+00:06:14.680 --> 00:06:23.605
+Quando você chama read com esse número, o V F S olha a tabela, descobre o driver, troca o número global pelo local e chama a função de leitura do driver.
+
+67
+00:06:23.605 --> 00:06:27.655
+É uma consulta direta numa tabela, então o custo é bem pequeno.
+
+68
+00:06:27.655 --> 00:06:36.243
+Essa tabela tem tamanho fixo, que em geral fica em torno de sessenta e quatro posições, ligado a uma constante do sistema usada também pelo select.
+
+69
+00:06:36.243 --> 00:06:44.305
+As três primeiras posições, zero, um e dois, são especiais: são a entrada padrão, a saída padrão e a saída de erro.
+
+70
+00:06:44.305 --> 00:06:49.530
+É por isso que, lá no começo, o printf conseguia escrever sem você ter aberto nada.
+
+71
+00:06:49.530 --> 00:06:54.218
+A saída padrão já estava ligada a um driver desde a inicialização do sistema.
+
+72
+00:06:54.218 --> 00:07:08.043
+Se você se distraiu agora, aqui vai o resumo do mecanismo: na abertura, o roteamento é feito pelo prefixo do caminho; depois da abertura, o roteamento é feito por uma tabela que traduz o descritor global no par driver e descritor local.
+
+73
+00:07:08.043 --> 00:07:09.105
+É só isso.
+
+74
+00:07:09.105 --> 00:07:11.143
+Todo o resto é consequência.
+
+75
+00:07:11.143 --> 00:07:15.718
+Vamos então ao primeiro exemplo concreto: a UART e o console.
+
+76
+00:07:15.718 --> 00:07:25.755
+Quando o ESP32 inicializa, o E S P I D F configura o console, que por padrão fica na UART zero, a mesma porta que você usa para gravar o firmware.
+
+77
+00:07:25.755 --> 00:07:35.080
+Dependendo do chip e da configuração no menuconfig, o console pode ir para outro lugar, como a interface U S B serial embutida em alguns modelos mais novos.
+
+78
+00:07:35.080 --> 00:07:38.768
+Mas vamos ficar com a UART, que é o caso clássico.
+
+79
+00:07:38.768 --> 00:07:50.818
+O driver de V F S da UART se registra em "barra dev barra uart", e cada porta aparece como um arquivo: "barra dev barra uart barra zero", "barra dev barra uart barra um", e assim por diante.
+
+80
+00:07:50.818 --> 00:07:54.905
+A saída padrão do sistema acaba apontando para a porta do console.
+
+81
+00:07:54.905 --> 00:08:02.393
+Então, quando o printf termina de formatar o seu texto e a newlib decide esvaziar o buffer, ela chama write no descritor um.
+
+82
+00:08:02.393 --> 00:08:10.393
+O V F S consulta a tabela, vê que o descritor um pertence ao driver da UART, e chama a função de escrita desse driver.
+
+83
+00:08:10.490 --> 00:08:13.252
+Tem dois detalhes interessantes nesse driver.
+
+84
+00:08:13.252 --> 00:08:15.940
+O primeiro é a conversão de fim de linha.
+
+85
+00:08:15.940 --> 00:08:20.202
+No seu código você escreve só a quebra de linha, a famosa barra n.
+
+86
+00:08:20.202 --> 00:08:25.115
+Mas muitos terminais seriais esperam um retorno de carro seguido de quebra de linha.
+
+87
+00:08:25.115 --> 00:08:37.652
+O driver de V F S da UART pode fazer essa conversão automaticamente, tanto na transmissão quanto na recepção, e você pode configurar isso por porta, tanto no menuconfig quanto por funções da própria API.
+
+88
+00:08:37.652 --> 00:08:41.477
+O segundo detalhe é mais importante e confunde muita gente.
+
+89
+00:08:41.477 --> 00:08:51.165
+Por padrão, o driver de V F S da UART funciona num modo simples, que escreve e lê diretamente nos registradores do periférico, aguardando em laço.
+
+90
+00:08:51.165 --> 00:08:57.077
+Esse modo é ótimo para logs logo no início do boot, quando ainda não há interrupções configuradas.
+
+91
+00:08:57.077 --> 00:09:00.152
+Mas ele não é muito bom para ler dados do usuário.
+
+92
+00:09:00.152 --> 00:09:06.890
+A leitura pela entrada padrão nesse modo pode se comportar de forma estranha, devolvendo vazio em vez de esperar.
+
+93
+00:09:06.890 --> 00:09:15.202
+A solução é instalar o driver completo da UART, que usa interrupções e buffers, e depois dizer ao V F S para usar esse driver.
+
+94
+00:09:15.202 --> 00:09:23.227
+Existe uma função específica para isso, cujo nome, nas versões mais recentes, é algo como uart vfs dev use driver.
+
+95
+00:09:23.227 --> 00:09:29.440
+Os nomes mudaram um pouco entre versões do IDF, então vale conferir na documentação da sua versão.
+
+96
+00:09:29.440 --> 00:09:36.302
+A ideia, porém, é a mesma: a camada V F S continua igual, só muda o que ela chama por baixo.
+
+97
+00:09:36.302 --> 00:09:39.040
+Agora o segundo exemplo: o SPIFFS.
+
+98
+00:09:39.040 --> 00:09:45.527
+SPIFFS é um sistema de arquivos pensado para memória flash do tipo N O R, aquela que fica ao lado do chip.
+
+99
+00:09:45.527 --> 00:09:51.615
+Para usar, você chama uma função de registro do SPIFFS passando uma pequena estrutura de configuração.
+
+100
+00:09:51.615 --> 00:10:04.052
+Nela você informa o prefixo, normalmente "barra spiffs", o rótulo da partição na tabela de partições, o número máximo de arquivos abertos ao mesmo tempo, e se o sistema deve formatar a partição caso a montagem falhe.
+
+101
+00:10:04.052 --> 00:10:13.290
+Por trás dos panos, essa função monta o sistema de arquivos e chama o mesmo esp vfs register de que falamos, com a estrutura de funções do SPIFFS.
+
+102
+00:10:13.290 --> 00:10:18.540
+A partir daí, você usa fopen, fread, fwrite e fclose normalmente.
+
+103
+00:10:18.540 --> 00:10:22.277
+O fopen é da newlib e cria um objeto FILE com buffer.
+
+104
+00:10:22.277 --> 00:10:25.615
+Quando precisa, ele chama o open de baixo nível.
+
+105
+00:10:25.615 --> 00:10:33.365
+O V F S casa o prefixo "barra spiffs", remove esse prefixo e chama a função de abertura do SPIFFS com o resto do caminho.
+
+106
+00:10:33.365 --> 00:10:35.790
+Aqui também há duas armadilhas.
+
+107
+00:10:35.790 --> 00:10:39.365
+A primeira: o SPIFFS não tem diretórios de verdade.
+
+108
+00:10:39.365 --> 00:10:40.477
+Ele é plano.
+
+109
+00:10:40.477 --> 00:10:48.090
+Se você criar "barra spiffs barra logs barra hoje ponto txt", o SPIFFS guarda um arquivo cujo nome inclui uma barra no meio.
+
+110
+00:10:48.090 --> 00:10:54.252
+Funciona, mas não espere que mkdir faça alguma coisa útil, nem que você consiga listar subpastas.
+
+111
+00:10:54.252 --> 00:11:02.102
+Se você precisa de diretórios reais, o FAT ou o LittleFS, que é um componente externo bem popular, são opções melhores.
+
+112
+00:11:02.102 --> 00:11:09.790
+Inclusive, o próprio SPIFFS hoje é considerado uma opção mais antiga, e muita gente prefere LittleFS em projetos novos.
+
+113
+00:11:09.790 --> 00:11:12.727
+A segunda armadilha é o buffer da newlib.
+
+114
+00:11:12.727 --> 00:11:19.640
+Quando você escreve com fwrite, os dados podem ficar parados na memória até o buffer encher ou até você chamar fflush ou fclose.
+
+115
+00:11:19.640 --> 00:11:24.002
+Se a placa reinicia antes disso, os dados não chegam à flash.
+
+116
+00:11:24.002 --> 00:11:27.515
+Isso não é culpa do V F S nem do SPIFFS.
+
+117
+00:11:27.515 --> 00:11:31.340
+É o andar de cima, a newlib, fazendo o trabalho dela.
+
+118
+00:11:31.340 --> 00:11:32.477
+Muito bem.
+
+119
+00:11:32.477 --> 00:11:36.965
+Agora vamos à parte mais divertida: escrever o seu próprio driver.
+
+120
+00:11:36.965 --> 00:11:46.040
+Imagine que você tem um sensor de temperatura e quer que qualquer parte do código possa ler o valor com um simples read, como se fosse um arquivo em "barra dev barra temp".
+
+121
+00:11:46.040 --> 00:11:48.415
+Você vai precisar de três coisas.
+
+122
+00:11:48.415 --> 00:11:51.190
+A primeira é escrever as funções do driver.
+
+123
+00:11:51.190 --> 00:11:57.752
+No mínimo, um open, um read e um close, e talvez um write, se o sensor aceitar configuração.
+
+124
+00:11:57.752 --> 00:12:07.365
+Essas funções seguem as mesmas assinaturas das versões pósix: o read recebe um descritor, um ponteiro para o buffer e um tamanho, e devolve quantos bytes leu.
+
+125
+00:12:07.365 --> 00:12:14.827
+A regra de erro também é a do pósix: em caso de falha, devolva menos um e preencha a variável érrno com o código adequado.
+
+126
+00:12:14.930 --> 00:12:20.805
+A segunda é preencher a estrutura de operações do V F S com ponteiros para essas funções.
+
+127
+00:12:20.805 --> 00:12:35.092
+Essa estrutura tem campos para dezenas de operações: open, read, write, close, lseek, fstat, operações de diretório como opendir e readdir, rename, unlink, ioctl, e as funções ligadas ao select.
+
+128
+00:12:35.092 --> 00:12:37.367
+Você só preenche o que faz sentido.
+
+129
+00:12:37.367 --> 00:12:44.630
+Os campos que ficarem vazios fazem o V F S responder sozinho com erro, indicando que a operação não é suportada.
+
+130
+00:12:44.630 --> 00:12:48.467
+Esse erro aparece na érrno com o código chamado E NO SYS.
+
+131
+00:12:48.467 --> 00:13:00.355
+Vale mencionar que versões mais recentes do IDF introduziram uma forma alternativa e mais econômica de descrever essas operações, agrupando-as em estruturas menores para gastar menos memória RAM.
+
+132
+00:13:00.355 --> 00:13:03.592
+O conceito, porém, continua idêntico.
+
+133
+00:13:03.592 --> 00:13:08.755
+A terceira é registrar tudo com um prefixo, por exemplo "barra dev barra temp".
+
+134
+00:13:08.755 --> 00:13:11.855
+E o ponteiro de contexto que mencionei lá atrás?
+
+135
+00:13:11.855 --> 00:13:15.905
+Ele é útil quando você quer registrar o mesmo driver mais de uma vez.
+
+136
+00:13:15.905 --> 00:13:22.080
+Pense em dois sensores iguais, um em "barra dev barra temp um" e outro em "barra dev barra temp dois".
+
+137
+00:13:22.080 --> 00:13:31.155
+Você escreve as funções uma vez só, mas registra duas vezes, cada uma com um contexto diferente, apontando para a estrutura de dados daquele sensor.
+
+138
+00:13:31.155 --> 00:13:40.280
+Para isso, você marca na estrutura uma flag dizendo que vai usar contexto e preenche as variantes das funções que recebem esse ponteiro como primeiro argumento.
+
+139
+00:13:40.280 --> 00:13:44.967
+Assim, o V F S entrega a cada chamada o contexto certo.
+
+140
+00:13:44.967 --> 00:13:48.567
+Agora, três cuidados importantes para o seu driver.
+
+141
+00:13:48.567 --> 00:13:50.530
+Primeiro, concorrência.
+
+142
+00:13:50.530 --> 00:13:56.930
+O V F S protege a própria tabela de descritores, mas não serializa as chamadas ao seu driver.
+
+143
+00:13:56.930 --> 00:14:02.867
+Se duas tarefas do FreeRTOS lerem ao mesmo tempo, o seu read vai ser chamado ao mesmo tempo.
+
+144
+00:14:02.867 --> 00:14:07.980
+Proteger o hardware e os dados compartilhados com um mutex é responsabilidade sua.
+
+145
+00:14:07.980 --> 00:14:10.017
+Segundo, o select.
+
+146
+00:14:10.017 --> 00:14:24.980
+Se você quiser que o seu dispositivo funcione com select, junto com sockets de rede e a UART, você precisa implementar as funções de início e fim do select e avisar o V F S quando houver dados disponíveis, usando uma função própria para isso.
+
+147
+00:14:24.980 --> 00:14:32.642
+É mais trabalhoso, mas é o que permite que uma única tarefa espere ao mesmo tempo por dados do sensor, da serial e da rede.
+
+148
+00:14:32.642 --> 00:14:41.280
+A pilha de rede, aliás, também se integra ao V F S, e é justamente por isso que sockets e arquivos podem conviver no mesmo select.
+
+149
+00:14:41.280 --> 00:14:44.242
+Terceiro, operações entre drivers.
+
+150
+00:14:44.242 --> 00:14:51.117
+Um rename de "barra spiffs barra a" para "barra sdcard barra b" não vai funcionar, porque são drivers diferentes.
+
+151
+00:14:51.117 --> 00:14:57.830
+O V F S recusa, do mesmo jeito que o Linux recusa renomear entre sistemas de arquivos distintos.
+
+152
+00:14:57.830 --> 00:15:02.217
+Nesse caso, você precisa copiar o conteúdo e apagar o original.
+
+153
+00:15:02.217 --> 00:15:03.892
+Vamos recapitular.
+
+154
+00:15:03.892 --> 00:15:13.392
+O ESP32 não tem um kernel que entenda arquivos, então o E S P I D F liga os ganchos de baixo nível da newlib ao componente V F S.
+
+155
+00:15:13.392 --> 00:15:18.692
+Cada driver se registra com um prefixo de caminho curto, de até quinze caracteres.
+
+156
+00:15:18.692 --> 00:15:25.792
+Na abertura, o V F S escolhe o driver pelo prefixo mais específico e repassa o caminho já sem o prefixo.
+
+157
+00:15:25.792 --> 00:15:31.617
+Depois da abertura, uma tabela traduz o descritor global no par driver e descritor local.
+
+158
+00:15:31.617 --> 00:15:40.255
+A UART usa esse mecanismo para o console, com conversão de fim de linha e um modo simples que você pode trocar pelo driver completo com interrupções.
+
+159
+00:15:40.255 --> 00:15:47.105
+O SPIFFS usa o mesmo mecanismo para a flash, com um espaço de nomes plano e com a newlib fazendo buffer por cima.
+
+160
+00:15:47.105 --> 00:15:54.242
+E você pode entrar nesse jogo preenchendo uma estrutura de funções, registrando um prefixo e cuidando você mesmo da concorrência.
+
+161
+00:15:54.242 --> 00:15:56.367
+E aqui vai o pensamento final.
+
+162
+00:15:56.367 --> 00:16:01.530
+A ideia de que tudo é um arquivo nasceu em computadores enormes, décadas atrás.
+
+163
+00:16:01.530 --> 00:16:07.667
+É bonito perceber que ela cabe num chip de poucos reais, com algumas centenas de kilobytes de memória.
+
+164
+00:16:07.667 --> 00:16:15.230
+Para isso, basta uma tabela pequena, uma lista de prefixos e um acordo simples sobre o que significam abrir, ler e escrever.
+
+165
+00:16:15.230 --> 00:16:21.080
+Às vezes, a melhor abstração não é a mais sofisticada, e sim a que todo mundo já conhece.
+

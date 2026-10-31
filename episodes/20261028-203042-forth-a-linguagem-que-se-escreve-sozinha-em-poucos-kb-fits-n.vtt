@@ -1,0 +1,674 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:03.137
+Imagine uma máquina ligando pela primeira vez.
+
+2
+00:00:03.137 --> 00:00:07.437
+Não tem sistema operacional, não tem compilador, não tem editor.
+
+3
+00:00:07.437 --> 00:00:11.475
+Tem só uns poucos kilobytes de memória, um teclado e uma tela.
+
+4
+00:00:11.475 --> 00:00:17.175
+Você digita uma linha, aperta enter, e a máquina responde com duas letras: ok.
+
+5
+00:00:17.175 --> 00:00:23.400
+Você digita outra linha, e agora a máquina conhece uma palavra nova, que não existia um segundo atrás.
+
+6
+00:00:23.400 --> 00:00:31.175
+Mais algumas linhas, e você está estendendo o próprio compilador, criando estruturas de controle que a linguagem nem trazia de fábrica.
+
+7
+00:00:31.175 --> 00:00:35.687
+Tudo isso dentro de um espaço menor do que o de muitos bootloaders modernos.
+
+8
+00:00:35.687 --> 00:00:37.700
+Essa linguagem é o Forth.
+
+9
+00:00:37.700 --> 00:00:46.062
+Hoje a gente vai ver de onde ela veio, por que ela cabe em tão pouco espaço, e como ela consegue, quase literalmente, escrever a si mesma.
+
+10
+00:00:46.062 --> 00:00:54.525
+Vamos passar pelas duas pilhas, pelo dicionário de palavras, pelo truque do código encadeado e pelo jeito como o compilador se deixa reprogramar.
+
+11
+00:00:54.525 --> 00:00:57.925
+E, no fim, vamos ver onde o Forth foi parar.
+
+12
+00:00:57.925 --> 00:01:03.775
+A resposta inclui o firmware de computadores da Sun e da Apple, e uma sonda que pousou num cometa.
+
+13
+00:01:03.775 --> 00:01:05.537
+Começando pelo começo.
+
+14
+00:01:05.537 --> 00:01:12.162
+O Forth é, em grande parte, obra de uma pessoa só: Charles Moore, que todo mundo chama de Chuck Moore.
+
+15
+00:01:12.162 --> 00:01:21.350
+Ao longo dos anos sessenta, Moore foi juntando um interpretador pessoal, uma espécie de caixa de ferramentas que ele levava de emprego em emprego e de máquina em máquina.
+
+16
+00:01:21.350 --> 00:01:25.987
+Ele estava cansado de reescrever as mesmas coisas a cada computador novo.
+
+17
+00:01:25.987 --> 00:01:33.450
+Por volta de 1968, trabalhando com um I B M 1130, essa caixa de ferramentas ganhou nome.
+
+18
+00:01:33.450 --> 00:01:39.900
+Moore achava que tinha criado uma linguagem de quarta geração, e queria chamá-la de "fourth", quarta em inglês.
+
+19
+00:01:39.900 --> 00:01:44.662
+Só que o sistema da I B M aceitava nomes de no máximo cinco caracteres.
+
+20
+00:01:44.662 --> 00:01:47.050
+Caiu uma letra, e ficou Forth.
+
+21
+00:01:47.050 --> 00:01:55.425
+Essa é a história que o próprio Moore conta, e ela diz muito sobre a linguagem: nasceu apertada, dentro de limites, e se adaptou a eles.
+
+22
+00:01:55.425 --> 00:02:06.037
+O primeiro grande uso foi no Observatório Nacional de Radioastronomia dos Estados Unidos, por volta de 1970, controlando um radiotelescópio em Kitt Peak, no Arizona.
+
+23
+00:02:06.037 --> 00:02:15.350
+Era um minicomputador pequeno, com pouca memória, que precisava apontar a antena, coletar dados e ainda oferecer um ambiente interativo para os astrônomos.
+
+24
+00:02:15.350 --> 00:02:20.250
+Um sistema operacional mais um compilador mais as aplicações não caberiam ali.
+
+25
+00:02:20.250 --> 00:02:23.675
+O Forth fazia o papel de todos eles ao mesmo tempo.
+
+26
+00:02:23.675 --> 00:02:25.212
+E como ele faz isso?
+
+27
+00:02:25.212 --> 00:02:27.050
+A primeira peça é a pilha.
+
+28
+00:02:27.050 --> 00:02:29.525
+Na verdade, são duas pilhas.
+
+29
+00:02:29.525 --> 00:02:31.862
+A primeira é a pilha de dados.
+
+30
+00:02:31.862 --> 00:02:36.987
+No Forth, as palavras não recebem argumentos entre parênteses nem por nome.
+
+31
+00:02:36.987 --> 00:02:41.587
+Elas pegam valores do topo da pilha e deixam resultados no topo da pilha.
+
+32
+00:02:41.587 --> 00:02:47.387
+Para somar dois e três, você escreve dois, depois três, depois o sinal de mais.
+
+33
+00:02:47.387 --> 00:02:53.350
+O dois vai para a pilha, o três vai para cima dele, e a palavra "mais" tira os dois e deixa o cinco.
+
+34
+00:02:53.350 --> 00:02:58.575
+É a notação polonesa reversa, a mesma das calculadoras científicas da H P.
+
+35
+00:02:58.575 --> 00:03:02.475
+Para quem trabalha com C, isso parece um retrocesso estético.
+
+36
+00:03:02.475 --> 00:03:05.375
+Mas olhe pelo lado de quem escreve o compilador.
+
+37
+00:03:05.375 --> 00:03:08.725
+Não existe precedência de operadores para resolver.
+
+38
+00:03:08.725 --> 00:03:11.062
+Não existe árvore sintática.
+
+39
+00:03:11.062 --> 00:03:16.675
+Não existe alocação de registradores, porque os valores intermediários moram na pilha.
+
+40
+00:03:16.675 --> 00:03:24.512
+Não existe nem convenção de chamada para negociar, porque toda palavra fala a mesma língua: pega da pilha, devolve na pilha.
+
+41
+00:03:24.512 --> 00:03:31.087
+O analisador sintático do Forth, se dá para chamar assim, se resume a separar o texto por espaços em branco.
+
+42
+00:03:31.087 --> 00:03:34.812
+Cada pedaço entre espaços é uma palavra, e ponto final.
+
+43
+00:03:34.812 --> 00:03:37.512
+A segunda pilha é a pilha de retorno.
+
+44
+00:03:37.512 --> 00:03:41.237
+Ela guarda para onde voltar quando uma palavra termina.
+
+45
+00:03:41.237 --> 00:03:47.112
+Em C, os endereços de retorno e os dados locais costumam conviver no mesmo quadro de pilha.
+
+46
+00:03:47.112 --> 00:03:49.675
+O Forth separa as duas coisas.
+
+47
+00:03:49.675 --> 00:03:57.412
+Isso deixa as chamadas baratíssimas: chamar uma palavra não exige montar um quadro, empilhar argumentos e depois desempilhar tudo.
+
+48
+00:03:57.412 --> 00:04:00.862
+Os dados simplesmente já estão onde precisam estar.
+
+49
+00:04:00.962 --> 00:04:03.312
+A segunda peça é o dicionário.
+
+50
+00:04:03.312 --> 00:04:11.637
+Cada palavra que o Forth conhece fica guardada numa lista encadeada na memória: o nome, um ponteiro para a palavra anterior e o corpo da definição.
+
+51
+00:04:11.637 --> 00:04:18.362
+Quando você digita uma palavra, o sistema percorre essa lista, da mais nova para a mais antiga, até achar o nome.
+
+52
+00:04:18.362 --> 00:04:21.812
+Se não achar, tenta interpretar o texto como número.
+
+53
+00:04:21.812 --> 00:04:26.449
+Se também não for número, responde com um erro e um ponto de interrogação.
+
+54
+00:04:26.449 --> 00:04:28.512
+E para criar uma palavra nova?
+
+55
+00:04:28.512 --> 00:04:35.924
+Você escreve dois-pontos, o nome da palavra, a sequência de palavras que ela deve executar, e termina com ponto-e-vírgula.
+
+56
+00:04:35.924 --> 00:04:46.062
+Por exemplo, uma palavra que eleva um número ao quadrado: dois-pontos, o nome "quadrado", a palavra que duplica o topo da pilha, a palavra de multiplicação, ponto-e-vírgula.
+
+57
+00:04:46.062 --> 00:04:46.599
+Pronto.
+
+58
+00:04:46.599 --> 00:04:52.074
+A partir daí, "quadrado" é tão parte da linguagem quanto a soma ou a multiplicação.
+
+59
+00:04:52.074 --> 00:04:56.749
+Não há diferença de status entre o que veio de fábrica e o que você acabou de escrever.
+
+60
+00:04:56.749 --> 00:05:01.912
+Vamos parar um instante para recapitular, caso o trânsito tenha roubado sua atenção.
+
+61
+00:05:01.912 --> 00:05:08.337
+O Forth foi criado por Chuck Moore por volta de 1970, para rodar em máquinas minúsculas.
+
+62
+00:05:08.337 --> 00:05:16.799
+Ele usa duas pilhas, uma para dados e outra para endereços de retorno, e isso elimina quase todo o trabalho pesado de um compilador tradicional.
+
+63
+00:05:16.799 --> 00:05:21.799
+E tudo na linguagem é uma palavra, guardada num dicionário que você vai estendendo.
+
+64
+00:05:21.799 --> 00:05:27.874
+A ideia para guardar é esta: no Forth, a linguagem e o programa são feitos do mesmo material.
+
+65
+00:05:27.874 --> 00:05:35.562
+Agora, a parte que explica de verdade por que o Forth é tão compacto: o código encadeado, que em inglês se chama threaded code.
+
+66
+00:05:35.562 --> 00:05:38.412
+Nada a ver com threads de sistema operacional.
+
+67
+00:05:38.412 --> 00:05:43.837
+Aqui, encadeado quer dizer costurado, como uma linha passando por contas de um colar.
+
+68
+00:05:43.837 --> 00:05:49.749
+Quando você define "quadrado", o Forth não gera instruções de máquina para duplicar e multiplicar.
+
+69
+00:05:49.749 --> 00:05:55.987
+Ele guarda uma lista de endereços: o endereço da palavra que duplica e o endereço da palavra que multiplica.
+
+70
+00:05:55.987 --> 00:05:56.962
+Só isso.
+
+71
+00:05:56.962 --> 00:06:02.424
+Numa máquina de dezesseis bits, cada referência a outra palavra custa dois bytes.
+
+72
+00:06:02.424 --> 00:06:11.987
+Uma chamada de sub-rotina em código de máquina custaria pelo menos três bytes na maioria das arquiteturas da época, e muitas vezes mais, com o preparo dos argumentos.
+
+73
+00:06:11.987 --> 00:06:20.187
+Quem percorre essa lista é o chamado interpretador interno, cujo coração é uma rotina tradicionalmente chamada de next, próximo em inglês.
+
+74
+00:06:20.187 --> 00:06:27.462
+O next faz uma coisa só: lê o próximo endereço da lista, avança o ponteiro e salta para o código daquela palavra.
+
+75
+00:06:27.462 --> 00:06:32.362
+Em muitos processadores, isso cabe em três, quatro, cinco instruções.
+
+76
+00:06:32.362 --> 00:06:40.424
+Quando a palavra chamada também é uma definição de dois-pontos, ela guarda a posição atual na pilha de retorno e começa a percorrer a própria lista.
+
+77
+00:06:40.424 --> 00:06:44.962
+Quando termina, desempilha a posição e o next continua de onde parou.
+
+78
+00:06:44.962 --> 00:06:56.049
+Lá no fundo, em algum momento, a cadeia chega a uma palavra primitiva, escrita diretamente em assembly: somar, ler da memória, escrever na memória, manipular a pilha.
+
+79
+00:06:56.049 --> 00:07:00.937
+Essas primitivas fazem o trabalho real e terminam saltando de volta para o next.
+
+80
+00:07:00.937 --> 00:07:03.487
+O resultado é uma troca muito clara.
+
+81
+00:07:03.487 --> 00:07:10.699
+Você paga um pouco de velocidade, por causa desse salto extra a cada palavra, e ganha uma densidade de código impressionante.
+
+82
+00:07:10.699 --> 00:07:14.412
+Programas inteiros viram listas compactas de endereços.
+
+83
+00:07:14.412 --> 00:07:20.349
+Numa época em que a memória custava caro e era contada em poucos kilobytes, era uma troca excelente.
+
+84
+00:07:20.349 --> 00:07:29.674
+Com o tempo surgiram variações: código encadeado direto, encadeado por sub-rotinas, e até compiladores Forth que geram código nativo otimizado.
+
+85
+00:07:29.674 --> 00:07:32.937
+Mas a ideia original é essa costura de endereços.
+
+86
+00:07:32.937 --> 00:07:38.124
+Agora vem a parte que dá título a este episódio: a linguagem que se escreve sozinha.
+
+87
+00:07:38.124 --> 00:07:41.687
+Lembra do interpretador que lê o texto palavra por palavra?
+
+88
+00:07:41.687 --> 00:07:45.524
+Ele se chama interpretador externo, e tem dois modos.
+
+89
+00:07:45.524 --> 00:07:50.224
+No modo de interpretação, cada palavra encontrada é executada na hora.
+
+90
+00:07:50.224 --> 00:07:59.949
+No modo de compilação, que começa quando você digita dois-pontos, cada palavra encontrada não é executada: o endereço dela é anexado à definição em construção.
+
+91
+00:07:59.949 --> 00:08:03.349
+O ponto-e-vírgula volta para o modo de interpretação.
+
+92
+00:08:03.458 --> 00:08:05.445
+Mas aí surge uma pergunta.
+
+93
+00:08:05.445 --> 00:08:12.683
+Se o ponto-e-vírgula é só mais uma palavra, como ele consegue ser executado no meio de uma compilação, em vez de ser compilado?
+
+94
+00:08:12.683 --> 00:08:16.933
+A resposta é que algumas palavras são marcadas como imediatas.
+
+95
+00:08:16.933 --> 00:08:20.783
+Uma palavra imediata é executada mesmo em modo de compilação.
+
+96
+00:08:20.783 --> 00:08:23.033
+O ponto-e-vírgula é imediata.
+
+97
+00:08:23.033 --> 00:08:27.233
+E, mais interessante, as estruturas de controle também são.
+
+98
+00:08:27.233 --> 00:08:30.845
+Pense no "se", que em Forth aparece em inglês, if.
+
+99
+00:08:30.845 --> 00:08:35.258
+Ele não é uma construção sintática embutida no compilador, como em C.
+
+100
+00:08:35.258 --> 00:08:37.645
+É uma palavra imediata comum.
+
+101
+00:08:37.645 --> 00:08:48.820
+Quando o compilador encontra o "if", essa palavra roda e faz duas coisas: grava na definição um desvio condicional, com o destino ainda em branco, e empilha o endereço desse espaço em branco.
+
+102
+00:08:48.820 --> 00:08:57.720
+Mais adiante, quando aparece a palavra que fecha o bloco, ela também roda imediatamente, pega aquele endereço da pilha e preenche o destino do desvio.
+
+103
+00:08:57.720 --> 00:09:00.033
+Laços funcionam do mesmo jeito.
+
+104
+00:09:00.033 --> 00:09:08.395
+Isso significa que o compilador do Forth é extensível pelo próprio usuário, com as mesmas ferramentas que ele usa para escrever qualquer outra coisa.
+
+105
+00:09:08.395 --> 00:09:19.533
+Se você quer uma estrutura de controle nova, um "case", um laço especial para varrer uma tabela, uma pequena linguagem para descrever estados de uma máquina, você escreve palavras imediatas e pronto.
+
+106
+00:09:19.533 --> 00:09:25.845
+Não há gramática para alterar, nem gerador de analisador sintático, nem recompilação do compilador.
+
+107
+00:09:25.845 --> 00:09:28.320
+E é daí que vem a autorreferência.
+
+108
+00:09:28.320 --> 00:09:33.520
+Num sistema Forth típico, só um núcleo pequeno de primitivas é escrito em assembly.
+
+109
+00:09:33.520 --> 00:09:43.045
+O resto, incluindo o interpretador externo, o compilador, o dois-pontos, o "if" e os laços, é escrito em Forth, sobre essas primitivas.
+
+110
+00:09:43.045 --> 00:09:46.758
+Um exemplo famoso é o eForth, de Bill Muench e C.
+
+111
+00:09:46.758 --> 00:09:55.270
+H. Ting, que foi desenhado justamente para ser portado com facilidade: algo em torno de trinta primitivas em assembly, e todo o resto em Forth.
+
+112
+00:09:55.270 --> 00:10:02.308
+Para levar o sistema a um processador novo, você reescreve essas poucas dezenas de rotinas, e o restante vem junto.
+
+113
+00:10:02.308 --> 00:10:13.495
+Muitos sistemas Forth vão além e usam um metacompilador: um programa Forth, rodando numa máquina, que gera a imagem completa de um novo sistema Forth, às vezes para outra arquitetura.
+
+114
+00:10:13.495 --> 00:10:15.758
+O Forth constrói o Forth.
+
+115
+00:10:15.758 --> 00:10:29.220
+É parecido com um compilador de C que compila a si mesmo, mas com uma diferença de escala: estamos falando de sistemas inteiros, com editor, compilador e interpretador, cabendo em algo como oito kilobytes, às vezes menos.
+
+116
+00:10:29.220 --> 00:10:31.770
+Mais uma recapitulação rápida.
+
+117
+00:10:31.770 --> 00:10:40.683
+O Forth guarda programas como listas de endereços, percorridas por uma rotina minúscula chamada next, e isso deixa o código extremamente denso.
+
+118
+00:10:40.683 --> 00:10:46.833
+O compilador tem dois modos, e algumas palavras, as imediatas, rodam durante a compilação.
+
+119
+00:10:46.833 --> 00:10:51.145
+É assim que até o "if" e os laços são escritos na própria linguagem.
+
+120
+00:10:51.145 --> 00:10:57.795
+A ideia para guardar: quase todo o Forth é escrito em Forth, sobre algumas dezenas de primitivas em assembly.
+
+121
+00:10:57.795 --> 00:11:00.333
+Então, onde essa linguagem foi parar?
+
+122
+00:11:00.333 --> 00:11:07.383
+Em 1973, Moore fundou a Forth Incorporated, junto com Elizabeth Rather e Ned Conklin.
+
+123
+00:11:07.383 --> 00:11:14.270
+Rather, aliás, foi uma das primeiras pessoas além do próprio Moore a programar em Forth, lá no observatório.
+
+124
+00:11:14.270 --> 00:11:21.770
+A empresa levou o Forth para controle industrial, instrumentação, sistemas de aeroportos e aplicações embarcadas.
+
+125
+00:11:21.770 --> 00:11:30.195
+No fim dos anos setenta, surgiu o Forth Interest Group, que publicou implementações em domínio público para vários processadores populares.
+
+126
+00:11:30.195 --> 00:11:34.808
+Foi assim que o Forth chegou às mãos de hobbistas com micros de oito bits.
+
+127
+00:11:34.808 --> 00:11:44.370
+Em 1982, um computador britânico chamado Jupiter Ace chegou ao mercado com Forth na ROM, em vez do BASIC que todos os concorrentes usavam.
+
+128
+00:11:44.370 --> 00:11:47.370
+Tinha um processador Z oitenta e pouquíssima RAM.
+
+129
+00:11:47.370 --> 00:11:51.483
+Vendeu mal, mas virou objeto de culto entre colecionadores.
+
+130
+00:11:51.483 --> 00:11:59.620
+Em 1994, a linguagem ganhou um padrão oficial pela A N S I, o que ajudou a reduzir a confusão entre dialetos.
+
+131
+00:11:59.738 --> 00:12:03.775
+O lugar mais surpreendente, porém, talvez seja o firmware.
+
+132
+00:12:03.775 --> 00:12:10.163
+As estações de trabalho da Sun tinham um firmware chamado OpenBoot, que depois virou o padrão Open Firmware.
+
+133
+00:12:10.163 --> 00:12:14.813
+Quem já ligou uma máquina SPARC e interrompeu o boot lembra do prompt: ok.
+
+134
+00:12:14.813 --> 00:12:16.025
+Era um Forth.
+
+135
+00:12:16.025 --> 00:12:24.013
+Os Macs com processadores PowerPC também usavam Open Firmware, e o laptop educacional do projeto Um Laptop por Criança idem.
+
+136
+00:12:24.013 --> 00:12:33.375
+E tem um detalhe muito elegante: placas de expansão podiam trazer seus drivers de inicialização num bytecode derivado do Forth, independente de arquitetura.
+
+137
+00:12:33.375 --> 00:12:39.700
+A mesma placa funcionava numa máquina SPARC ou num PowerPC, porque o firmware interpretava aquele bytecode.
+
+138
+00:12:39.700 --> 00:12:42.350
+O Forth também influenciou hardware.
+
+139
+00:12:42.350 --> 00:12:51.463
+Moore projetou processadores cujas instruções eram, essencialmente, as primitivas do Forth, com as duas pilhas implementadas direto no silício.
+
+140
+00:12:51.463 --> 00:12:59.850
+Uma linhagem desses chips levou ao R T X dois mil e dez, da Harris, usado em aplicações espaciais por ser resistente à radiação.
+
+141
+00:12:59.850 --> 00:13:07.175
+A sonda Philae, que pousou num cometa em 2014 como parte da missão Rosetta, levava processadores desse tipo.
+
+142
+00:13:07.175 --> 00:13:14.800
+Mais recentemente, Moore se dedicou a chips com dezenas de núcleos minúsculos, todos programados num dialeto próprio de Forth.
+
+143
+00:13:14.800 --> 00:13:18.788
+Agora, é justo falar das críticas, porque elas são reais.
+
+144
+00:13:18.788 --> 00:13:21.800
+Código Forth pode ser muito difícil de ler.
+
+145
+00:13:21.800 --> 00:13:31.738
+Quem não escreveu precisa acompanhar mentalmente o estado da pilha a cada palavra, e programas cheios de palavras que só giram, duplicam e descartam valores viram um quebra-cabeça.
+
+146
+00:13:31.738 --> 00:13:40.525
+A extensibilidade também tem seu preço: como cada programador molda a linguagem ao próprio problema, cada projeto acaba falando um dialeto diferente.
+
+147
+00:13:40.525 --> 00:13:45.438
+Existe até um ditado na comunidade: se você viu um Forth, você viu um Forth.
+
+148
+00:13:45.438 --> 00:13:47.613
+Só aquele, e mais nenhum.
+
+149
+00:13:47.613 --> 00:13:53.038
+E aqui vale fazer a ponte com outros sistemas pequenos e engenhosos da história da computação.
+
+150
+00:13:53.038 --> 00:14:01.675
+O Small-C mostrou que dava para ter um compilador de C capaz de compilar a si mesmo em máquinas de oito bits, aceitando cortar partes da linguagem.
+
+151
+00:14:01.675 --> 00:14:11.063
+O CHIP oito mostrou que uma máquina virtual mínima, com poucas dezenas de instruções, bastava para fazer jogos rodarem em computadores muito diferentes.
+
+152
+00:14:11.063 --> 00:14:19.588
+E o Smalltalk mostrou um ambiente vivo, onde você modifica o sistema enquanto ele roda e onde as ferramentas são feitas da mesma matéria que os programas.
+
+153
+00:14:19.588 --> 00:14:22.300
+O Forth fica no cruzamento dos três.
+
+154
+00:14:22.300 --> 00:14:30.725
+Tem a autossuficiência do Small-C, a portabilidade por meio de um núcleo mínimo do CHIP oito e a natureza viva e extensível do Smalltalk.
+
+155
+00:14:30.725 --> 00:14:36.338
+Só que tudo isso numa escala de poucos kilobytes, e sem esconder nada de quem está programando.
+
+156
+00:14:36.338 --> 00:14:38.088
+Fechando, então.
+
+157
+00:14:38.088 --> 00:14:46.438
+O Forth nasceu das mãos de Chuck Moore, por volta de 1970, para controlar um radiotelescópio com quase nenhuma memória.
+
+158
+00:14:46.438 --> 00:14:54.988
+Ele resolve o problema do tamanho com duas pilhas, um dicionário de palavras e código encadeado, percorrido por uma rotina de poucas instruções.
+
+159
+00:14:54.988 --> 00:15:02.738
+Resolve o problema da portabilidade com um núcleo de algumas dezenas de primitivas, sobre as quais o resto do sistema é escrito em Forth.
+
+160
+00:15:02.738 --> 00:15:07.813
+E resolve o problema da expressividade deixando o programador estender o próprio compilador.
+
+161
+00:15:07.813 --> 00:15:14.563
+Daí ele saiu para fábricas, aeroportos, firmware de estações de trabalho e até a superfície de um cometa.
+
+162
+00:15:14.563 --> 00:15:16.675
+E fica um último pensamento.
+
+163
+00:15:16.675 --> 00:15:21.975
+A maioria das linguagens traça uma linha clara entre quem cria a linguagem e quem a usa.
+
+164
+00:15:21.975 --> 00:15:23.988
+O Forth apaga essa linha.
+
+165
+00:15:23.988 --> 00:15:29.725
+Cada palavra que você define vira parte da linguagem, com o mesmo status das que vieram de fábrica.
+
+166
+00:15:29.725 --> 00:15:34.138
+No fim, programar em Forth não é escrever um programa numa linguagem.
+
+167
+00:15:34.138 --> 00:15:40.150
+É ir construindo, palavra por palavra, a linguagem exata em que aquele programa fica óbvio.
+
+168
+00:15:40.150 --> 00:15:44.638
+E quando ela fica pronta, a máquina responde do jeito de sempre: ok.
+
